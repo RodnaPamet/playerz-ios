@@ -71,9 +71,7 @@
       "post": {
         "operationId": "authSignIn",
         "summary": "Sign in with email and password (native)",
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "description": "Exchanges email + password for an access/refresh token pair. This is the native-client equivalent of the web credentials sign-in; both share one throttle bucket keyed `login:<ip>` (10 attempts / 15 min, 15 min lockout), so attempts here draw down the same allowance as the web form — and a SUCCESSFUL sign-in still consumes one attempt (the bucket is never reset).\n\nThe throttle runs BEFORE the body is parsed, so a 429 tells you nothing about the credentials.\n\nThere is no validation error on this endpoint: a missing, malformed or non-JSON body leaves email/password undefined, which falls through to the same opaque 401 as a wrong password. The 401 is deliberately identical for \"no such account\" and \"wrong password\" (and the server burns equal bcrypt time on both), so a client must not try to distinguish them.\n\nOn success the server creates a session row that lives 30 days from THIS moment and attaches the returned refresh token to it.",
         "security": [],
         "requestBody": {
@@ -156,9 +154,7 @@
       "post": {
         "operationId": "authRefresh",
         "summary": "Exchange a refresh token for a new access token",
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "description": "Trades a refresh token for a fresh 15-minute access token, rotating the refresh token in the process.\n\n**Rotation with a 60-second grace window.** The normal case rotates: the presented token becomes the \"previous\" token, a new one is returned, and the old one keeps working for 60 more seconds. Inside that window (or when a concurrent caller loses the compare-and-swap race) the call still succeeds but `data.refreshToken` is **null**, meaning \"keep the token you already have\". This is what makes a burst of simultaneous refreshes — an iOS app resumed from the app switcher — safe: every caller gets a valid access token and they converge on one refresh token.\n\n**Presenting a rotated-away token after the grace window is treated as replay and REVOKES THE WHOLE SESSION.** Never persist a stale refresh token and retry it later.\n\nAll failure reasons (unknown, revoked, expired, stale session version, replay) collapse into one 401 on purpose — a client cannot act differently on any of them, and the only correct response is to discard both tokens and sign in again.\n\nThis endpoint does not rotate the session's access-token binding, so access tokens already in flight keep working.",
         "security": [],
         "requestBody": {
@@ -251,9 +247,7 @@
       "post": {
         "operationId": "authLogout",
         "summary": "End this session, or every session for the user",
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "description": "Revokes the session behind the presented access token. With `{\"everywhere\": true}` it instead revokes every session for the user and bumps the user's session version, which invalidates tokens on devices the server has never seen — use that after a password change or a suspected compromise.\n\n**This endpoint always returns 204.** Anonymous callers, expired tokens and already-revoked sessions all get 204: the caller's intent is satisfied either way, and a sign-out button must never be able to fail and spin. Do not branch on the response; clear local credentials unconditionally.\n\nRevoking the session also kills its refresh token — a subsequent POST /auth/refresh with it returns 401.\n\nThe `bearerAuth` requirement below reflects what a client MUST send for this call to do anything; the handler itself does not enforce it and returns 204 without a token.\n\n**Authentication is optional, and the response is always 204.** A missing, expired or already-revoked token is not an error: the caller wanted the session gone and it is gone. Returning 401 would invite clients to treat sign-out as retryable, which is how a sign-out button ends up spinning for ever. The edge treats this path as public for the same reason.",
         "security": [
           {},
@@ -326,9 +320,7 @@
         "operationId": "listVenues",
         "summary": "Search venues",
         "description": "Public, unauthenticated, cross-tenant venue search. Returns ACTIVE venues only, ordered by `id` ascending, paged with an opaque keyset cursor.\n\nThe response is the PAGE envelope: `{\"data\":{\"items\":[...],\"nextCursor\":...}}`.\n\nNo query parameter here is rejected: unparseable numbers fall back to the default and an unknown `sport` reaches the query layer, where it fails as a 500. `limit` is clamped, never refused.",
-        "tags": [
-          "Venues"
-        ],
+        "tags": ["Venues"],
         "security": [],
         "parameters": [
           {
@@ -420,9 +412,7 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": [
-                    "data"
-                  ],
+                  "required": ["data"],
                   "properties": {
                     "data": {
                       "$ref": "#/components/schemas/VenueSummaryPage"
@@ -450,9 +440,7 @@
         "operationId": "findVenuesNear",
         "summary": "Venues near a point",
         "description": "Public, unauthenticated, cross-tenant geo search, ordered by ascending distance and capped at 50 results.\n\nDeliberately NOT paginated: there is no cursor, and `data.paginated` is always false. A distance-ordered cursor cannot be stable while the caller moves, so the way to see more is a larger `radiusKm`.\n\nThe response is the plain `ok()` envelope: `{\"data\":{\"venues\":[...],\"radiusKm\":...,\"maxResults\":...,\"paginated\":false}}`. Note the items are `NearVenue`, not `VenueSummary`.",
-        "tags": [
-          "Venues"
-        ],
+        "tags": ["Venues"],
         "security": [],
         "parameters": [
           {
@@ -532,9 +520,7 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": [
-                    "data"
-                  ],
+                  "required": ["data"],
                   "properties": {
                     "data": {
                       "$ref": "#/components/schemas/NearVenueResult"
@@ -572,9 +558,7 @@
         "operationId": "getVenue",
         "summary": "Venue detail",
         "description": "Public, unauthenticated, cross-tenant venue detail. Wrapped in the `ok()` envelope: `{\"data\": VenueDetail}`.\n\nBy id, never by slug: slugs are unique only within a tenant, so two clubs can both own `central-courts` and a public slug route could not say which it meant. Ids come from `GET /venues` or `GET /venues/near`.",
-        "tags": [
-          "Venues"
-        ],
+        "tags": ["Venues"],
         "security": [],
         "parameters": [
           {
@@ -608,9 +592,7 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": [
-                    "data"
-                  ],
+                  "required": ["data"],
                   "properties": {
                     "data": {
                       "$ref": "#/components/schemas/VenueDetail"
@@ -648,9 +630,7 @@
         "operationId": "getVenueAvailability",
         "summary": "Bookable slots for a venue",
         "description": "Public, unauthenticated, cross-tenant. Materialises every candidate slot in a time window for each ACTIVE resource of the venue, including the ones already taken (`available: false`), so a grid can grey them out instead of implying the club is shut. Wrapped in the `ok()` envelope: `{\"data\": VenueAvailability}`.\n\nCHOOSING THE WINDOW — three mutually exclusive forms, resolved by `_lib/range.ts`:\n\n1. `?date=YYYY-MM-DD` (optionally with `?days=`) — the calendar date AT THE CLUB. Both ends are resolved against the VENUE's timezone (each local midnight against that date's real UTC offset), so a window spanning a DST changeover is still a whole number of local days. This exists so a client never computes the window with the DEVICE's calendar: a player in London tapping \"Thursday\" for a Sofia court would otherwise ask for a window shifted by two hours at both ends, with nothing reporting an error.\n2. `?from=` and/or `?to=` — absolute instants, for a caller that genuinely means instants. `from` alone implies `to = from + 24h`; `to` alone implies `from = now`.\n3. Neither — the window is `now` to `now + 24h`.\n\nSending `date` together with `from` or `to` is a 400 rather than a silent preference for one of them. `days` is only read in form 1; with `from`/`to` it is ignored silently.\n\nThe window is capped at 14 days (plus one hour of DST tolerance). `days` cannot exceed that, so `RANGE_TOO_WIDE` is only reachable through `from`/`to`.",
-        "tags": [
-          "Venues"
-        ],
+        "tags": ["Venues"],
         "security": [],
         "parameters": [
           {
@@ -736,9 +716,7 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": [
-                    "data"
-                  ],
+                  "required": ["data"],
                   "properties": {
                     "data": {
                       "$ref": "#/components/schemas/VenueAvailability"
@@ -786,9 +764,7 @@
         "operationId": "listBookings",
         "summary": "List my bookings at this club",
         "description": "The caller's OWN bookings at `{slug}`, newest first (ordered by `startTs` descending, then `id` descending).\n\nOwnership is enforced in the SQL `WHERE` clause (`bookedByUserId = ctx.userId`), not filtered after the read. Staff permissions do NOT widen this route — `bookings.view_all` has no effect here; a club admin wanting every booking needs a different route.\n\nPagination is KEYSET, not offset. `nextCursor` is the `id` of the last item on the page; pass it back verbatim as `cursor` and never parse it. `nextCursor` is `null` on the last page.\n\nResponse is WRAPPED twice: `{\"data\":{\"items\":[...],\"nextCursor\":...}}`.\n\nThis route is NOT rate-limited (the wrapper only limits POST/PUT/PATCH/DELETE), so there is no 429 here.",
-        "tags": [
-          "Bookings"
-        ],
+        "tags": ["Bookings"],
         "security": [
           {
             "bearerAuth": []
@@ -887,9 +863,7 @@
         "operationId": "createBooking",
         "summary": "Create a booking (hold a slot)",
         "description": "Creates a PENDING booking that HOLDS the slot for 15 minutes (`expiresAt`), then releases it. Pay for it with `POST /t/{slug}/bookings/{id}/checkout` before then, or it lapses.\n\n**The `Idempotency-Key` header is REQUIRED, and the server will not generate one.** Only the client knows that two requests are the same tap; a server-generated key would make every network retry a NEW booking, which is the exact double-charge this exists to prevent. A missing or whitespace-only header is a 400 `BAD_REQUEST` with `details.field = \"Idempotency-Key\"`, before the body is even read.\n\n**201 on a genuine create, 200 on an idempotent replay.** Both carry the identical `{\"data\": Booking}` body, so the client must branch on the STATUS CODE, not the payload, to know whether it created something. The key is unique per `(tenant, idempotencyKey)`: on a replay the stored booking is returned and THE REQUEST BODY IS IGNORED ENTIRELY — reusing a key for a different slot silently returns the first booking. Use a fresh UUID per distinct booking attempt, and reuse it only for retries of that same attempt.\n\n**The body NEVER carries a price.** `totalCents` is computed server-side by the same quoting engine the availability endpoint uses, from the resource's base price, opening hours, step grid and pricing rules. A `price`/`totalCents`/`priceCents` field in the body is silently ignored, not rejected.\n\n**The server does not pre-check whether the slot is free.** A Postgres EXCLUDE constraint arbitrates at INSERT time, so a lost race surfaces as 409 `SLOT_TAKEN` — \"retry with fresh availability\", not \"you did something wrong\". This is deliberately distinct from 400 `SLOT_NOT_BOOKABLE`, which means the club never offered that time at all (outside opening hours, off the step grid, not a whole number of billable units, a start that is not on a whole minute, or an ambiguous wall-clock time on a DST fall-back day) and which retrying unchanged can never fix.",
-        "tags": [
-          "Bookings"
-        ],
+        "tags": ["Bookings"],
         "security": [
           {
             "bearerAuth": []
@@ -1080,9 +1054,7 @@
         "operationId": "cancelBooking",
         "summary": "Cancel a booking and quote its refund",
         "description": "Cancels a PENDING or CONFIRMED booking and returns the refund QUOTE resolved against the club's cancellation policy at this instant.\n\n**This endpoint does not move money.** It sets the booking to CANCELLED, writes a Cancellation receipt with the resolved percentage frozen onto it, and returns what that receipt says. Issuing the actual Stripe refund is a separate operation. A client must not tell the user \"refunded\" — only \"refund of X due\".\n\n**Ownership is checked here, not by the permission.** `bookings.cancel` is held by every PLAYER, so the middleware only establishes that the caller may cancel SOMETHING at this club. This handler then loads the caller's OWN booking — unless they hold `bookings.view_all`, in which case staff may cancel on a player's behalf (the front desk taking a phone call). Someone else's booking answers 404, never 403: a 403 would confirm the booking exists and let a club's reservations be enumerated one id at a time.\n\n**Cancelling twice is a 409, not a no-op.** Each call writes a fresh Cancellation row and recomputes the refund from the CURRENT hours-until-start, so a second call would produce two receipts for one booking that disagree about the amount.\n\nThe request body is optional; a body-less POST is the common case and is not an error.",
-        "tags": [
-          "Bookings"
-        ],
+        "tags": ["Bookings"],
         "security": [
           {
             "bearerAuth": []
@@ -1238,10 +1210,7 @@
         "operationId": "checkoutBooking",
         "summary": "Pay for a booking (wallet, card, or both)",
         "description": "Starts payment for a PENDING booking. Credit is spent first, and only the remainder is charged to a card.\n\n**Read `confirmed` before doing anything else.**\n\n- `confirmed: true` — wallet credit covered the whole price. `cardDueCents` is 0 and `paymentIntentId` / `clientSecret` are both `null`. The booking has ALREADY been confirmed inline by this call. **Do NOT present a PaymentSheet**; go straight to the success screen. (No zero-amount PaymentIntent is created, because Stripe rejects those — and without this inline confirmation there would be no `payment_intent.succeeded` webhook, so a fully-credit-paid booking would sit PENDING until its slot expired.)\n- `confirmed: false` — `cardDueCents` is greater than 0 and `clientSecret` is non-null. Present the PaymentSheet with `clientSecret` and `publishableKey`. The booking is confirmed later, by the Stripe webhook; this response does NOT mean it is paid.\n\n**Show the split.** When `walletAppliedCents > 0` and `cardDueCents > 0`, the card amount is LESS than the booking total. Rendering the card amount alone next to the booking price looks like a bug to the user, which is why both numbers are returned: \"€10.00 from credit, €14.00 on card\".\n\n**`useWallet` is opt-in and strict.** Only the literal JSON `true` spends credit. A missing body, an unparseable body, `false`, `\"true\"`, or `1` all mean card-only — spending someone's credit because a field was omitted would be taking a decision that is theirs.\n\n**Own bookings only, with no staff escape hatch.** Unlike cancel, `bookings.view_all` grants nothing here: a manager must not be able to charge a player's saved card. Someone else's booking answers 404, not 403.\n\nCalling this twice on the same booking is safe on the card path — the Stripe idempotency key is derived from `booking id + amount due`, so a second tap returns the SAME PaymentIntent rather than charging twice.",
-        "tags": [
-          "Bookings",
-          "Payments"
-        ],
+        "tags": ["Bookings", "Payments"],
         "security": [
           {
             "bearerAuth": []
@@ -1396,9 +1365,7 @@
       "get": {
         "operationId": "getTenantMe",
         "summary": "Who am I at this club",
-        "tags": [
-          "Tenant"
-        ],
+        "tags": ["Tenant"],
         "description": "Resolves the caller's identity **and their membership of the club addressed by `{slug}`**, reading the membership authoritatively from the database rather than from the bearer token's claims.\n\nThe token's `memberships` array is a mint-time snapshot: an access token lives 15 minutes and its refresh token 30 days, and nothing re-mints the claims in between. This endpoint therefore re-reads the membership and reports the disagreement via `data.tokenStale`.\n\n**`tokenStale` handling (important for a native client).** `tokenStale` is `true` when the token's tenant id or role for this slug differs from the database — including the case where the token carries no membership for this slug at all. It is **not** an error and the rest of the payload is still correct. The client should refresh its access token (so the edge middleware, which authorises mutations from claims alone and never consults the database, stops working from a stale role) and then continue. Do not surface it to the user, and do not retry this call in a loop expecting it to flip on its own — only a token refresh clears it.\n\n**404, not 403.** When the caller holds no `ACTIVE` membership for this slug the handler answers `404 NOT_FOUND` with the message `Not found.`, deliberately making \"no such club\" and \"you are not a member of it\" indistinguishable so the endpoint cannot be used to enumerate tenants. Note that a `403 FORBIDDEN` is still possible for a non-member, but it comes from the edge middleware *before* this handler runs — see the 403 response.\n\nMemberships whose status is not `ACTIVE` (`INVITED`, `SUSPENDED`, `EXPIRED`) are filtered out by the query and therefore also produce a 404.\n\nRead-only; no rate limit applies (the shared wrapper rate-limits mutating methods only).",
         "security": [
           {
@@ -1413,9 +1380,7 @@
             "description": "The club's tenant slug, as it appears in `/t/{slug}/…`.",
             "schema": {
               "type": "string",
-              "examples": [
-                "slot-club-sofia"
-              ]
+              "examples": ["slot-club-sofia"]
             }
           }
         ],
@@ -1515,9 +1480,7 @@
       "post": {
         "operationId": "startConnectOnboarding",
         "summary": "Start or resume Stripe Connect onboarding",
-        "tags": [
-          "Payouts"
-        ],
+        "tags": ["Payouts"],
         "description": "Creates the club's Stripe Express connected account if it does not have one, then mints a **fresh, short-lived** Stripe-hosted onboarding link and returns it. Until a club has both a `stripeAccountId` and `payoutsEnabled`, checkout for its bookings fails with `PAYOUTS_NOT_ENABLED`.\n\n**Requires `admin.billing_manage`** — held by `OWNER` and `MANAGER` only. This is enforced twice: by the edge route-permission table (`/api/v1/t/:slug/connect/*` on any mutating verb) and again in the handler from the role held *at this slug*. Neither check reads the token's flat `permissions` claim.\n\n**No request body.** The handler reads nothing from the body; anything sent is ignored. `return_url` and `refresh_url` are built server-side from `NEXTAUTH_URL` on purpose — a caller-supplied return URL would be an open redirect dressed as the last step of our own flow.\n\n**`payoutsEnabled` is NOT set by this call.** It is echoed from the stored venue row and stays `false` until Stripe's `account.updated` webhook says otherwise. Finishing the onboarding form is not the same as Stripe having accepted the club's identity documents. A client that treats a 200 here, or a return to `?onboarding=complete`, as \"payouts are live\" will show a club it can take money it cannot be paid. Poll `payoutsEnabled` from the club's own state, never infer it from this response.\n\n**Idempotency.** Calling this repeatedly is safe: the stored `stripeAccountId` is reused, and account creation carries a tenant-derived idempotency key so two simultaneous first calls resolve to one Stripe account. Every call returns a *new* `onboardingUrl` (Stripe's links expire), so the URL must not be cached. `created` distinguishes the call that created the account from the ones that reused it.\n\nIt is a POST rather than a GET precisely because the first call has an external, non-reversible side effect that must not sit behind a verb a browser, crawler or prefetcher will follow on its own.\n\nRate-limited as a mutation (see the 429 response).",
         "security": [
           {
@@ -1532,9 +1495,7 @@
             "description": "The club's tenant slug, as it appears in `/t/{slug}/…`.",
             "schema": {
               "type": "string",
-              "examples": [
-                "slot-club-sofia"
-              ]
+              "examples": ["slot-club-sofia"]
             }
           }
         ],
@@ -1693,9 +1654,7 @@
       "get": {
         "operationId": "listEntraGroupMappings",
         "summary": "List Entra group → role mappings",
-        "tags": [
-          "SSO"
-        ],
+        "tags": ["SSO"],
         "description": "Every Entra security group mapped to a role at this club, ordered by `priority` DESC then `createdAt` ASC.\n\nRequires `sso.manage`, which only OWNER holds (MANAGER deliberately does not: a MANAGER could otherwise map a directory group they administer to MANAGER and mint peers at will).\n\nENFORCEMENT NOTE: the edge middleware does NOT gate this read — `requiredPermission()` returns null for non-mutating methods — so the permission is checked in the handler (`requireSsoManage`). The list is sensitive not because it holds secrets but because it is reconnaissance: it is a map of which directory groups confer administrative access to this club.\n\nThe response is the `ok()` envelope wrapping a BARE ARRAY (`{\"data\": [ ... ]}`), not the `page()` shape. The underlying query takes at most 200 rows and there is no cursor.\n\nNot rate-limited: the wrapper only rate-limits POST/PUT/PATCH/DELETE.",
         "security": [
           {
@@ -1756,9 +1715,7 @@
       "post": {
         "operationId": "createEntraGroupMapping",
         "summary": "Map an Entra group to a role",
-        "tags": [
-          "SSO"
-        ],
+        "tags": ["SSO"],
         "description": "Create one mapping: everyone in the named Entra security group is granted `role` at this club from their next sign-in, subject to `priority` when several mapped groups match.\n\nRequires `sso.manage` (OWNER only), enforced twice — at the edge by ROUTE_PERMISSIONS and again in the handler.\n\nThe write and its audit entry share one transaction, so a mapping cannot exist without its audit record.\n\nDuplicate detection is arbitrated by the `@@unique([tenantId, aadGroupId])` index, not by a read-then-write, so two admins adding the same group concurrently produce exactly one row and one 409.\n\nRate-limited: mutating verbs go through the wrapper's default `API_MUTATION_LIMIT`.",
         "security": [
           {
@@ -1915,9 +1872,7 @@
       "patch": {
         "operationId": "updateEntraGroupMapping",
         "summary": "Update a group mapping",
-        "tags": [
-          "SSO"
-        ],
+        "tags": ["SSO"],
         "description": "Partially update one mapping. Only `aadGroupName`, `role` and `priority` can change; `aadGroupId` is immutable through this API.\n\nRequires `sso.manage` (OWNER only), enforced at the edge and again in the handler.\n\nThe row is read before it is written so the audit entry can record the BEFORE state (role and priority), not just the new value — an entry that records only what it is now answers a question anyone can answer by looking.\n\nThere is no 409 on this operation: since `aadGroupId` cannot be changed, there is no unique-constraint path to collide on.\n\nRate-limited by the wrapper's default mutation limit.",
         "security": [
           {
@@ -2042,9 +1997,7 @@
       "delete": {
         "operationId": "deleteEntraGroupMapping",
         "summary": "Delete a group mapping",
-        "tags": [
-          "SSO"
-        ],
+        "tags": ["SSO"],
         "description": "Remove one mapping. Everyone whose role came from this group stops being granted it at their next sign-in — a silent mass revocation that tends to present as \"SSO is broken\" rather than as a change somebody made, which is why DELETE is gated exactly as hard as POST and why the audit entry carries the FULL before-state (`aadGroupId`, `aadGroupName`, `role`, `priority`): once the row is gone, that entry is the only remaining evidence the group ever granted anything.\n\nRequires `sso.manage` (OWNER only), enforced at the edge and again in the handler.\n\nNot idempotent in the usual REST sense: a second DELETE of the same id returns 404, not 204.\n\nRate-limited by the wrapper's default mutation limit.",
         "security": [
           {
@@ -2145,9 +2098,7 @@
         "operationId": "createRealtimeToken",
         "summary": "Mint a short-lived Centrifugo connection token",
         "description": "Returns a 15-minute HS256 JWT the client presents to Centrifugo when opening its WebSocket, together with the broker URL so no second config call is needed.\n\nThe connection is per-PERSON, not per-club: there is no tenant slug in the path, and one socket carries every club the user belongs to. The token carries only `sub`, `iat` and `exp` — it is NOT a capability list. What the holder may actually subscribe to is decided per subscription by Centrifugo's subscribe proxy against the database at subscribe time, so a token minted before the user was removed from a conversation does not keep them reading it. The TTL is the revocation window; a token cannot be revoked, so the client must refresh before `expiresInSeconds` elapses.\n\nThe handler reads no request body. Send an empty POST.\n\nAuthentication is `Authorization: Bearer <jwe>` for a native client; a browser session cookie is equally accepted by the same code path.",
-        "tags": [
-          "Realtime"
-        ],
+        "tags": ["Realtime"],
         "security": [
           {
             "bearerAuth": []
@@ -2161,9 +2112,7 @@
                 "description": "Contract version marker, stamped on every wrapped v1 response including successes.",
                 "schema": {
                   "type": "string",
-                  "examples": [
-                    "2026-04-29"
-                  ]
+                  "examples": ["2026-04-29"]
                 }
               },
               "x-request-id": {
@@ -2244,9 +2193,7 @@
         "operationId": "centrifugoSubscribeProxy",
         "summary": "Centrifugo subscribe proxy (SERVER-TO-SERVER — do not generate a client for this)",
         "description": "**Not a client endpoint.** Centrifugo calls this before admitting a connection to a channel; no application client should ever call it, and its request and response shapes are Centrifugo's, not this API's.\n\nFour ways this operation differs from every other v1 route:\n\n1. **It always returns HTTP 200**, including when it denies. A non-200 makes Centrifugo treat the proxy as broken rather than as having decided, and the broker then falls back to its own configuration. The decision is in the BODY.\n2. **No success envelope.** `{\"result\":{}}` allows, `{\"error\":{...}}` denies. An `{\"error\":{\"code\":\"...\"}}` body in our canonical shape would be read by the broker as an allow carrying unknown fields, so this route must never use it. Note that `error.code` here is an INTEGER, not the string code used everywhere else in this API.\n3. **Authentication is a shared secret in the `x-centrifugo-secret` header**, compared in constant time against `CENTRIFUGO_PROXY_SECRET`. There is no user session, because the request is not made by a user — Centrifugo names the user itself in the body, having derived it from the JWT this server signed. `security: []` reflects only that no bearer token applies; the endpoint is NOT public.\n4. **No `X-API-Version` or `x-request-id` response header**, because this route is not wrapped by the shared v1 handler. It is also not rate limited.\n\nDenials are deliberately indistinguishable: a wrong secret, an absent secret header, an anonymous (empty) user, an unrecognised channel shape, a non-participant, and a participant who has LEFT the conversation all produce exactly `{\"error\":{\"code\":403,\"message\":\"forbidden\"}}`. The real reason is logged and never returned — saying \"not a participant\" rather than \"no such channel\" would confirm the conversation exists and turn the proxy into a membership oracle.\n\nAn unset server secret yields `{\"error\":{\"code\":503,\"message\":\"proxy not configured\"}}` for every request, still over HTTP 200. Unset never means allow.\n\nRecognised channels: `conv:<cuid>` (conversation; requires a participant row with `leftAt` null), `notif:<cuid>` and `presence:user:<cuid>` (both require the id to equal the caller's user id). Anything else is denied as an unknown shape.",
-        "tags": [
-          "Internal"
-        ],
+        "tags": ["Internal"],
         "security": [],
         "parameters": [
           {
@@ -2288,9 +2235,7 @@
       "post": {
         "operationId": "registerDevice",
         "summary": "Register this device for push notifications",
-        "tags": [
-          "Devices"
-        ],
+        "tags": ["Devices"],
         "description": "Registers an APNs device token for the signed-in user, or refreshes an existing one.\n\n**Call this on every launch.** A device token is not stable — iOS reissues it on reinstall, on restore from backup, and sometimes unprompted. The server upserts on (deviceToken, environment), so repeat calls are free and a re-registered token has its failure count cleared.\n\n**`environment` must match the build.** SANDBOX and PRODUCTION are different APNs hosts with different token namespaces; only the client knows which build it is. A debug build registering as PRODUCTION receives `BadDeviceToken` for ever, which presents as 'push is broken' rather than as a configuration mistake. Anything other than `SANDBOX` is treated as `PRODUCTION`.\n\nA device belongs to a person, not a club: one registration covers every club the user belongs to.",
         "security": [
           {
@@ -2314,9 +2259,7 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": [
-                    "data"
-                  ],
+                  "required": ["data"],
                   "properties": {
                     "data": {
                       "$ref": "#/components/schemas/RegisteredDevice"
@@ -2351,9 +2294,7 @@
       "delete": {
         "operationId": "unregisterDevice",
         "summary": "Stop sending push to this device",
-        "tags": [
-          "Devices"
-        ],
+        "tags": ["Devices"],
         "description": "Removes the registration. Call it on sign-out, so the next person to use the phone does not receive the previous user's notifications.\n\nIdempotent: unregistering an unknown or already-removed token succeeds. Row-level security means this can only ever reach the caller's own devices — there is no way to name somebody else's.",
         "security": [
           {
@@ -2402,9 +2343,7 @@
       "get": {
         "operationId": "listPlatformAudit",
         "summary": "What platform admins have done",
-        "tags": [
-          "Platform"
-        ],
+        "tags": ["Platform"],
         "description": "The append-only record of every cross-club action: who, which grant, which capability, against which club, and why.\n\n**Reading this is itself audited.** An audit reader that exempted itself could not answer \"who has been looking at who looked at what\", which is the question an investigation asks. Each page of this read writes its own row.\n\n**Needs `AUDIT_READ`, not `TENANT_READ`.** Read access to a club’s bookings is a different question from read access to the record of platform access, and a grant should be able to carry one without the other.\n\n**Page to the end.** Newest first, 50 per page. A truncated audit log that looks complete is worse than none at all, so keep following `nextCursor` until it is null. Rows written while you page sort above your cursor and will not shift the boundaries underneath you.",
         "security": [
           {
@@ -2481,9 +2420,7 @@
       "get": {
         "operationId": "listPlatformTenants",
         "summary": "Every club on the platform",
-        "tags": [
-          "Platform"
-        ],
+        "tags": ["Platform"],
         "description": "The cross-club club list. A tenant-bound request can only ever see its own club, so this is the smallest question that genuinely needs platform authority.\n\n**Needs `TENANT_READ`.**\n\n**What it does not return:** bookings, members, payments. This answers \"which clubs exist\" and nothing about the people in them. The audit row it writes leaves `subjectTenantId` null on purpose — a list of every club is about no single one.\n\nOldest first, 100 per page.",
         "security": [
           {
@@ -2593,31 +2530,22 @@
             "type": "string",
             "format": "date-time",
             "description": "When `accessToken` expires. RFC 3339, UTC `Z`, SECOND precision — fractional seconds are stripped server-side because Swift's `JSONDecoder.DateDecodingStrategy.iso8601` rejects them. Truncation rounds DOWN, so the value is never later than the real expiry.",
-            "examples": [
-              "2026-09-24T09:15:00Z"
-            ]
+            "examples": ["2026-09-24T09:15:00Z"]
           },
           "expiresIn": {
             "type": "integer",
             "description": "Seconds until `accessToken` expires, floored. Currently always ~900. Provided so a client doing its own clock arithmetic need not parse a date.",
-            "examples": [
-              900
-            ]
+            "examples": [900]
           },
           "refreshToken": {
-            "type": [
-              "string",
-              "null"
-            ],
+            "type": ["string", "null"],
             "description": "A NEW refresh token to store, or **null**.\n\nNull only ever comes from POST /auth/refresh and means \"keep the token you already have\": the call landed inside the 60-second grace window, or it lost the compare-and-swap race against a concurrent refresh. The server stores only a hash and genuinely cannot hand back the current plaintext in that case.\n\nNull is used rather than an empty string precisely because a falsy-but-present value is what ends up written to a keychain. From POST /auth/token this is always a non-null string."
           },
           "refreshExpiresAt": {
             "type": "string",
             "format": "date-time",
             "description": "When the refresh token stops being accepted, and the one value here that does not move: the SESSION ROW's own expiry, fixed when the session is created and never extended. Refreshing does NOT push it out — it counts DOWN across responses rather than sliding forward, so a client may schedule re-authentication against it. Sign-in sets it 30 days ahead, every refresh in that session reports the same instant, and once it passes every refresh answers 401. Same format as `expiresAt`: RFC 3339, UTC `Z`, second precision, truncated downwards.",
-            "examples": [
-              "2026-10-24T09:00:00Z"
-            ]
+            "examples": ["2026-10-24T09:00:00Z"]
           }
         }
       },
@@ -2625,9 +2553,7 @@
         "type": "object",
         "title": "NativeTokensResponse",
         "description": "The v1 success envelope around a token pair. Every successful v1 body is `{\"data\": <T>}` — there is no unwrapped form.",
-        "required": [
-          "data"
-        ],
+        "required": ["data"],
         "properties": {
           "data": {
             "$ref": "#/components/schemas/NativeTokens"
@@ -2638,18 +2564,13 @@
         "type": "object",
         "title": "AuthTokenRequest",
         "description": "Sign-in credentials. Both fields are functionally required, but omitting either produces a 401, never a validation error.",
-        "required": [
-          "email",
-          "password"
-        ],
+        "required": ["email", "password"],
         "properties": {
           "email": {
             "type": "string",
             "format": "email",
             "description": "Lower-cased and trimmed server-side before lookup, so casing and surrounding whitespace do not matter.",
-            "examples": [
-              "player@example.com"
-            ]
+            "examples": ["player@example.com"]
           },
           "password": {
             "type": "string",
@@ -2662,9 +2583,7 @@
         "type": "object",
         "title": "AuthRefreshRequest",
         "description": "The refresh token most recently stored by the client.",
-        "required": [
-          "refreshToken"
-        ],
+        "required": ["refreshToken"],
         "properties": {
           "refreshToken": {
             "type": "string",
@@ -2756,31 +2675,18 @@
             "description": "Distinct sports over the venue's ACTIVE resources. On the list endpoint it is derived from at most 20 resources (the list query's `take: 20`), so a venue with more may report fewer sports there than on `GET /venues/{id}`."
           },
           "fromPriceCents": {
-            "type": [
-              "integer",
-              "null"
-            ],
+            "type": ["integer", "null"],
             "description": "Lowest `basePriceCents` among ACTIVE resources, in integer CENTS. Null — never 0 — when the venue has no active bookable resource. The currency is NOT carried on the summary; it only appears per-resource on the availability response."
           },
           "coverPhotoUrl": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"]
           }
         }
       },
       "VenueResource": {
         "type": "object",
         "description": "One bookable resource (court, field, table, lobby, route) as embedded in `VenueDetail`. ACTIVE only, ordered by name, capped at 50.",
-        "required": [
-          "id",
-          "name",
-          "sport",
-          "surface",
-          "isIndoor",
-          "basePriceCents"
-        ],
+        "required": ["id", "name", "sport", "surface", "isIndoor", "basePriceCents"],
         "properties": {
           "id": {
             "type": "string"
@@ -2792,10 +2698,7 @@
             "$ref": "#/components/schemas/SportType"
           },
           "surface": {
-            "type": [
-              "string",
-              "null"
-            ],
+            "type": ["string", "null"],
             "description": "`CourtSurface`: CLAY | HARD | GRASS | ARTIFICIAL_GRASS | CARPET | WOOD | CONCRETE. Typed nullable by the DTO and therefore modelled nullable, although the column is currently NOT NULL."
           },
           "isIndoor": {
@@ -2861,23 +2764,14 @@
             "description": "Distinct sports over the ACTIVE resources listed below (capped at 50 here)."
           },
           "fromPriceCents": {
-            "type": [
-              "integer",
-              "null"
-            ],
+            "type": ["integer", "null"],
             "description": "Lowest `basePriceCents` among ACTIVE resources, integer CENTS; null when there are none."
           },
           "coverPhotoUrl": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"]
           },
           "description": {
-            "type": [
-              "string",
-              "null"
-            ],
+            "type": ["string", "null"],
             "description": "Plaintext. The schema comment claims \"encrypted at rest\"; nothing encrypts or decrypts this column today, so it is returned as stored."
           },
           "addressLine": {
@@ -2896,10 +2790,7 @@
             "description": "IANA zone, e.g. \"Europe/Sofia\". This is the zone `?date=` on the availability endpoint is resolved in."
           },
           "phone": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"]
           },
           "openingHours": {
             "description": "The venue's `openingHoursJson` column, passed through verbatim. No shape is enforced anywhere in the codebase and nothing else reads it; the column default is `{}`. Modelled as free-form JSON on purpose — do not generate a typed struct for it."
@@ -2915,10 +2806,7 @@
       "VenueSummaryPage": {
         "type": "object",
         "description": "The `data` of a paged venue response (`page()` in _lib/envelope.ts).",
-        "required": [
-          "items",
-          "nextCursor"
-        ],
+        "required": ["items", "nextCursor"],
         "properties": {
           "items": {
             "type": "array",
@@ -2927,10 +2815,7 @@
             }
           },
           "nextCursor": {
-            "type": [
-              "string",
-              "null"
-            ],
+            "type": ["string", "null"],
             "description": "Opaque; pass back verbatim as `?cursor=`. Null on the last page. (It is currently the last item's venue id — keyset pagination on `id asc` — but clients must not parse it.)"
           }
         }
@@ -2979,12 +2864,7 @@
       "NearVenueResult": {
         "type": "object",
         "description": "The `data` of `GET /venues/near`. The echoed `radiusKm` and `maxResults` are part of the contract: a caller that asked for 500 km and got 50 must be able to tell, rather than rendering \"nothing within 500 km\".",
-        "required": [
-          "venues",
-          "radiusKm",
-          "maxResults",
-          "paginated"
-        ],
+        "required": ["venues", "radiusKm", "maxResults", "paginated"],
         "properties": {
           "venues": {
             "type": "array",
@@ -3010,12 +2890,7 @@
       "AvailabilitySlot": {
         "type": "object",
         "description": "One candidate booking window. Half-open [startTs, endTs); its length is the resource's `minBookingMinutes`, and consecutive slots are `slotStepMinutes` apart, so slots OVERLAP whenever the step is smaller than the minimum booking.",
-        "required": [
-          "startTs",
-          "endTs",
-          "priceCents",
-          "available"
-        ],
+        "required": ["startTs", "endTs", "priceCents", "available"],
         "properties": {
           "startTs": {
             "type": "string",
@@ -3087,14 +2962,7 @@
       "VenueAvailability": {
         "type": "object",
         "description": "The `data` of `GET /venues/{id}/availability`.",
-        "required": [
-          "venueId",
-          "venueName",
-          "timezone",
-          "from",
-          "to",
-          "resources"
-        ],
+        "required": ["venueId", "venueName", "timezone", "from", "to", "resources"],
         "properties": {
           "venueId": {
             "type": "string"
@@ -3170,18 +3038,12 @@
             "description": "ISO 4217 code for `totalCents`, e.g. `EUR` (the column default). Upper-case."
           },
           "expiresAt": {
-            "type": [
-              "string",
-              "null"
-            ],
+            "type": ["string", "null"],
             "format": "date-time",
             "description": "When a PENDING booking stops holding its slot — 15 minutes after creation. `null` once the booking is no longer merely held (confirmed, cancelled). A client should count down against this and stop offering payment when it passes."
           },
           "cancelledAt": {
-            "type": [
-              "string",
-              "null"
-            ],
+            "type": ["string", "null"],
             "format": "date-time",
             "description": "When the booking was cancelled, or `null` if it was not."
           },
@@ -3193,11 +3055,7 @@
           "resource": {
             "type": "object",
             "description": "The court/pitch/table booked. Trimmed deliberately: no price, no status, no tenant id.",
-            "required": [
-              "id",
-              "name",
-              "sport"
-            ],
+            "required": ["id", "name", "sport"],
             "properties": {
               "id": {
                 "type": "string",
@@ -3216,11 +3074,7 @@
           "venue": {
             "type": "object",
             "description": "The club/venue, lifted out of the resource so the wire shape survives a schema change that moves the relation.",
-            "required": [
-              "id",
-              "name",
-              "timezone"
-            ],
+            "required": ["id", "name", "timezone"],
             "properties": {
               "id": {
                 "type": "string",
@@ -3242,9 +3096,7 @@
         "type": "object",
         "title": "BookingEnvelope",
         "description": "The success envelope for a single booking. Every v1 success body is an object from the first commit — a bare value has nowhere to grow a cursor or a deprecation notice without breaking binaries already in the field.",
-        "required": [
-          "data"
-        ],
+        "required": ["data"],
         "properties": {
           "data": {
             "$ref": "#/components/schemas/Booking"
@@ -3255,10 +3107,7 @@
         "type": "object",
         "title": "BookingPage",
         "description": "One keyset page of bookings.",
-        "required": [
-          "items",
-          "nextCursor"
-        ],
+        "required": ["items", "nextCursor"],
         "properties": {
           "items": {
             "type": "array",
@@ -3268,10 +3117,7 @@
             }
           },
           "nextCursor": {
-            "type": [
-              "string",
-              "null"
-            ],
+            "type": ["string", "null"],
             "description": "OPAQUE. Pass back verbatim as the `cursor` query parameter to fetch the next page; never parse it. `null` means this is the last page. (It is currently the last item's `id`, but that is an implementation detail a client must not rely on.)"
           }
         }
@@ -3280,9 +3126,7 @@
         "type": "object",
         "title": "BookingPageEnvelope",
         "description": "The paginated success envelope: `{\"data\":{\"items\":[...],\"nextCursor\":...}}`. Note the DOUBLE nesting — a client generated against the unwrapped page shape cannot decode this at all.",
-        "required": [
-          "data"
-        ],
+        "required": ["data"],
         "properties": {
           "data": {
             "$ref": "#/components/schemas/BookingPage"
@@ -3293,11 +3137,7 @@
         "type": "object",
         "title": "CreateBookingRequest",
         "description": "Which slot to book. It carries NO price: the server prices the span itself from the resource's base price, opening windows and pricing rules, so a client cannot book a €24 court for one cent. Any price-shaped field sent here is silently ignored. Unknown properties are ignored rather than rejected.",
-        "required": [
-          "resourceId",
-          "startTs",
-          "endTs"
-        ],
+        "required": ["resourceId", "startTs", "endTs"],
         "properties": {
           "resourceId": {
             "type": "string",
@@ -3315,10 +3155,7 @@
             "description": "End instant, RFC 3339. Must be after `startTs`, a whole number of minutes later, at least `minBookingMinutes`, at most `maxBookingMinutes`, a whole multiple of `minBookingMinutes`, no more than 4 hours in total, and inside the SAME opening window as `startTs` (a span bridging a lunchtime closure is two bookings, not one)."
           },
           "notes": {
-            "type": [
-              "string",
-              "null"
-            ],
+            "type": ["string", "null"],
             "description": "Optional free-text note stored on the booking. A non-string value is silently coerced to `null` rather than rejected. No length limit is enforced at this route."
           }
         }
@@ -3338,12 +3175,7 @@
         "type": "object",
         "title": "CancelQuote",
         "description": "What the cancellation receipt says. The percentage is RESOLVED AND WRITTEN DOWN at cancellation time, not recomputed later — the club may change its policy next month, and this receipt must not change with it. No money is moved by the cancel call itself.",
-        "required": [
-          "bookingId",
-          "refundPercent",
-          "refundAmountCents",
-          "reason"
-        ],
+        "required": ["bookingId", "refundPercent", "refundAmountCents", "reason"],
         "properties": {
           "bookingId": {
             "type": "string",
@@ -3367,9 +3199,7 @@
         "type": "object",
         "title": "CancelQuoteEnvelope",
         "description": "The success envelope wrapping the cancellation quote: `{\"data\": CancelQuote}`.",
-        "required": [
-          "data"
-        ],
+        "required": ["data"],
         "properties": {
           "data": {
             "$ref": "#/components/schemas/CancelQuote"
@@ -3415,24 +3245,15 @@
             "description": "How much is still to be charged to a card, in integer CENTS. `walletAppliedCents + cardDueCents` equals the booking's `totalCents`. `0` means credit covered everything."
           },
           "paymentIntentId": {
-            "type": [
-              "string",
-              "null"
-            ],
+            "type": ["string", "null"],
             "description": "The Stripe PaymentIntent id, or `null` when `cardDueCents` is 0 (no zero-amount intent is created — Stripe rejects those). Also stored on the booking for reconciliation."
           },
           "clientSecret": {
-            "type": [
-              "string",
-              "null"
-            ],
+            "type": ["string", "null"],
             "description": "The PaymentIntent client secret for the PaymentSheet. `null` when `cardDueCents` is 0. Can also be `null` in the unlikely event Stripe returns an intent without one — treat a `null` secret with `confirmed: false` as a failure to present the sheet, not as success."
           },
           "publishableKey": {
-            "type": [
-              "string",
-              "null"
-            ],
+            "type": ["string", "null"],
             "description": "The Stripe publishable key, returned here so the app needs neither a second config endpoint nor a rebuild to follow a key rotation. `null` if the server has no key configured — with `confirmed: false` that means the PaymentSheet cannot be presented."
           },
           "confirmed": {
@@ -3445,9 +3266,7 @@
         "type": "object",
         "title": "CheckoutSessionEnvelope",
         "description": "The success envelope wrapping the checkout result: `{\"data\": CheckoutSession}`.",
-        "required": [
-          "data"
-        ],
+        "required": ["data"],
         "properties": {
           "data": {
             "$ref": "#/components/schemas/CheckoutSession"
@@ -3457,9 +3276,7 @@
       "TenantMeResponse": {
         "type": "object",
         "description": "Success envelope produced by `ok(data)`. The payload is always under `data`; there is no unwrapped form.",
-        "required": [
-          "data"
-        ],
+        "required": ["data"],
         "properties": {
           "data": {
             "$ref": "#/components/schemas/TenantMe"
@@ -3468,12 +3285,7 @@
       },
       "TenantMe": {
         "type": "object",
-        "required": [
-          "user",
-          "tenant",
-          "membership",
-          "tokenStale"
-        ],
+        "required": ["user", "tenant", "membership", "tokenStale"],
         "properties": {
           "user": {
             "$ref": "#/components/schemas/TenantMeUser"
@@ -3492,12 +3304,7 @@
       },
       "TenantMeUser": {
         "type": "object",
-        "required": [
-          "id",
-          "email",
-          "name",
-          "locale"
-        ],
+        "required": ["id", "email", "name", "locale"],
         "properties": {
           "id": {
             "type": "string",
@@ -3508,18 +3315,12 @@
             "format": "email"
           },
           "name": {
-            "type": [
-              "string",
-              "null"
-            ],
+            "type": ["string", "null"],
             "description": "Display name. Null when the account has never set one."
           },
           "locale": {
             "type": "string",
-            "enum": [
-              "bg",
-              "en"
-            ],
+            "enum": ["bg", "en"],
             "description": "The user's preferred locale, lowercase."
           }
         }
@@ -3527,11 +3328,7 @@
       "TenantMeTenant": {
         "type": "object",
         "description": "The club the caller is a member of.",
-        "required": [
-          "id",
-          "slug",
-          "name"
-        ],
+        "required": ["id", "slug", "name"],
         "properties": {
           "id": {
             "type": "string",
@@ -3550,32 +3347,16 @@
       "TenantMeMembership": {
         "type": "object",
         "description": "The caller's membership AT THIS CLUB, read from the database — never from token claims.",
-        "required": [
-          "role",
-          "status",
-          "permissions",
-          "joinedAt"
-        ],
+        "required": ["role", "status", "permissions", "joinedAt"],
         "properties": {
           "role": {
             "type": "string",
-            "enum": [
-              "OWNER",
-              "MANAGER",
-              "COACH",
-              "STAFF",
-              "PLAYER"
-            ],
+            "enum": ["OWNER", "MANAGER", "COACH", "STAFF", "PLAYER"],
             "description": "The role held at this club, and only this club. A user may hold a different role at every club they belong to."
           },
           "status": {
             "type": "string",
-            "enum": [
-              "INVITED",
-              "ACTIVE",
-              "SUSPENDED",
-              "EXPIRED"
-            ],
+            "enum": ["INVITED", "ACTIVE", "SUSPENDED", "EXPIRED"],
             "description": "Membership status. In practice only `ACTIVE` is ever returned: the query filters on it, and any other status produces a 404. The other values are the field's domain, present so the enum does not have to change if the filter is relaxed."
           },
           "permissions": {
@@ -3598,18 +3379,14 @@
             "type": "string",
             "format": "date-time",
             "description": "When the membership was accepted, falling back to when it was created. RFC 3339, UTC, with NO fractional seconds — decodable by Swift's default `.iso8601` strategy.",
-            "examples": [
-              "2026-09-24T09:00:00Z"
-            ]
+            "examples": ["2026-09-24T09:00:00Z"]
           }
         }
       },
       "ConnectOnboardingStartResponse": {
         "type": "object",
         "description": "Success envelope produced by `ok(data)`. The payload is always under `data`; there is no unwrapped form.",
-        "required": [
-          "data"
-        ],
+        "required": ["data"],
         "properties": {
           "data": {
             "$ref": "#/components/schemas/ConnectOnboardingStart"
@@ -3618,19 +3395,12 @@
       },
       "ConnectOnboardingStart": {
         "type": "object",
-        "required": [
-          "stripeAccountId",
-          "onboardingUrl",
-          "payoutsEnabled",
-          "created"
-        ],
+        "required": ["stripeAccountId", "onboardingUrl", "payoutsEnabled", "created"],
         "properties": {
           "stripeAccountId": {
             "type": "string",
             "description": "The club's Stripe Express connected account id. Stable across calls once created.",
-            "examples": [
-              "acct_1PqReSTuVwXyZ012"
-            ]
+            "examples": ["acct_1PqReSTuVwXyZ012"]
           },
           "onboardingUrl": {
             "type": "string",
@@ -3649,12 +3419,7 @@
       },
       "EntraMappableRole": {
         "type": "string",
-        "enum": [
-          "MANAGER",
-          "COACH",
-          "STAFF",
-          "PLAYER"
-        ],
+        "enum": ["MANAGER", "COACH", "STAFF", "PLAYER"],
         "description": "A club role an Entra security group may be mapped to.\n\nOWNER is deliberately absent (ENTRA_MAPPABLE_ROLES in src/app-layer/schemas/entra-group-mapping.ts is `every Role except OWNER`). OWNER carries `admin.tenant_lifecycle` (suspend or close the club) and `admin.owner_management` (change who owns it); a mapping that granted it would make club ownership transferable by editing an Active Directory group, by directory administrators outside this application who have no way of knowing what the role means here.\n\nThe refusal is repeated four times: this Zod enum, `assertMappable` in the use case, the sync's OWNER-immunity check, and a CHECK constraint in migration P27. Sending `\"OWNER\"` to this API is rejected by the Zod enum FIRST, so the response is 400 with code `BAD_REQUEST` (not `ROLE_NOT_MAPPABLE`) — see the 400 response description."
       },
       "EntraGroupMapping": {
@@ -3673,26 +3438,17 @@
           "id": {
             "type": "string",
             "description": "Server-generated identifier (Prisma `@default(cuid())`) — a cuid, NOT a UUID. Treat it as an opaque string.",
-            "examples": [
-              "clz3k9q1p0001s601f8m2h7xa"
-            ]
+            "examples": ["clz3k9q1p0001s601f8m2h7xa"]
           },
           "aadGroupId": {
             "type": "string",
             "description": "The Entra security-group object id. Always LOWER CASE here: the create schema lower-cases on the way in, so this can differ from the string the client sent (an admin pasting an upper-cased GUID from a portal gets it back lower-cased). Compare case-insensitively, or re-read this value after a write.",
-            "examples": [
-              "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-            ]
+            "examples": ["3fa85f64-5717-4562-b3fc-2c963f66afa6"]
           },
           "aadGroupName": {
-            "type": [
-              "string",
-              "null"
-            ],
+            "type": ["string", "null"],
             "description": "Cached Microsoft Graph display name. Cosmetics only — the sync never matches on it, because a group can be renamed in the directory at any time and this copy would then be a lie that looks authoritative. Null when never supplied.",
-            "examples": [
-              "Coaching staff"
-            ]
+            "examples": ["Coaching staff"]
           },
           "role": {
             "$ref": "#/components/schemas/EntraMappableRole"
@@ -3707,26 +3463,20 @@
             "type": "string",
             "format": "date-time",
             "description": "RFC 3339, UTC, with NO fractional seconds (`rfc3339()` strips the milliseconds `toISOString()` emits, because Swift's `.iso8601` decoding strategy rejects them).",
-            "examples": [
-              "2026-09-24T09:00:00Z"
-            ]
+            "examples": ["2026-09-24T09:00:00Z"]
           },
           "updatedAt": {
             "type": "string",
             "format": "date-time",
             "description": "RFC 3339, UTC, no fractional seconds. Maintained by Prisma `@updatedAt`.",
-            "examples": [
-              "2026-09-24T09:00:00Z"
-            ]
+            "examples": ["2026-09-24T09:00:00Z"]
           }
         }
       },
       "EntraGroupMappingEnvelope": {
         "type": "object",
         "description": "The v1 success envelope around a single mapping: `ok(data)` emits `{\"data\": <T>}`. There is no top-level bare object on any v1 route.",
-        "required": [
-          "data"
-        ],
+        "required": ["data"],
         "properties": {
           "data": {
             "$ref": "#/components/schemas/EntraGroupMapping"
@@ -3736,9 +3486,7 @@
       "EntraGroupMappingListEnvelope": {
         "type": "object",
         "description": "The list response. NOTE: this route calls `ok(array)`, not `page()` — `data` is a bare ARRAY, with no `items`/`nextCursor` object. Do not generate a paginated decoder for it.",
-        "required": [
-          "data"
-        ],
+        "required": ["data"],
         "properties": {
           "data": {
             "type": "array",
@@ -3752,28 +3500,21 @@
       "EntraGroupMappingCreate": {
         "type": "object",
         "description": "Request body for creating a mapping (`EntraGroupMappingCreateSchema`). Unknown properties are stripped, not rejected.",
-        "required": [
-          "aadGroupId",
-          "role"
-        ],
+        "required": ["aadGroupId", "role"],
         "properties": {
           "aadGroupId": {
             "type": "string",
             "format": "uuid",
             "pattern": "^(?:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
             "description": "The Entra security-group OBJECT ID — a GUID, never a display name. Validated with Zod 4 `z.string().uuid()`, which is RFC 9562-strict: the version nibble must be 1–8 and the variant nibble 8/9/a/b (the nil and max UUIDs are also accepted). A display name here would silently never match any `groups` claim and the mapping would look configured while doing nothing, which is why this is validated rather than accepted as free text.\n\nAccepted in any case and STORED LOWER-CASED; the response echoes the lower-cased form.",
-            "examples": [
-              "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-            ]
+            "examples": ["3fa85f64-5717-4562-b3fc-2c963f66afa6"]
           },
           "aadGroupName": {
             "type": "string",
             "minLength": 1,
             "maxLength": 256,
             "description": "Optional cached Graph display name. Trimmed first, then length-checked, so a whitespace-only string is a 400. Must be a string or omitted — explicit `null` is rejected (400). Omitted stores null.",
-            "examples": [
-              "Coaching staff"
-            ]
+            "examples": ["Coaching staff"]
           },
           "role": {
             "$ref": "#/components/schemas/EntraMappableRole"
@@ -3811,9 +3552,7 @@
       "RealtimeTokenEnvelope": {
         "type": "object",
         "description": "The success envelope produced by `ok(data)`. The payload is under `data`; nothing is returned at the top level.",
-        "required": [
-          "data"
-        ],
+        "required": ["data"],
         "properties": {
           "data": {
             "$ref": "#/components/schemas/RealtimeToken"
@@ -3823,36 +3562,23 @@
       "RealtimeToken": {
         "type": "object",
         "description": "A Centrifugo connection credential and where to spend it.",
-        "required": [
-          "token",
-          "expiresInSeconds",
-          "url"
-        ],
+        "required": ["token", "expiresInSeconds", "url"],
         "properties": {
           "token": {
             "type": "string",
             "description": "HS256 JWT, three base64url segments. Its claims are exactly `sub`, `iat` and `exp` — no channel grants, no role, no tenant.",
-            "examples": [
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbHg...ifQ.9mV1r_Qq0tE"
-            ]
+            "examples": ["eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbHg...ifQ.9mV1r_Qq0tE"]
           },
           "expiresInSeconds": {
             "type": "integer",
             "description": "Lifetime of `token` in SECONDS from issuance (currently 900). This is a duration, not a timestamp. Refresh before it elapses: a minted token cannot be revoked, so this value is the revocation window.",
-            "examples": [
-              900
-            ]
+            "examples": [900]
           },
           "url": {
-            "type": [
-              "string",
-              "null"
-            ],
+            "type": ["string", "null"],
             "format": "uri",
             "description": "The public Centrifugo WebSocket URL, from `NEXT_PUBLIC_CENTRIFUGO_URL`. NULL when that variable is unset on the server — the token is still minted and the response is still 200, so a client must handle null rather than assume a URL is always present.",
-            "examples": [
-              "wss://realtime.playerz.bg/connection/websocket"
-            ]
+            "examples": ["wss://realtime.playerz.bg/connection/websocket"]
           }
         }
       },
@@ -3860,17 +3586,12 @@
         "type": "object",
         "description": "What Centrifugo POSTs to the subscribe proxy. `user` is a claim from the BROKER, not from the browser: Centrifugo derived it from the JWT this server signed, and the shared header secret is what makes it trustworthy. Additional properties are permitted and ignored.",
         "additionalProperties": true,
-        "required": [
-          "user",
-          "channel"
-        ],
+        "required": ["user", "channel"],
         "properties": {
           "user": {
             "type": "string",
             "description": "The connecting user's id (a cuid). Marked required because Centrifugo always sends it; at runtime a missing, empty or non-string value is not a 4xx — it is answered HTTP 200 with the `403 forbidden` deny body, since every channel this server issues is personal and none is subscribable anonymously.",
-            "examples": [
-              "clx8h2k9d0001qz7r4t6m2v8p"
-            ]
+            "examples": ["clx8h2k9d0001qz7r4t6m2v8p"]
           },
           "channel": {
             "type": "string",
@@ -3897,9 +3618,7 @@
       "CentrifugoSubscribeAllow": {
         "type": "object",
         "description": "Subscription permitted.",
-        "required": [
-          "result"
-        ],
+        "required": ["result"],
         "properties": {
           "result": {
             "type": "object",
@@ -3911,35 +3630,22 @@
       "CentrifugoSubscribeDeny": {
         "type": "object",
         "description": "Subscription refused. The reason is logged server-side and never disclosed here — every refusal is byte-identical, so the response cannot be used to probe whether a conversation exists.",
-        "required": [
-          "error"
-        ],
+        "required": ["error"],
         "properties": {
           "error": {
             "type": "object",
-            "required": [
-              "code",
-              "message"
-            ],
+            "required": ["code", "message"],
             "properties": {
               "code": {
                 "type": "integer",
                 "description": "An INTEGER, unlike the string `code` used in this API's own error envelope. 403 for every refusal decision; 503 when `CENTRIFUGO_PROXY_SECRET` is unset on the server, in which case every request is refused.",
-                "enum": [
-                  403,
-                  503
-                ],
-                "examples": [
-                  403
-                ]
+                "enum": [403, 503],
+                "examples": [403]
               },
               "message": {
                 "type": "string",
                 "description": "`forbidden` for 403, `proxy not configured` for 503.",
-                "examples": [
-                  "forbidden",
-                  "proxy not configured"
-                ]
+                "examples": ["forbidden", "proxy not configured"]
               }
             }
           }
@@ -3947,16 +3653,11 @@
       },
       "Error": {
         "type": "object",
-        "required": [
-          "error"
-        ],
+        "required": ["error"],
         "properties": {
           "error": {
             "type": "object",
-            "required": [
-              "code",
-              "message"
-            ],
+            "required": ["code", "message"],
             "properties": {
               "code": {
                 "type": "string",
@@ -3981,10 +3682,7 @@
       },
       "DeviceRegistration": {
         "type": "object",
-        "required": [
-          "deviceToken",
-          "bundleId"
-        ],
+        "required": ["deviceToken", "bundleId"],
         "properties": {
           "deviceToken": {
             "type": "string",
@@ -3997,10 +3695,7 @@
           },
           "environment": {
             "type": "string",
-            "enum": [
-              "SANDBOX",
-              "PRODUCTION"
-            ],
+            "enum": ["SANDBOX", "PRODUCTION"],
             "default": "PRODUCTION",
             "description": "SANDBOX for debug builds, PRODUCTION for TestFlight and the App Store. Getting this wrong is the usual cause of 'works in TestFlight, not in the App Store'."
           },
@@ -4016,21 +3711,14 @@
       },
       "RegisteredDevice": {
         "type": "object",
-        "required": [
-          "id",
-          "environment",
-          "bundleId"
-        ],
+        "required": ["id", "environment", "bundleId"],
         "properties": {
           "id": {
             "type": "string"
           },
           "environment": {
             "type": "string",
-            "enum": [
-              "SANDBOX",
-              "PRODUCTION"
-            ]
+            "enum": ["SANDBOX", "PRODUCTION"]
           },
           "bundleId": {
             "type": "string"
@@ -4039,24 +3727,12 @@
       },
       "PlatformCapability": {
         "type": "string",
-        "enum": [
-          "TENANT_READ",
-          "AUDIT_READ",
-          "USER_READ",
-          "TENANT_SUSPEND"
-        ],
+        "enum": ["TENANT_READ", "AUDIT_READ", "USER_READ", "TENANT_SUSPEND"],
         "description": "What a platform grant permits. `TENANT_SUSPEND` is a WRITE capability, declared so the shape is settled and deliberately refused at runtime: stepping up to a cross-club write should require a second factor and there is none yet."
       },
       "PlatformAuditEntry": {
         "type": "object",
-        "required": [
-          "id",
-          "actorUserId",
-          "capability",
-          "action",
-          "reason",
-          "createdAt"
-        ],
+        "required": ["id", "actorUserId", "capability", "action", "reason", "createdAt"],
         "properties": {
           "id": {
             "type": "string"
@@ -4073,23 +3749,14 @@
             "description": "SCREAMING_SNAKE verb, e.g. `PLATFORM_TENANT_LIST`."
           },
           "subjectTenantId": {
-            "type": [
-              "string",
-              "null"
-            ],
+            "type": ["string", "null"],
             "description": "The club this was about, or null when it was about every club."
           },
           "entity": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"]
           },
           "entityId": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"]
           },
           "reason": {
             "type": "string",
@@ -4103,13 +3770,7 @@
       },
       "PlatformTenant": {
         "type": "object",
-        "required": [
-          "id",
-          "slug",
-          "name",
-          "country",
-          "createdAt"
-        ],
+        "required": ["id", "slug", "name", "country", "createdAt"],
         "properties": {
           "id": {
             "type": "string"
@@ -4121,10 +3782,7 @@
             "type": "string"
           },
           "city": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"]
           },
           "country": {
             "type": "string",
@@ -4138,16 +3796,11 @@
       },
       "PlatformAuditPage": {
         "type": "object",
-        "required": [
-          "data"
-        ],
+        "required": ["data"],
         "properties": {
           "data": {
             "type": "object",
-            "required": [
-              "items",
-              "nextCursor"
-            ],
+            "required": ["items", "nextCursor"],
             "properties": {
               "items": {
                 "type": "array",
@@ -4156,10 +3809,7 @@
                 }
               },
               "nextCursor": {
-                "type": [
-                  "string",
-                  "null"
-                ],
+                "type": ["string", "null"],
                 "description": "Null on the last page. Keep following it: a partially-read audit log that looks complete is the failure this endpoint exists to prevent."
               }
             }
@@ -4168,16 +3818,11 @@
       },
       "PlatformTenantPage": {
         "type": "object",
-        "required": [
-          "data"
-        ],
+        "required": ["data"],
         "properties": {
           "data": {
             "type": "object",
-            "required": [
-              "items",
-              "nextCursor"
-            ],
+            "required": ["items", "nextCursor"],
             "properties": {
               "items": {
                 "type": "array",
@@ -4186,10 +3831,7 @@
                 }
               },
               "nextCursor": {
-                "type": [
-                  "string",
-                  "null"
-                ],
+                "type": ["string", "null"],
                 "description": "Null on the last page."
               }
             }

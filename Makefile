@@ -18,7 +18,10 @@
 # Hardcoded, NOT $(shell xcode-select -p): that returns
 # /Library/Developer/CommandLineTools on this machine, and make does not
 # inherit a DEVELOPER_DIR exported by the calling shell anyway.
-DEVELOPER_DIR := /Applications/Xcode.app/Contents/Developer
+# Respect an inherited value first: a CI runner points DEVELOPER_DIR at a
+# versioned Xcode (/Applications/Xcode_26.app/...) and hardcoding over it would
+# silently build against a different toolchain than the one the job selected.
+DEVELOPER_DIR ?= /Applications/Xcode.app/Contents/Developer
 export DEVELOPER_DIR
 TESTING_FW := $(DEVELOPER_DIR)/Platforms/MacOSX.platform/Developer/Library/Frameworks
 

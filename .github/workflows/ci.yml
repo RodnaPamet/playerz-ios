@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Build and test
+    # macOS, not ubuntu: the client is built by a SwiftPM plugin and the tests
+    # use Swift Testing, which ships inside Xcode's MacOSX platform rather than
+    # the open-source toolchain.
+    runs-on: macos-15
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        # `make` exports DEVELOPER_DIR only if it is not already set, so this
+        # decides the toolchain for the whole job.
+        run: |
+          sudo xcode-select -s /Applications/Xcode_26.app/Contents/Developer || \
+            sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+          echo "DEVELOPER_DIR=$(xcode-select -p)" >> "$GITHUB_ENV"
+          swift --version
+
+      - name: Cache SwiftPM
+        uses: actions/cache@v4
+        with:
+          path: .build
+          key: spm-${{ runner.os }}-${{ hashFiles('Package.resolved') }}
+          restore-keys: spm-${{ runner.os }}-
+
+      - name: Build
+        run: make build
+
+      - name: Test
+        run: make test
+
+  spec-drift:
+    name: OpenAPI spec matches the server
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check out the server repo
+        uses: actions/checkout@v4
+        with:
+          repository: RodnaPamet/projectZ
+          path: .server
+
+      - name: The vendored spec must be byte-identical to the server's
+        # ═══ WHY THIS IS A SEPARATE JOB ═══
+        #
+        # Sources/PlayerzAPI/openapi.json is a COPY. The client is generated
+        # from it, so if the server's spec moves and this copy does not, the
+        # client keeps compiling and keeps calling an API that has changed —
+        # which fails at runtime, in a shipped binary, and nowhere earlier.
+        #
+        # A guardrail in the server repo keeps ITS spec in step with ITS routes.
+        # This keeps the copy in step with that spec. Together they reach from a
+        # route handler to a Swift method name.
+        run: |
+          if ! diff -u .server/openapi/playerz-v1.json Sources/PlayerzAPI/openapi.json; then
+            echo "::error::The vendored OpenAPI spec is out of date. Run 'make regenerate' and commit."
+            exit 1
+          fi
+          echo "spec is identical to RodnaPamet/projectZ@main"
