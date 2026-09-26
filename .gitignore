@@ -6,3 +6,8 @@ DerivedData/
 *.p8
 *.pem
 *.key
+
+# XcodeGen output — Apps/*/project.yml is the source of truth for all of it.
+*.xcodeproj
+Apps/*/Info.plist
+Apps/*/*.entitlements

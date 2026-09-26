@@ -1,0 +1,44 @@
+name: PushProbe
+options:
+  bundleIdPrefix: bg.playerz
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+
+packages:
+  PlayerzAPI:
+    path: ../..
+
+targets:
+  PushProbe:
+    type: application
+    platform: iOS
+    sources:
+      - path: Sources
+    dependencies:
+      - package: PlayerzAPI
+        product: PlayerzAPI
+    entitlements:
+      path: PushProbe.entitlements
+      properties:
+        # `development` is the SANDBOX APNs environment. A debug build signed
+        # with a development profile registers there, which is why the sandbox
+        # key exists at all — the production key is refused with
+        # BadEnvironmentKeyInToken.
+        aps-environment: development
+    info:
+      path: Info.plist
+      properties:
+        CFBundleDisplayName: Push Probe
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: bg.playerz.app
+        DEVELOPMENT_TEAM: 9423GKWL67
+        CODE_SIGN_STYLE: Automatic
+        MARKETING_VERSION: "0.1"
+        CURRENT_PROJECT_VERSION: "1"
+        SWIFT_VERSION: "6.0"
+        TARGETED_DEVICE_FAMILY: "1"
