@@ -41,6 +41,12 @@ struct BookingsView: View {
         .navigationTitle(String(localized: "bookings.title"))
         .navigationBarTitleDisplayMode(.inline)
         .task { await model.load(session, slug: slug) }
+        .onChange(of: model.banner) { _, banner in
+            guard let banner else { return }
+            // Especially here: the refund line is the whole point of the
+            // action, and a banner mid-list is silent to VoiceOver.
+            AccessibilityNotification.Announcement(banner).post()
+        }
         .confirmationDialog(
             String(localized: "bookings.confirmTitle"),
             isPresented: .init(get: { pendingCancel != nil }, set: { if !$0 { pendingCancel = nil } }),
@@ -68,14 +74,18 @@ private struct BookingRow: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(booking.startTs.formatted(date: .abbreviated, time: .shortened))
-                .font(.headline)
-            HStack {
-                Text(booking.status).font(.caption).foregroundStyle(.secondary)
-                Spacer()
-                Text((Decimal(booking.totalCents) / 100).formatted(.currency(code: booking.currency)))
-                    .font(.subheadline)
+            Group {
+                Text(when).font(.headline)
+                HStack {
+                    Text(booking.status).font(.caption).foregroundStyle(.secondary)
+                    Spacer()
+                    Text(amount).font(.subheadline)
+                }
             }
+            // The description is one element; the button stays its own, so it
+            // is still reachable and actionable.
+            .accessibilityElement(children: .combine)
+
             if booking.status != "CANCELLED" {
                 Button(role: .destructive, action: cancel) {
                     if busy {
@@ -86,8 +96,26 @@ private struct BookingRow: View {
                 }
                 .buttonStyle(.borderless)
                 .disabled(disabled)
+                // Several bookings mean several identical "Откажи" buttons, and
+                // this one is destructive and not undoable — cancelling twice
+                // is a 409, and the refund is recomputed from the CURRENT
+                // hours-until-start. Naming the booking is the difference
+                // between confirming and guessing.
+                .accessibilityLabel(
+                    busy
+                        ? String(localized: "bookings.cancelling")
+                        : String(format: String(localized: "a11y.cancelBooking"), when)
+                )
             }
         }
+    }
+
+    private var when: String {
+        booking.startTs.formatted(date: .abbreviated, time: .shortened)
+    }
+
+    private var amount: String {
+        (Decimal(booking.totalCents) / 100).formatted(.currency(code: booking.currency))
     }
 }
 

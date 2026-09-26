@@ -36,6 +36,13 @@ struct VenueDetailView: View {
             }
         }
         .task { await model.load(session, venueId: venueId) }
+        .onChange(of: model.banner) { _, banner in
+            // A banner appearing mid-list is invisible to VoiceOver: focus does
+            // not move, and the user is told nothing about the booking they
+            // just made.
+            guard let banner else { return }
+            AccessibilityNotification.Announcement(banner).post()
+        }
         .onChange(of: model.lastBookingSucceeded) { _, booked in
             // Only after a booking, and only once: iOS grants exactly one
             // system prompt, so it is spent at the moment the offer is
@@ -72,14 +79,22 @@ struct VenueDetailView: View {
                                 } label: {
                                     Text(day.label(timeZone: model.timezone, today: String(localized: "venue.today")))
                                         .font(.subheadline)
-                                        .padding(.horizontal, 12)
-                                        .padding(.vertical, 6)
+                                        .padding(.horizontal, 14)
+                                        // 44pt is Apple's minimum tappable
+                                        // height. The capsule was ~28pt tall,
+                                        // which is a hard target for anyone
+                                        // with a tremor and fails the guideline
+                                        // outright.
+                                        .frame(minWidth: 44, minHeight: 44)
                                         .background(
                                             day.apiDate == model.selectedDate
                                                 ? Color.accentColor.opacity(0.18)
                                                 : Color.clear,
                                             in: Capsule()
                                         )
+                                        // The padded frame, not just the glyph,
+                                        // takes the tap.
+                                        .contentShape(Capsule())
                                 }
                                 .buttonStyle(.plain)
                                 .accessibilityAddTraits(
@@ -93,7 +108,12 @@ struct VenueDetailView: View {
             }
 
             if let banner = model.banner {
-                Section { Text(banner).foregroundStyle(model.bannerIsError ? .red : .green) }
+                Section {
+                    Text(banner)
+                        // Colour alone must not carry the meaning — the words
+                        // already say which outcome it is.
+                        .foregroundStyle(model.bannerIsError ? .red : .green)
+                }
             }
 
             ForEach(model.courts, id: \.resourceId) { court in
@@ -159,12 +179,20 @@ private struct SlotRow: View {
     let disabled: Bool
     let book: () -> Void
 
+    @Environment(\.dynamicTypeSize) private var typeSize
+
     var body: some View {
-        HStack {
-            Text(slot.startTs.formatted(date: .omitted, time: .shortened))
-            Spacer()
-            Text(price)
-                .foregroundStyle(.secondary)
+        // At accessibility sizes the time, the price and the button cannot
+        // share a line without truncating one of them.
+        let layout = typeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 8))
+            : AnyLayout(HStackLayout())
+
+        layout {
+            Text(time)
+            if !typeSize.isAccessibilitySize { Spacer() }
+            Text(price).foregroundStyle(.secondary)
+
             Button(action: book) {
                 if busy {
                     ProgressView()
@@ -174,7 +202,25 @@ private struct SlotRow: View {
             }
             .buttonStyle(.borderless)
             .disabled(disabled)
+            // ═══ WITHOUT THIS, EVERY SLOT IS "Резервирай" ═══
+            //
+            // A court with twelve free hours renders twelve buttons with the
+            // same label. VoiceOver reads the time as a SEPARATE element, so
+            // nothing ties the two together and choosing an hour means
+            // counting swipes.
+            //
+            // A ProgressView also has no label, so the busy state announced an
+            // unlabelled button — the worst moment to lose the name.
+            .accessibilityLabel(
+                busy
+                    ? String(localized: "venue.booking")
+                    : String(format: String(localized: "a11y.bookSlot"), time, price)
+            )
         }
+    }
+
+    private var time: String {
+        slot.startTs.formatted(date: .omitted, time: .shortened)
     }
 
     private var price: String {

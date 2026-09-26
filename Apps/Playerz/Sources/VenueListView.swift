@@ -77,22 +77,31 @@ private struct VenueRow: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(row.name).font(.headline)
-            HStack {
-                Text([row.city, row.country].joined(separator: ", "))
-                if let km = row.distanceKm {
-                    Text("·")
-                    Text(String(format: String(localized: "venues.distance"),
-                                km.formatted(.number.precision(.fractionLength(1)))))
-                }
-            }
-            .font(.subheadline)
-            .foregroundStyle(.secondary)
+
+            // A separate "·" Text is read as its own fragment by VoiceOver and
+            // wraps badly at large sizes. One string instead.
+            Text(placeLine)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
 
             if let line = priceLine {
                 Text(line).font(.footnote).foregroundStyle(.secondary)
             }
         }
         .padding(.vertical, 2)
+        // One utterance per club. Left alone, VoiceOver reads three fragments
+        // and the NavigationLink's own label on top of them.
+        .accessibilityElement(children: .combine)
+    }
+
+    private var placeLine: String {
+        let place = [row.city, row.country].joined(separator: ", ")
+        guard let km = row.distanceKm else { return place }
+        let distance = String(
+            format: String(localized: "venues.distance"),
+            km.formatted(.number.precision(.fractionLength(1)))
+        )
+        return "\(place) · \(distance)"
     }
 
     /// Nil in `near` mode — that endpoint carries no price, and inventing one
