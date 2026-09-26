@@ -116,6 +116,10 @@ struct VenueDetailView: View {
                 }
             }
 
+            if model.showsAnyForecast {
+                Section { WeatherAttribution() }
+            }
+
             ForEach(model.courts, id: \.resourceId) { court in
                 Section {
                     if court.bookable.isEmpty {
@@ -145,6 +149,25 @@ struct VenueDetailView: View {
                 }
             }
         }
+    }
+}
+
+/// Apple REQUIRES this wherever WeatherKit data appears.
+///
+/// Not a courtesy — it is in the terms, and it is an App Review item. The mark
+/// and a link to Apple's legal attribution page must both be present, so this
+/// renders only when a forecast is actually on screen: attribution for data
+/// nobody is being shown would be noise.
+private struct WeatherAttribution: View {
+    private static let legal = URL(string: "https://weatherkit.apple.com/legal-attribution.html")!
+
+    var body: some View {
+        HStack(spacing: 6) {
+            Text(String(localized: "weather.attribution"))
+            Link(String(localized: "weather.legal"), destination: Self.legal)
+        }
+        .font(.footnote)
+        .foregroundStyle(.secondary)
     }
 }
 

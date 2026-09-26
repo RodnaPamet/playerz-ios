@@ -864,6 +864,38 @@
           }
         }
       }
+    },
+    "weather.attribution": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Данни за времето:  Weather"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weather data:  Weather"
+          }
+        }
+      }
+    },
+    "weather.legal": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Правна информация"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Legal"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

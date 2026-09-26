@@ -72,6 +72,16 @@ final class VenueDetailModel {
         court.isIndoor ? nil : forecasts[court.resourceId]
     }
 
+    /// Whether any forecast is actually on screen.
+    ///
+    /// Drives the attribution row: Apple requires it wherever WeatherKit data
+    /// appears, and only there. An all-indoor club shows no forecast and
+    /// therefore needs no attribution — and a fetch that failed shows none
+    /// either, so the row would be crediting data nobody received.
+    var showsAnyForecast: Bool {
+        courts.contains { !$0.isIndoor && forecasts[$0.resourceId] != nil }
+    }
+
     func select(_ session: SessionModel, venueId: String, day: VenueDay) async {
         guard day.apiDate != selectedDate else { return }
         selectedDate = day.apiDate
