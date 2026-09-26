@@ -28,6 +28,12 @@ final class VenueDetailModel {
     private(set) var bannerIsError = false
     private(set) var bookingSlot: Date?
 
+    /// The strip of selectable days, and which one is showing. Both are
+    /// computed in the VENUE's timezone — see VenueDay.
+    private(set) var days: [VenueDay] = []
+    private(set) var selectedDate: String?
+    private(set) var timezone: String = "Europe/Sofia"
+
     private let weather = ForecastLine()
     private var forecasts: [String: String] = [:]
 
@@ -64,6 +70,12 @@ final class VenueDetailModel {
         court.isIndoor ? nil : forecasts[court.resourceId]
     }
 
+    func select(_ session: SessionModel, venueId: String, day: VenueDay) async {
+        guard day.apiDate != selectedDate else { return }
+        selectedDate = day.apiDate
+        await load(session, venueId: venueId)
+    }
+
     func load(_ session: SessionModel, venueId: String) async {
         phase = .loading
         guard let client = await session.client() else {
@@ -76,7 +88,9 @@ final class VenueDetailModel {
                 .getVenue(.init(path: .init(id: venueId)))
                 .ok.body.json.data
             let availability = try await client
-                .getVenueAvailability(.init(path: .init(id: venueId)))
+                .getVenueAvailability(
+                    .init(path: .init(id: venueId), query: .init(date: selectedDate))
+                )
                 .ok.body.json.data
 
             let indoorById = Dictionary(
@@ -84,6 +98,13 @@ final class VenueDetailModel {
             )
 
             venue = detail
+            // The venue's own zone decides what "today" is and what the strip
+            // offers — not the device's.
+            timezone = availability.timezone
+            if days.isEmpty {
+                days = VenueDay.upcoming(inTimeZone: availability.timezone)
+                selectedDate = days.first?.apiDate
+            }
             courts = availability.resources.map { slots in
                 Court(
                     resourceId: slots.resourceId,

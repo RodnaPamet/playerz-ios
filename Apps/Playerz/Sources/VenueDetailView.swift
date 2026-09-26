@@ -40,6 +40,38 @@ struct VenueDetailView: View {
     @ViewBuilder
     private var content: some View {
         List {
+            if model.days.count > 1 {
+                Section {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 8) {
+                            ForEach(model.days) { day in
+                                Button {
+                                    Task {
+                                        await model.select(session, venueId: venueId, day: day)
+                                    }
+                                } label: {
+                                    Text(day.label(timeZone: model.timezone, today: String(localized: "venue.today")))
+                                        .font(.subheadline)
+                                        .padding(.horizontal, 12)
+                                        .padding(.vertical, 6)
+                                        .background(
+                                            day.apiDate == model.selectedDate
+                                                ? Color.accentColor.opacity(0.18)
+                                                : Color.clear,
+                                            in: Capsule()
+                                        )
+                                }
+                                .buttonStyle(.plain)
+                                .accessibilityAddTraits(
+                                    day.apiDate == model.selectedDate ? [.isSelected] : []
+                                )
+                            }
+                        }
+                        .padding(.vertical, 2)
+                    }
+                }
+            }
+
             if let banner = model.banner {
                 Section { Text(banner).foregroundStyle(model.bannerIsError ? .red : .green) }
             }
