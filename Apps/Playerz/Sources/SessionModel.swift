@@ -1,0 +1,73 @@
+import Foundation
+import Observation
+import PlayerzAPI
+
+/// The app's view of the session.
+///
+/// A thin shell over `PlayerzSession`, which is where the decisions live. This
+/// exists to give SwiftUI something observable and to turn thrown errors into
+/// a message the screen can show.
+@MainActor
+@Observable
+final class SessionModel {
+    enum State { case unknown, signedOut, signedIn }
+
+    /// The dev server, reachable from the phone. A cloudflared quick tunnel
+    /// gets a fresh hostname each run, so this is editable on the sign-in
+    /// screen rather than baked in — shipping a dead URL helps nobody.
+    var serverURL: String = ""
+    private(set) var state: State = .unknown
+    private(set) var signInError: String?
+    private(set) var busy = false
+
+    private var session: PlayerzSession?
+
+    /// Restore a session from the Keychain, if the URL is already known.
+    func restore() async {
+        guard let url = URL(string: serverURL), !serverURL.isEmpty else {
+            state = .signedOut
+            return
+        }
+        let s = PlayerzSession(baseURL: url)
+        session = s
+        state = await s.isSignedIn ? .signedIn : .signedOut
+    }
+
+    func signIn(email: String, password: String) async {
+        guard let url = URL(string: serverURL), url.scheme != nil else {
+            signInError = String(localized: "signIn.failed")
+            return
+        }
+
+        busy = true
+        signInError = nil
+        defer { busy = false }
+
+        let s = PlayerzSession(baseURL: url)
+        do {
+            try await s.signIn(email: email, password: password)
+            session = s
+            state = .signedIn
+        } catch SessionError.invalidCredentials {
+            // One message for both "no such account" and "wrong password".
+            // `authorize()` equalises bcrypt timing precisely so the response
+            // cannot enumerate accounts; distinguishing them here would undo it.
+            signInError = String(localized: "signIn.invalid")
+        } catch SessionError.throttled {
+            signInError = String(localized: "signIn.throttled")
+        } catch {
+            signInError = String(localized: "signIn.failed")
+        }
+    }
+
+    func signOut() async {
+        try? await session?.signOut()
+        session = nil
+        state = .signedOut
+    }
+
+    /// An authenticated client, or nil when signed out.
+    func client() async -> Client? {
+        await session?.client()
+    }
+}

@@ -1,0 +1,51 @@
+name: Playerz
+options:
+  bundleIdPrefix: bg.playerz
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+  # Bulgarian is the DEVELOPMENT language, not a translation of an English
+  # original. `DEFAULT_LOCALE = 'bg'` on the server, the message catalogues are
+  # at parity with bg as the reference, and the audience is Bulgarian. An app
+  # whose base language is English gets English fallbacks for anything missed,
+  # which is the wrong direction to fail in.
+  developmentLanguage: bg
+
+packages:
+  PlayerzAPI:
+    path: ../..
+
+targets:
+  Playerz:
+    type: application
+    platform: iOS
+    sources:
+      - path: Sources
+      - path: Resources
+        buildPhase: resources
+    dependencies:
+      - package: PlayerzAPI
+        product: PlayerzAPI
+    info:
+      path: Info.plist
+      properties:
+        CFBundleDisplayName: playerz.bg
+        CFBundleDevelopmentRegion: bg
+        CFBundleLocalizations: [bg, en]
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        # WeatherKit attribution is a REQUIREMENT, not a courtesy (#211), so the
+        # capability is declared where the forecast row will read it.
+        NSLocationWhenInUseUsageDescription: >-
+          Използва се, за да покаже кортовете близо до вас.
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: bg.playerz.app
+        DEVELOPMENT_TEAM: 9423GKWL67
+        CODE_SIGN_STYLE: Automatic
+        MARKETING_VERSION: "0.1"
+        CURRENT_PROJECT_VERSION: "1"
+        SWIFT_VERSION: "6.0"
+        TARGETED_DEVICE_FAMILY: "1"
+        SWIFT_EMIT_LOC_STRINGS: YES

@@ -27,13 +27,16 @@ public enum Playerz {
     ///         baseURL: url,
     ///         middlewares: [BearerMiddleware(tokens: store, refresh: refresher)]
     ///     )
+    /// `transport` is injectable so the session logic can be tested without a
+    /// server. Production never passes it.
     public static func client(
         baseURL: URL,
-        middlewares: [any ClientMiddleware] = []
+        middlewares: [any ClientMiddleware] = [],
+        transport: (any ClientTransport)? = nil
     ) -> Client {
         Client(
             serverURL: baseURL,
-            transport: URLSessionTransport(),
+            transport: transport ?? URLSessionTransport(),
             middlewares: middlewares
         )
     }
