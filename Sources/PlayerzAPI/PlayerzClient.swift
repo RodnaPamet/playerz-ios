@@ -19,6 +19,14 @@ public enum Playerz {
     ///
     /// `middlewares` is how auth is injected — see `BearerMiddleware`, which
     /// exists so the generated code never has to know about tokens.
+    ///
+    /// Typical use:
+    ///
+    ///     let store = TokenStore(persistence: keychain)
+    ///     let client = Playerz.client(
+    ///         baseURL: url,
+    ///         middlewares: [BearerMiddleware(tokens: store, refresh: refresher)]
+    ///     )
     public static func client(
         baseURL: URL,
         middlewares: [any ClientMiddleware] = []
