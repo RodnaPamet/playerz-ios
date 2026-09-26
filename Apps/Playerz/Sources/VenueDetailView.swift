@@ -5,6 +5,7 @@ struct VenueDetailView: View {
     let venueId: String
     @Bindable var session: SessionModel
     @State private var model = VenueDetailModel()
+    @State private var offerPush = false
 
     var body: some View {
         Group {
@@ -35,6 +36,25 @@ struct VenueDetailView: View {
             }
         }
         .task { await model.load(session, venueId: venueId) }
+        .onChange(of: model.lastBookingSucceeded) { _, booked in
+            // Only after a booking, and only once: iOS grants exactly one
+            // system prompt, so it is spent at the moment the offer is
+            // concrete rather than on a cold launch.
+            guard booked else { return }
+            Task {
+                if await !PushRegistrar.shared.alreadyDecided() { offerPush = true }
+            }
+        }
+        .alert(String(localized: "push.askTitle"), isPresented: $offerPush) {
+            Button(String(localized: "push.allow")) {
+                Task { await PushRegistrar.shared.requestAndRegister(session) }
+            }
+            // "Not now" is recoverable; a system "Don't Allow" is not. Asking
+            // ourselves first is what preserves the one real prompt.
+            Button(String(localized: "push.notNow"), role: .cancel) {}
+        } message: {
+            Text(String(localized: "push.askBody"))
+        }
     }
 
     @ViewBuilder

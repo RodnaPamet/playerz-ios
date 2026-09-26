@@ -27,6 +27,8 @@ final class VenueDetailModel {
     private(set) var banner: String?
     private(set) var bannerIsError = false
     private(set) var bookingSlot: Date?
+    /// Flips true once a booking is confirmed, so the view can offer push.
+    private(set) var lastBookingSucceeded = false
 
     /// The strip of selectable days, and which one is showing. Both are
     /// computed in the VENUE's timezone — see VenueDay.
@@ -168,6 +170,7 @@ final class VenueDetailModel {
             case .ok, .created:
                 bannerIsError = false
                 banner = String(localized: "venue.booked")
+                lastBookingSucceeded = true
                 // Re-read rather than mutating locally: the slot that was just
                 // taken is not the only thing that changed if somebody else
                 // booked an overlapping one in the meantime.
