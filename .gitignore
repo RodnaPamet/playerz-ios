@@ -1,0 +1,8 @@
+.build/
+.swiftpm/
+*.xcuserstate
+xcuserdata/
+DerivedData/
+*.p8
+*.pem
+*.key
