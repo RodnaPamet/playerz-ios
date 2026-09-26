@@ -12,10 +12,20 @@ import PlayerzAPI
 final class SessionModel {
     enum State { case unknown, signedOut, signedIn }
 
-    /// The dev server, reachable from the phone. A cloudflared quick tunnel
-    /// gets a fresh hostname each run, so this is editable on the sign-in
-    /// screen rather than baked in — shipping a dead URL helps nobody.
-    var serverURL: String = ""
+    /// The dev server, reachable from the device or simulator.
+    ///
+    /// Editable on the sign-in screen rather than baked in: a cloudflared quick
+    /// tunnel gets a fresh hostname every run, so a hardcoded value only ever
+    /// ships a dead URL.
+    ///
+    /// `PLAYERZ_SERVER_URL` pre-fills it, which is how a simulator or CI run
+    /// avoids typing one in:
+    ///
+    ///     SIMCTL_CHILD_PLAYERZ_SERVER_URL=https://… xcrun simctl launch booted bg.playerz.app
+    ///
+    /// Reading an environment variable is inert in a shipped build — nothing
+    /// sets it — so this needs no #if and cannot change release behaviour.
+    var serverURL: String = ProcessInfo.processInfo.environment["PLAYERZ_SERVER_URL"] ?? ""
     private(set) var state: State = .unknown
     private(set) var signInError: String?
     private(set) var busy = false

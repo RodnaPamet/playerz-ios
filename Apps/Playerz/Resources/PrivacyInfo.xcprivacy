@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <!--
+    Required by Apple since spring 2024; an upload without one is rejected.
+
+    Everything below is what the app ACTUALLY does, checked against the code
+    rather than copied from a template. Over-declaring is not the safe choice —
+    it shows the user a nutrition label claiming data collection that never
+    happens, and under-declaring is a rejection.
+  -->
+
+  <!-- No tracking. Nothing is shared with a data broker, and there is no
+       advertising SDK, so no NSPrivacyTrackingDomains either. -->
+  <key>NSPrivacyTracking</key>
+  <false/>
+  <key>NSPrivacyTrackingDomains</key>
+  <array/>
+
+  <key>NSPrivacyCollectedDataTypes</key>
+  <array>
+    <!-- Sign-in. Tied to the account by definition, so it is linked. -->
+    <dict>
+      <key>NSPrivacyCollectedDataType</key>
+      <string>NSPrivacyCollectedDataTypeEmailAddress</string>
+      <key>NSPrivacyCollectedDataTypeLinked</key>
+      <true/>
+      <key>NSPrivacyCollectedDataTypeTracking</key>
+      <false/>
+      <key>NSPrivacyCollectedDataTypePurposes</key>
+      <array>
+        <string>NSPrivacyCollectedDataTypePurposeAppFunctionality</string>
+      </array>
+    </dict>
+
+    <!-- "Near me". COARSE rather than precise: LocationProvider asks for
+         kCLLocationAccuracyKilometer, so iOS never hands the app a finer fix
+         than about a kilometre. Not linked — the coordinate is used for one
+         query and never stored against the account. -->
+    <dict>
+      <key>NSPrivacyCollectedDataType</key>
+      <string>NSPrivacyCollectedDataTypeCoarseLocation</string>
+      <key>NSPrivacyCollectedDataTypeLinked</key>
+      <false/>
+      <key>NSPrivacyCollectedDataTypeTracking</key>
+      <false/>
+      <key>NSPrivacyCollectedDataTypePurposes</key>
+      <array>
+        <string>NSPrivacyCollectedDataTypePurposeAppFunctionality</string>
+      </array>
+    </dict>
+
+    <!-- The APNs device token. Stored against the user so a booking reminder
+         can reach this handset, which makes it linked. -->
+    <dict>
+      <key>NSPrivacyCollectedDataType</key>
+      <string>NSPrivacyCollectedDataTypeDeviceID</string>
+      <key>NSPrivacyCollectedDataTypeLinked</key>
+      <true/>
+      <key>NSPrivacyCollectedDataTypeTracking</key>
+      <false/>
+      <key>NSPrivacyCollectedDataTypePurposes</key>
+      <array>
+        <string>NSPrivacyCollectedDataTypePurposeAppFunctionality</string>
+      </array>
+    </dict>
+  </array>
+
+  <!--
+    Empty, and checked rather than assumed: the required-reason APIs are file
+    timestamps, system boot time, disk space, active keyboards and UserDefaults.
+    This app uses none of them. The session lives in the Keychain, which is not
+    in that list.
+  -->
+  <key>NSPrivacyAccessedAPITypes</key>
+  <array/>
+</dict>
+</plist>
