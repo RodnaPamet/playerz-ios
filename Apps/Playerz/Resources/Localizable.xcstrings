@@ -1,6 +1,182 @@
 {
   "sourceLanguage": "bg",
   "strings": {
+    "bookings.already": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Резервацията вече е отказана."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That booking is already cancelled."
+          }
+        }
+      }
+    },
+    "bookings.cancel": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Откажи"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel"
+          }
+        }
+      }
+    },
+    "bookings.cancelFailed": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отказът не бе извършен."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The booking could not be cancelled."
+          }
+        }
+      }
+    },
+    "bookings.cancelling": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отказване…"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancelling…"
+          }
+        }
+      }
+    },
+    "bookings.confirmKeep": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Назад"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keep it"
+          }
+        }
+      }
+    },
+    "bookings.confirmTitle": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Да откажем ли резервацията?"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel this booking?"
+          }
+        }
+      }
+    },
+    "bookings.empty": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нямате резервации в този клуб."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You have no bookings at this club."
+          }
+        }
+      }
+    },
+    "bookings.failed": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Резервациите не можаха да се заредят."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bookings could not be loaded."
+          }
+        }
+      }
+    },
+    "bookings.noRefund": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Без възстановяване по правилата на клуба."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No refund under the club's policy."
+          }
+        }
+      }
+    },
+    "bookings.refundDue": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Дължимо възстановяване: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Refund of %@ due"
+          }
+        }
+      }
+    },
+    "bookings.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Моите резервации"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "My bookings"
+          }
+        }
+      }
+    },
     "common.loading": {
       "localizations": {
         "bg": {

@@ -57,7 +57,7 @@ jobs:
           repository: RodnaPamet/projectZ
           path: .server
 
-      - name: The vendored spec must be byte-identical to the server's
+      - name: The vendored spec must match the server's
         # ═══ WHY THIS IS A SEPARATE JOB ═══
         #
         # Sources/PlayerzAPI/openapi.json is a COPY. The client is generated
@@ -68,9 +68,45 @@ jobs:
         # A guardrail in the server repo keeps ITS spec in step with ITS routes.
         # This keeps the copy in step with that spec. Together they reach from a
         # route handler to a Swift method name.
+        #
+        # Compared as PARSED JSON, not as bytes. The first version of this job
+        # diffed the files directly and failed on its very next run — the server
+        # reformats its copy through prettier on commit, so 861 lines of
+        # whitespace differed while the contract was identical.
+        #
+        # A byte check is not stricter in any way that matters: the generator
+        # parses this file, so formatting cannot reach the generated client. It
+        # is only noisier, and a job that cries wolf on whitespace is a job
+        # people learn to ignore — which is worse than not having it.
         run: |
-          if ! diff -u .server/openapi/playerz-v1.json Sources/PlayerzAPI/openapi.json; then
-            echo "::error::The vendored OpenAPI spec is out of date. Run 'make regenerate' and commit."
-            exit 1
-          fi
-          echo "spec is identical to RodnaPamet/projectZ@main"
+          python3 - <<'PY'
+          import json, sys
+
+          server = json.load(open('.server/openapi/playerz-v1.json'))
+          vendored = json.load(open('Sources/PlayerzAPI/openapi.json'))
+
+          if server == vendored:
+              print('spec matches RodnaPamet/projectZ@main')
+              sys.exit(0)
+
+          print('::error::The vendored OpenAPI spec is out of date. Run `make regenerate` and commit.')
+
+          # Say WHICH operations moved, so the failure is actionable without
+          # diffing a 180KB file by hand.
+          def ops(doc):
+              return {
+                  f'{method.upper()} {path}'
+                  for path, item in doc.get('paths', {}).items()
+                  for method, op in item.items()
+                  if isinstance(op, dict)
+              }
+
+          added, removed = ops(server) - ops(vendored), ops(vendored) - ops(server)
+          for op in sorted(added):
+              print(f'  + {op} (on the server, missing here)')
+          for op in sorted(removed):
+              print(f'  - {op} (here, gone from the server)')
+          if not added and not removed:
+              print('  operations match; a schema or description changed')
+          sys.exit(1)
+          PY

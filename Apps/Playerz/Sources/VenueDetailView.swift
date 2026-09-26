@@ -25,6 +25,15 @@ struct VenueDetailView: View {
         }
         .navigationTitle(model.venue?.name ?? "")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            if let slug = model.venue?.slug {
+                ToolbarItem(placement: .topBarTrailing) {
+                    NavigationLink(String(localized: "bookings.title")) {
+                        BookingsView(slug: slug, session: session)
+                    }
+                }
+            }
+        }
         .task { await model.load(session, venueId: venueId) }
     }
 
