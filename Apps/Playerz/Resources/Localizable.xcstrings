@@ -593,6 +593,38 @@
         }
       }
     },
+    "venues.all": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Всички"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All"
+          }
+        }
+      }
+    },
+    "venues.distance": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ км"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ km"
+          }
+        }
+      }
+    },
     "venues.empty": {
       "localizations": {
         "bg": {
@@ -641,6 +673,54 @@
         }
       }
     },
+    "venues.locating": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Определяне на местоположението…"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finding your location…"
+          }
+        }
+      }
+    },
+    "venues.nearMe": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Близо до мен"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Near me"
+          }
+        }
+      }
+    },
+    "venues.noLocation": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Достъпът до местоположението е отказан. Разрешете го в Настройки, за да видите кортове близо до вас."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Location access is off. Allow it in Settings to see courts near you."
+          }
+        }
+      }
+    },
     "venues.noPrice": {
       "localizations": {
         "bg": {
@@ -653,6 +733,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "No bookable courts"
+          }
+        }
+      }
+    },
+    "venues.noneNearby": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Няма клубове в радиус от 50 км."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No clubs within 50 km."
           }
         }
       }
