@@ -59,6 +59,11 @@ sign-out and a newer sign-in.
 
 ## Not done yet
 
-No UI, no Keychain implementation (`TokenPersistence` is a protocol with an
-in-memory test double), no push registration. Those need the decisions still
-open on #167.
+No UI and no push registration yet. v1 is scoped to **discovery + booking, no
+payments**, so Stripe Connect and the SCA flow are deliberately out.
+
+`TokenPersistence` has a real Keychain implementation now. Two attributes carry
+the whole security posture and both are pinned by tests:
+`AfterFirstUnlock` (so a background push can refresh with the phone locked —
+`WhenUnlocked` silently breaks that) and `ThisDeviceOnly` (so a refresh token
+never rides an iCloud backup onto a second device as a live session).
