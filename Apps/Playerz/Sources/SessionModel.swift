@@ -41,8 +41,10 @@ final class SessionModel {
         let s = PlayerzSession(baseURL: url)
         session = s
         state = await s.isSignedIn ? .signedIn : .signedOut
-        // A DEBUG launch may sign in from its environment (DebugLaunch).
-        if state == .signedOut, let debug = DebugLaunch.credentials {
+        // A DEBUG launch with credentials signs in as THEM (DebugLaunch): a
+        // session kept from an earlier launch would otherwise win.
+        if let debug = DebugLaunch.credentials {
+            if state == .signedIn { await signOut() }
             await signIn(email: debug.email, password: debug.password)
         }
     }

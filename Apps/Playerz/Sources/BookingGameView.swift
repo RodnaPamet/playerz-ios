@@ -57,8 +57,7 @@ struct BookingGameView: View {
             } else {
                 Section {
                     if let open = g.game, open.open {
-                        LabeledContent(String(localized: "bookingGame.state"),
-                                       value: String(localized: "games.spotsLeft \(open.spotsLeft)"))
+                        Text(String(localized: "games.spotsLeft \(open.spotsLeft)"))
                     } else {
                         Text(String(localized: "bookingGame.intro"))
                     }

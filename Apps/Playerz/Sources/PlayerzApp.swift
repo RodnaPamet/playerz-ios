@@ -71,7 +71,8 @@ struct RootView: View {
         case .signedOut:
             SignInView(session: session)
         case .signedIn:
-            // The player's tabs, as the web's bottom bar (#362): Играй, then Игри (#510).
+            // The player's tabs, as the web's bottom bar (#362): Играй, Игри (#510),
+            // Резервации; then Съобщения, which the web keeps in its header, and Профил.
             // `.tabItem`, not `Tab`: the app supports iOS 17, and `Tab` is 18.
             TabView(selection: $tab) {
                 VenueListView(session: session)
@@ -80,6 +81,9 @@ struct RootView: View {
                 GamesView(session: session)
                     .tabItem { Label(String(localized: "tab.games"), systemImage: "person.3") }
                     .tag(DebugLaunch.Tab.games)
+                MyBookingsView(session: session)
+                    .tabItem { Label(String(localized: "tab.bookings"), systemImage: "calendar") }
+                    .tag(DebugLaunch.Tab.bookings)
                 InboxView(session: session, unread: $unread)
                     .tabItem { Label(String(localized: "tab.messages"), systemImage: "bubble.left.and.bubble.right") }
                     .badge(unread)

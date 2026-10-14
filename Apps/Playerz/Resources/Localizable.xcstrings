@@ -353,22 +353,6 @@
         }
       }
     },
-    "bookingGame.state": {
-      "localizations": {
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Търсят се"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Wanted"
-          }
-        }
-      }
-    },
     "bookingGame.stop": {
       "localizations": {
         "bg": {
@@ -637,6 +621,86 @@
           "stringUnit": {
             "state": "translated",
             "value": "Refund of %@ due"
+          }
+        }
+      }
+    },
+    "bookings.status.CANCELLED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отменена"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancelled"
+          }
+        }
+      }
+    },
+    "bookings.status.COMPLETED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Приключила"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Completed"
+          }
+        }
+      }
+    },
+    "bookings.status.CONFIRMED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Потвърдена"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirmed"
+          }
+        }
+      }
+    },
+    "bookings.status.NO_SHOW": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Неявяване"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No show"
+          }
+        }
+      }
+    },
+    "bookings.status.PENDING": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Чака потвърждение"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Awaiting confirmation"
           }
         }
       }
@@ -2913,6 +2977,118 @@
         }
       }
     },
+    "myBookings.added": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Добавен от резервиралия"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Added by the booker"
+          }
+        }
+      }
+    },
+    "myBookings.emptyPast": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Още нямате минали резервации"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No past bookings yet"
+          }
+        }
+      }
+    },
+    "myBookings.emptyUpcoming": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нямате предстоящи резервации"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No upcoming bookings"
+          }
+        }
+      }
+    },
+    "myBookings.past": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Минали"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Past"
+          }
+        }
+      }
+    },
+    "myBookings.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Резервации"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bookings"
+          }
+        }
+      }
+    },
+    "myBookings.upcoming": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Предстоящи"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upcoming"
+          }
+        }
+      }
+    },
+    "myBookings.when": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Кои резервации"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Which bookings"
+          }
+        }
+      }
+    },
     "profile.emails": {
       "localizations": {
         "bg": {
@@ -3629,6 +3805,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Volleyball"
+          }
+        }
+      }
+    },
+    "tab.bookings": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Резервации"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bookings"
           }
         }
       }
