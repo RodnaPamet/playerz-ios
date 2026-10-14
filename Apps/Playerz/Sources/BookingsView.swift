@@ -30,6 +30,7 @@ struct BookingsView: View {
                     ForEach(model.bookings, id: \.id) { booking in
                         BookingRow(
                             booking: booking,
+                            session: session,
                             busy: model.cancelling == booking.id,
                             disabled: model.cancelling != nil
                         ) { pendingCancel = booking }
@@ -40,6 +41,7 @@ struct BookingsView: View {
         }
         .navigationTitle(String(localized: "bookings.title"))
         .navigationBarTitleDisplayMode(.inline)
+
         .task { await model.load(session, slug: slug) }
         .onChange(of: model.banner) { _, banner in
             guard let banner else { return }
@@ -68,6 +70,7 @@ struct BookingsView: View {
 
 private struct BookingRow: View {
     let booking: Components.Schemas.Booking
+    let session: SessionModel
     let busy: Bool
     let disabled: Bool
     let cancel: () -> Void
@@ -106,6 +109,18 @@ private struct BookingRow: View {
                         ? String(localized: "bookings.cancelling")
                         : String(format: String(localized: "a11y.cancelBooking"), when)
                 )
+            }
+
+            // Open play (#510): the booker looks for players for a booking to come.
+            if booking.status == "CONFIRMED", booking.startTs > .now {
+                // Destination-style, as the rest of this stack (Играй) is: the
+                // two kinds of link do not mix well in one hierarchy.
+                NavigationLink {
+                    BookingGameView(bookingId: booking.id, session: session)
+                } label: {
+                    Text(String(localized: "bookingGame.link"))
+                }
+                .accessibilityLabel(String(localized: "a11y.bookingGame \(when)"))
             }
         }
     }

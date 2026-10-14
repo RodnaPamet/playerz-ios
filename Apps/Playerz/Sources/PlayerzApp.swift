@@ -68,7 +68,14 @@ struct RootView: View {
         case .signedOut:
             SignInView(session: session)
         case .signedIn:
-            VenueListView(session: session)
+            // The player's tabs, as the web's bottom bar (#362): Играй, then Игри (#510).
+            // `.tabItem`, not `Tab`: the app supports iOS 17, and `Tab` is 18.
+            TabView {
+                VenueListView(session: session)
+                    .tabItem { Label(String(localized: "tab.play"), systemImage: "figure.tennis") }
+                GamesView(session: session)
+                    .tabItem { Label(String(localized: "tab.games"), systemImage: "person.3") }
+            }
         }
     }
 }
