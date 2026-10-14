@@ -57,6 +57,26 @@ refresh is awaited. Signing out mid-refresh used to be undone by the refresh
 completing; a generation counter now makes a stale refresh lose to both a
 sign-out and a newer sign-in.
 
+## Looking at a screen on the simulator
+
+A DEBUG build reads where to open from its environment (`DebugLaunch.swift`,
+compiled out of release builds). Run the server locally with password sign-in
+(`TEST_PASSWORD_SIGN_IN=1`, `DEPLOY_ENV=test`), then:
+
+    SIMCTL_CHILD_PLAYERZ_SERVER_URL=http://localhost:3100 \
+    SIMCTL_CHILD_PLAYERZ_EMAIL=… SIMCTL_CHILD_PLAYERZ_PASSWORD=… \
+    SIMCTL_CHILD_PLAYERZ_TAB=games \
+    xcrun simctl launch booted bg.playerz.app -AppleLanguages "(bg)"
+    xcrun simctl io booted screenshot screen.png
+
+`PLAYERZ_TAB` is `play`, `games`, `messages` or `profile`. `PLAYERZ_GAMES=mine`
+opens «Моите заявки», and `PLAYERZ_CONVERSATION=<id>` opens a conversation.
+
+The server URL is the **origin**: the generated client adds `/api/v1` itself,
+so `…/api/v1` as the server makes every call `/api/v1/api/v1/…` and a 404.
+Plain `http://localhost` is allowed by App Transport Security; a device needs a
+tunnel.
+
 ## Not done yet
 
 No UI and no push registration yet. v1 is scoped to **discovery + booking, no

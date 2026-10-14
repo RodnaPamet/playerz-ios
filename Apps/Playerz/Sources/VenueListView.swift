@@ -46,6 +46,9 @@ struct VenueListView: View {
                 }
             }
             .navigationTitle(String(localized: "venues.title"))
+            // Inline: with a segmented control inset below the bar, iOS 26 hid the large
+            // title under the bar's material.
+            .navigationBarTitleDisplayMode(.inline)
             .safeAreaInset(edge: .top) {
                 Picker("", selection: .init(
                     get: { model.mode },
@@ -58,13 +61,6 @@ struct VenueListView: View {
                 .padding(.horizontal)
                 .padding(.bottom, 4)
                 .background(.bar)
-            }
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(String(localized: "common.signOut")) {
-                        Task { await session.signOut() }
-                    }
-                }
             }
         }
         .task { await model.load(session) }

@@ -36,8 +36,33 @@ public enum Playerz {
     ) -> Client {
         Client(
             serverURL: baseURL,
+            configuration: Configuration(dateTranscoder: ServerDateTranscoder()),
             transport: transport ?? URLSessionTransport(),
             middlewares: middlewares
         )
+    }
+}
+
+/// The server's dates, as it writes them.
+///
+/// Every date in a v1 response comes from JavaScript's `toISOString()`, which
+/// always writes milliseconds: `2026-10-16T15:56:01.418Z`. The runtime's
+/// default transcoder is plain ISO 8601 and rejects the fraction, so with it
+/// every response that carries a date failed to decode, as a thrown
+/// `DecodingError` the screens could only show as "failed". Real responses
+/// captured from the server's routes found it (OpenPlayDecodingTests).
+///
+/// Decoding accepts both forms, so a date written without the fraction still
+/// reads; encoding writes the fraction, which the server's validation accepts.
+struct ServerDateTranscoder: DateTranscoder {
+    func encode(_ date: Date) throws -> String {
+        try ISO8601DateTranscoder.iso8601WithFractionalSeconds.encode(date)
+    }
+
+    func decode(_ string: String) throws -> Date {
+        if let date = try? ISO8601DateTranscoder.iso8601WithFractionalSeconds.decode(string) {
+            return date
+        }
+        return try ISO8601DateTranscoder.iso8601.decode(string)
     }
 }
