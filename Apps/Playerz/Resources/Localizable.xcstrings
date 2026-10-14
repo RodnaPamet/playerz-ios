@@ -721,6 +721,54 @@
         }
       }
     },
+    "club.description": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Клубът се управлява от playerz.bg в браузъра: календар, кортове, играчи и съобщения. Приложението е за играчи."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A club is run from playerz.bg in a browser: its calendar, courts, players and messages. The app is for players."
+          }
+        }
+      }
+    },
+    "club.openWeb": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отвори playerz.bg"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open playerz.bg"
+          }
+        }
+      }
+    },
+    "club.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Профил на клуб"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Club account"
+          }
+        }
+      }
+    },
     "common.loading": {
       "localizations": {
         "bg": {
@@ -1861,6 +1909,182 @@
           "stringUnit": {
             "state": "translated",
             "value": "Your game"
+          }
+        }
+      }
+    },
+    "kind.coach": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Треньор"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coach"
+          }
+        }
+      }
+    },
+    "kind.coachHint": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Профилът на треньор предстои. Дотогава можете да резервирате като играч."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The coach profile is coming. Until then you can book as a player."
+          }
+        }
+      }
+    },
+    "kind.continue": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Продължи"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continue"
+          }
+        }
+      }
+    },
+    "kind.description": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изберете как ще използвате playerz.bg. Изборът е еднократен и не може да се смени по-късно."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose how you will use playerz.bg. You choose once, and it cannot be changed later."
+          }
+        }
+      }
+    },
+    "kind.error.ALREADY_SET": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Този профил вече е избран."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This account has already been chosen."
+          }
+        }
+      }
+    },
+    "kind.error.FAILED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изборът не беше запазен. Опитайте отново."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your choice was not saved. Try again."
+          }
+        }
+      }
+    },
+    "kind.error.NOT_ALLOWED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Този профил не може да е от този вид. Свържете се с нас."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This account cannot be that type. Please contact us."
+          }
+        }
+      }
+    },
+    "kind.legend": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вид профил"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Account type"
+          }
+        }
+      }
+    },
+    "kind.player": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Играч"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Player"
+          }
+        }
+      }
+    },
+    "kind.playerHint": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Резервирате кортове и играете с приятели."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Book courts and play with friends."
+          }
+        }
+      }
+    },
+    "kind.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Играч или треньор?"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Player or coach?"
           }
         }
       }

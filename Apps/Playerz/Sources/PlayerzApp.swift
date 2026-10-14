@@ -74,32 +74,36 @@ struct RootView: View {
             // The player's tabs, as the web's bottom bar (#362): Играй, Игри (#510),
             // Резервации; then Съобщения, which the web keeps in its header, and Профил.
             // `.tabItem`, not `Tab`: the app supports iOS 17, and `Tab` is 18.
-            TabView(selection: $tab) {
-                VenueListView(session: session)
-                    .tabItem { Label(String(localized: "tab.play"), systemImage: "figure.tennis") }
-                    .tag(DebugLaunch.Tab.play)
-                GamesView(session: session)
-                    .tabItem { Label(String(localized: "tab.games"), systemImage: "person.3") }
-                    .tag(DebugLaunch.Tab.games)
-                MyBookingsView(session: session)
-                    .tabItem { Label(String(localized: "tab.bookings"), systemImage: "calendar") }
-                    .tag(DebugLaunch.Tab.bookings)
-                InboxView(session: session, unread: $unread)
-                    .tabItem { Label(String(localized: "tab.messages"), systemImage: "bubble.left.and.bubble.right") }
-                    .badge(unread)
-                    .tag(DebugLaunch.Tab.messages)
-                ProfileView(session: session)
-                    .tabItem { Label(String(localized: "tab.profile"), systemImage: "person.crop.circle") }
-                    .tag(DebugLaunch.Tab.profile)
-            }
-            // The badge without opening the tab: read on launch, then each minute.
-            .task {
-                while !Task.isCancelled {
-                    if let client = await session.client(),
-                       let counts = try? await client.getMyUnreadConversations().ok.body.json.data {
-                        unread = counts.conversations + counts.requests
+            // Where this account lands first (#167): a club account and an
+            // undecided one do not get the player's tabs.
+            LandingGate(session: session) {
+                TabView(selection: $tab) {
+                    VenueListView(session: session)
+                        .tabItem { Label(String(localized: "tab.play"), systemImage: "figure.tennis") }
+                        .tag(DebugLaunch.Tab.play)
+                    GamesView(session: session)
+                        .tabItem { Label(String(localized: "tab.games"), systemImage: "person.3") }
+                        .tag(DebugLaunch.Tab.games)
+                    MyBookingsView(session: session)
+                        .tabItem { Label(String(localized: "tab.bookings"), systemImage: "calendar") }
+                        .tag(DebugLaunch.Tab.bookings)
+                    InboxView(session: session, unread: $unread)
+                        .tabItem { Label(String(localized: "tab.messages"), systemImage: "bubble.left.and.bubble.right") }
+                        .badge(unread)
+                        .tag(DebugLaunch.Tab.messages)
+                    ProfileView(session: session)
+                        .tabItem { Label(String(localized: "tab.profile"), systemImage: "person.crop.circle") }
+                        .tag(DebugLaunch.Tab.profile)
+                }
+                // The badge without opening the tab: read on launch, then each minute.
+                .task {
+                    while !Task.isCancelled {
+                        if let client = await session.client(),
+                           let counts = try? await client.getMyUnreadConversations().ok.body.json.data {
+                            unread = counts.conversations + counts.requests
+                        }
+                        try? await Task.sleep(for: .seconds(60))
                     }
-                    try? await Task.sleep(for: .seconds(60))
                 }
             }
         }
