@@ -60,6 +60,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
 /// depth. Root swaps instead.
 struct RootView: View {
     @Bindable var session: SessionModel
+    /// Unread conversations and requests, for the Съобщения tab's badge.
+    @State private var unread = 0
 
     var body: some View {
         switch session.state {
@@ -75,6 +77,21 @@ struct RootView: View {
                     .tabItem { Label(String(localized: "tab.play"), systemImage: "figure.tennis") }
                 GamesView(session: session)
                     .tabItem { Label(String(localized: "tab.games"), systemImage: "person.3") }
+                InboxView(session: session, unread: $unread)
+                    .tabItem { Label(String(localized: "tab.messages"), systemImage: "bubble.left.and.bubble.right") }
+                    .badge(unread)
+                ProfileView(session: session)
+                    .tabItem { Label(String(localized: "tab.profile"), systemImage: "person.crop.circle") }
+            }
+            // The badge without opening the tab: read on launch, then each minute.
+            .task {
+                while !Task.isCancelled {
+                    if let client = await session.client(),
+                       let counts = try? await client.getMyUnreadConversations().ok.body.json.data {
+                        unread = counts.conversations + counts.requests
+                    }
+                    try? await Task.sleep(for: .seconds(60))
+                }
             }
         }
     }

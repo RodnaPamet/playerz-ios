@@ -111,6 +111,15 @@ private struct BookingRow: View {
                 )
             }
 
+            // Who is playing, with «Пиши» to each of them (#484).
+            if booking.status != "CANCELLED" {
+                NavigationLink {
+                    BookingPlayersView(bookingId: booking.id, session: session)
+                } label: {
+                    Text(String(localized: "bookingPlayers.title"))
+                }
+            }
+
             // Open play (#510): the booker looks for players for a booking to come.
             if booking.status == "CONFIRMED", booking.startTs > .now {
                 // Destination-style, as the rest of this stack (Играй) is: the

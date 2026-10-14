@@ -6,6 +6,9 @@ struct VenueDetailView: View {
     @Bindable var session: SessionModel
     @State private var model = VenueDetailModel()
     @State private var offerPush = false
+    @State private var conversation: OpenedConversation?
+    @State private var writeProblem: String?
+    @State private var showingWriteProblem = false
 
     var body: some View {
         Group {
@@ -34,6 +37,25 @@ struct VenueDetailView: View {
                     }
                 }
             }
+            // «Пиши на клуба» (#484): the club's conversation, by the club's slug.
+            if let club = model.venue?.clubSlug {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(String(localized: "messages.writeToClub"), systemImage: "bubble.left") {
+                        Task { await writeToClub(club) }
+                    }
+                }
+            }
+        }
+        .sheet(item: $conversation) { opened in
+            ConversationSheet(opened: opened, session: session)
+        }
+        .alert(
+            String(localized: "messages.writeToClub"),
+            isPresented: $showingWriteProblem,
+            presenting: writeProblem
+        ) { _ in
+        } message: { problem in
+            Text(problem)
         }
         .task { await model.load(session, venueId: venueId) }
         .onChange(of: model.banner) { _, banner in
@@ -148,6 +170,15 @@ struct VenueDetailView: View {
                     CourtHeader(court: court, forecast: model.forecast(for: court))
                 }
             }
+        }
+    }
+
+    private func writeToClub(_ slug: String) async {
+        switch await ConversationOpener.open(session, .case2(.init(club: slug))) {
+        case .success(let id): conversation = OpenedConversation(id: id)
+        case .failure(let failure):
+            writeProblem = failure.text
+            showingWriteProblem = true
         }
     }
 }

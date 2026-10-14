@@ -95,24 +95,6 @@ struct OpenPlayDecodingTests {
     }
 }
 
-private struct Canned: ClientTransport {
-    let replies: [String: (Int, String)]
-
-    func send(
-        _ request: HTTPRequest,
-        body: HTTPBody?,
-        baseURL: URL,
-        operationID: String
-    ) async throws -> (HTTPResponse, HTTPBody?) {
-        guard let (status, json) = replies[operationID] else {
-            return (HTTPResponse(status: .notFound), nil)
-        }
-        return (
-            HTTPResponse(status: .init(code: status), headerFields: [.contentType: "application/json"]),
-            HTTPBody(json)
-        )
-    }
-}
 
 // Captured 2026-10-14 from the server's v1 route handlers (see the suite's comment).
 private let GAMES = #"{"data":{"items":[{"id":"cmv8akv31000cbtiz30wp6y04","sport":"PADEL","resourceType":"COURT","courtName":"Court 1","venue":{"id":"cmv8akuuq0003btizu6idzc93","slug":"venue-iu4jx0c0","name":"Venue iu4jx0c0","city":"Sofia"},"startTs":"2026-10-16T15:56:01.418Z","endTs":"2026-10-16T16:56:01.418Z","timezone":"Europe/Sofia","cutoffAt":"2026-10-15T15:56:01.418Z","capacity":4,"playersCount":1,"spotsLeft":2,"open":true,"levelMin":3,"levelMax":5,"note":"Приятелска игра","booker":{"firstName":"Иван","avatarUrl":null},"viewer":{"isBooker":false,"isPlaying":false,"bookingId":null,"request":null,"levelFits":null}}],"nextCursor":null}}"#

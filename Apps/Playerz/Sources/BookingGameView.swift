@@ -96,6 +96,14 @@ struct BookingGameView: View {
                         .disabled(busy)
                     }
                 }
+                // The game's chat (#376): the booker and everyone accepted.
+                if let chatId = g.chatId {
+                    Section {
+                        NavigationLink(String(localized: "bookingGame.chat")) {
+                            ConversationView(conversationId: chatId, session: session)
+                        }
+                    }
+                }
                 Section(String(localized: "bookingGame.requests")) {
                     if g.requests.isEmpty {
                         Text(String(localized: "bookingGame.noRequests")).foregroundStyle(.secondary)

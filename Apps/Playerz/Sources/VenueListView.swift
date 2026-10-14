@@ -59,13 +59,6 @@ struct VenueListView: View {
                 .padding(.bottom, 4)
                 .background(.bar)
             }
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(String(localized: "common.signOut")) {
-                        Task { await session.signOut() }
-                    }
-                }
-            }
         }
         .task { await model.load(session) }
     }
