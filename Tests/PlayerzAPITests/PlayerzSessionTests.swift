@@ -69,6 +69,32 @@ private actor FlakyTransport: ClientTransport {
     }
 }
 
+/// Answers like StubTransport, and keeps each request's Authorization header.
+private actor RecordingTransport: ClientTransport {
+    private let replies: [String: String]
+    private(set) var authorization: [String: String?] = [:]
+
+    init(_ replies: [String: String]) { self.replies = replies }
+
+    func send(
+        _ request: HTTPRequest,
+        body: HTTPBody?,
+        baseURL: URL,
+        operationID: String
+    ) async throws -> (HTTPResponse, HTTPBody?) {
+        authorization[operationID] = request.headerFields[.authorization]
+        guard let json = replies[operationID] else {
+            return (HTTPResponse(status: .noContent), nil)
+        }
+        return (
+            HTTPResponse(status: .ok, headerFields: [.contentType: "application/json"]),
+            HTTPBody(json)
+        )
+    }
+
+    func header(_ operationID: String) -> String?? { authorization[operationID] }
+}
+
 private func tokensJSON(refresh: String?) -> String {
     let refreshField = refresh.map { "\"\($0)\"" } ?? "null"
     return """
@@ -149,6 +175,31 @@ struct PlayerzSessionTests {
         await #expect(throws: SessionError.throttled) {
             try await session.signIn(email: "a@b.bg", password: "pw")
         }
+    }
+
+    @Test("signing out sends the session's access token, so the server can end it (playerz-ios#1)")
+    func signOutNamesTheSession() async throws {
+        // The server ends the session the access token names; an anonymous
+        // logout revokes nothing and the refresh token stays valid there.
+        let persistence = MemoryPersistence()
+        let transport = RecordingTransport(["authSignIn": tokensJSON(refresh: "r1")])
+        let session = PlayerzSession(baseURL: BASE, persistence: persistence, transport: transport)
+        try await session.signIn(email: "a@b.bg", password: "pw")
+
+        try await session.signOut()
+
+        #expect(await transport.header("authLogout") == .some("Bearer access-1"))
+        #expect(persistence.peek == nil)
+    }
+
+    @Test("signing out when already signed out sends nothing")
+    func signOutWithoutASession() async throws {
+        let transport = RecordingTransport([:])
+        let session = PlayerzSession(baseURL: BASE, persistence: MemoryPersistence(), transport: transport)
+
+        try await session.signOut()
+
+        #expect(await transport.header("authLogout") == nil)
     }
 
     @Test("signing out clears the Keychain even when the server call fails")
