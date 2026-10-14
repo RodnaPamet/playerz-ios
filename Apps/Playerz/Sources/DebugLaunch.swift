@@ -11,7 +11,7 @@ import Foundation
 /// Compiled out of release builds: nothing here can sign anyone in, or move
 /// anyone, in a shipped app.
 enum DebugLaunch {
-    enum Tab: String { case play, games, messages, profile }
+    enum Tab: String { case play, games, bookings, messages, profile }
 
     #if DEBUG
     private static let env = ProcessInfo.processInfo.environment
@@ -22,10 +22,12 @@ enum DebugLaunch {
     static var tab: Tab? { env["PLAYERZ_TAB"].flatMap(Tab.init(rawValue:)) }
     static var conversation: String? { env["PLAYERZ_CONVERSATION"] }
     static var gamesMine: Bool { env["PLAYERZ_GAMES"] == "mine" }
+    static var bookingGame: String? { env["PLAYERZ_BOOKING_GAME"] }
     #else
     static let credentials: (email: String, password: String)? = nil
     static let tab: Tab? = nil
     static let conversation: String? = nil
     static let gamesMine = false
+    static let bookingGame: String? = nil
     #endif
 }

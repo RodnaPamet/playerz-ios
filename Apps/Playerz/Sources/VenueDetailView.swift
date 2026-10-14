@@ -30,7 +30,9 @@ struct VenueDetailView: View {
         .navigationTitle(model.venue?.name ?? "")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            if let slug = model.venue?.slug {
+            // The CLUB's slug: `/t/{slug}/bookings` is the club's namespace, and
+            // a venue's slug matches it only when the club named it so.
+            if let slug = model.venue?.clubSlug {
                 ToolbarItem(placement: .topBarTrailing) {
                     NavigationLink(String(localized: "bookings.title")) {
                         BookingsView(slug: slug, session: session)
