@@ -2913,38 +2913,6 @@
         }
       }
     },
-    "profile.email.messages": {
-      "localizations": {
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Съобщения"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Messages"
-          }
-        }
-      }
-    },
-    "profile.email.openPlay": {
-      "localizations": {
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Игри"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Games"
-          }
-        }
-      }
-    },
     "profile.emails": {
       "localizations": {
         "bg": {
@@ -2961,6 +2929,22 @@
         }
       }
     },
+    "profile.emailsHint": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Камбанката в приложението винаги показва всичко. Тук избирате кои имейли да получавате."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The bell in the app always shows everything. Here you choose which emails you get."
+          }
+        }
+      }
+    },
     "profile.failed": {
       "localizations": {
         "bg": {
@@ -2973,6 +2957,118 @@
           "stringUnit": {
             "state": "translated",
             "value": "The profile did not load."
+          }
+        }
+      }
+    },
+    "profile.kind.clubChanges": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отмяна от клуба или треньора"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancelled by the club or the coach"
+          }
+        }
+      }
+    },
+    "profile.kind.confirmation": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Потвърждение на резервация"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Booking confirmation"
+          }
+        }
+      }
+    },
+    "profile.kind.lessonsTaught": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Уроци, които водя"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lessons I teach"
+          }
+        }
+      }
+    },
+    "profile.kind.messages": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Непрочетени съобщения"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unread messages"
+          }
+        }
+      }
+    },
+    "profile.kind.openPlay": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Игри: заявки и отговори"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Games: requests and answers"
+          }
+        }
+      }
+    },
+    "profile.kind.reminder": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Напомняне 3 часа преди игра"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reminder 3 hours before a game"
+          }
+        }
+      }
+    },
+    "profile.push": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "На телефона"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On the phone"
           }
         }
       }

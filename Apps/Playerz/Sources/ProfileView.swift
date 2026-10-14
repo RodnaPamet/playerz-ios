@@ -12,8 +12,8 @@ struct ProfileView: View {
     @State private var problem: String?
     // The switches, as the server last said; a change is written back.
     @State private var searchable = true
-    @State private var emailMessages = true
-    @State private var emailOpenPlay = true
+    @State private var email: [NotificationKind: Bool] = [:]
+    @State private var push: [NotificationKind: Bool] = [:]
 
     var body: some View {
         NavigationStack {
@@ -34,10 +34,11 @@ struct ProfileView: View {
                     ProgressView()
                 }
 
-                if settings != nil {
-                    Section(String(localized: "profile.emails")) {
-                        Toggle(String(localized: "profile.email.messages"), isOn: $emailMessages)
-                        Toggle(String(localized: "profile.email.openPlay"), isOn: $emailOpenPlay)
+                if let settings {
+                    emailSection
+                    // On the phone (#529): only once this account has a device registered.
+                    if settings.pushDevices > 0 {
+                        pushSection
                     }
                 }
 
@@ -58,11 +59,37 @@ struct ProfileView: View {
             .onChange(of: searchable) { _, on in
                 if let me, me.searchable != on { Task { await setSearchable(on) } }
             }
-            .onChange(of: emailMessages) { _, on in
-                if let settings, settings.email.messages != on { Task { await setEmail(.init(messages: on)) } }
+            .onChange(of: email) { _, now in
+                guard let settings else { return }
+                for kind in kinds where now[kind] != kind.read(settings.email) {
+                    Task { await save(email: kind, now[kind] ?? true) }
+                }
             }
-            .onChange(of: emailOpenPlay) { _, on in
-                if let settings, settings.email.openPlay != on { Task { await setEmail(.init(openPlay: on)) } }
+            .onChange(of: push) { _, now in
+                guard let settings else { return }
+                for kind in kinds where now[kind] != kind.read(settings.push) {
+                    Task { await save(push: kind, now[kind] ?? true) }
+                }
+            }
+        }
+    }
+
+    private var emailSection: some View {
+        Section {
+            ForEach(kinds, id: \.self) { kind in
+                Toggle(kind.label, isOn: $email[on: kind])
+            }
+        } header: {
+            Text(String(localized: "profile.emails"))
+        } footer: {
+            Text(String(localized: "profile.emailsHint"))
+        }
+    }
+
+    private var pushSection: some View {
+        Section(String(localized: "profile.push")) {
+            ForEach(kinds, id: \.self) { kind in
+                Toggle(kind.label, isOn: $push[on: kind])
             }
         }
     }
@@ -90,8 +117,13 @@ struct ProfileView: View {
 
     private func show(settings fresh: Components.Schemas.NotificationSettings) {
         settings = fresh
-        emailMessages = fresh.email.messages
-        emailOpenPlay = fresh.email.openPlay
+        email = Dictionary(uniqueKeysWithValues: NotificationKind.allCases.map { ($0, $0.read(fresh.email)) })
+        push = Dictionary(uniqueKeysWithValues: NotificationKind.allCases.map { ($0, $0.read(fresh.push)) })
+    }
+
+    /// The kinds this account is shown: «Уроци, които водя» is a coach's only.
+    private var kinds: [NotificationKind] {
+        NotificationKind.allCases.filter { $0 != .lessonsTaught || me?.accountKind == "COACH" }
     }
 
     /// Whether other players find this person by name to write to them (#375).
@@ -106,12 +138,20 @@ struct ProfileView: View {
         }
     }
 
-    private func setEmail(_ change: Components.Schemas.UpdateNotificationSettingsRequest.emailPayload) async {
+    private func save(email kind: NotificationKind, _ on: Bool) async {
+        await save(.init(email: kind.emailChange(on)))
+    }
+
+    private func save(push kind: NotificationKind, _ on: Bool) async {
+        await save(.init(push: kind.pushChange(on)))
+    }
+
+    private func save(_ change: Components.Schemas.UpdateNotificationSettingsRequest) async {
         guard let client = await session.client() else { return }
         problem = nil
         do {
             show(settings: try await client
-                .updateMyNotificationSettings(body: .json(.init(email: change)))
+                .updateMyNotificationSettings(body: .json(change))
                 .ok.body.json.data)
         } catch {
             problem = String(localized: "profile.saveFailed")
