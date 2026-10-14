@@ -154,7 +154,9 @@ final class VenueDetailModel {
         resourceId: String,
         slot: Components.Schemas.AvailabilitySlot
     ) async {
-        guard let client = await session.client(), let slug = venue?.slug else { return }
+        // The CLUB's slug: `/t/{slug}/bookings` is the club's namespace, and a
+        // venue's own slug is unique only within its club (playerz-ios#2).
+        guard let client = await session.client(), let slug = venue?.clubSlug else { return }
 
         bookingSlot = slot.startTs
         banner = nil

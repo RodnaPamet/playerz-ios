@@ -52,8 +52,10 @@ public actor PlayerzSession {
     }
 
     public func signIn(email: String, password: String) async throws {
+        // The password grant: test runs only on the server (#361). The app's
+        // real ways in are the provider grants (projectZ #444, #442).
         let response = try await anonymous.authSignIn(
-            .init(body: .json(.init(email: email, password: password)))
+            .init(body: .json(.AuthTokenPasswordRequest(.init(email: email, password: password))))
         )
 
         switch response {
@@ -84,11 +86,26 @@ public actor PlayerzSession {
     }
 
     public func signOut() async throws {
+        // The server ends the session the ACCESS token names, and an
+        // anonymous or expired one names nothing (projectZ's logout route).
+        // So take a live one first, refreshing only if it has expired. A
+        // failure here must not stand in the way of the local sign-out.
+        let presented = try? await tokens.validAccessToken(refreshing: makeRefresher())
+
         // Local first. If the network call fails the user still expects to be
         // signed out of THIS device, and a token left in the Keychain is the
         // one thing they cannot fix themselves.
         try await tokens.signOut()
-        _ = try? await anonymous.authLogout(.init(body: .json(.init())))
+
+        guard let presented else { return }
+        // Then the server, with the token captured above: the Keychain no
+        // longer holds it, so the session's own middleware has nothing to send.
+        let bearer = Playerz.client(
+            baseURL: baseURL,
+            middlewares: [StaticBearerMiddleware(token: presented)],
+            transport: transport
+        )
+        _ = try? await bearer.authLogout(.init(body: .json(.init())))
     }
 
     /// Exchange a refresh token for a new session.
