@@ -241,7 +241,7 @@ private struct ReportSheet: View {
                 }
                 Picker(String(localized: "messages.reportReason"), selection: $reason) {
                     ForEach(Components.Schemas.ReportRequest.reasonPayload.allCases, id: \.self) { r in
-                        Text(String(localized: String.LocalizationValue("messages.reason.\(r.rawValue)"))).tag(r)
+                        Text(localized(key: "messages.reason.\(r.rawValue)")).tag(r)
                     }
                 }
                 Section(String(localized: "messages.reportDetails")) {

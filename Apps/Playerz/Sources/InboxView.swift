@@ -12,7 +12,7 @@ struct InboxView: View {
     @State private var items: [Components.Schemas.ConversationSummary] = []
     @State private var nextCursor: String?
     @State private var phase: Phase = .loading
-    @State private var path: [String] = []
+    @State private var path: [String] = DebugLaunch.conversation.map { [$0] } ?? []
     @State private var searching = false
 
     enum Phase { case loading, loaded, failed }
@@ -21,6 +21,9 @@ struct InboxView: View {
         NavigationStack(path: $path) {
             content
                 .navigationTitle(String(localized: "messages.title"))
+                // Inline: with a segmented control inset below the bar, iOS 26 hid the large
+                // title under the bar's material.
+                .navigationBarTitleDisplayMode(.inline)
                 .safeAreaInset(edge: .top) {
                     Picker(String(localized: "messages.tabs"), selection: $tab) {
                         Text(String(localized: "messages.tab.conversations")).tag(Operations.listMyConversations.Input.Query.tabPayload.conversations)

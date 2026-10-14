@@ -33,6 +33,6 @@ enum ConversationText {
             "PLAYER_ACCOUNT_REQUIRED", "CANNOT_MESSAGE_SELF",
         ]
         guard let code, known.contains(code) else { return String(localized: "messages.error.generic") }
-        return String(localized: String.LocalizationValue("messages.error.\(code)"))
+        return localized(key: "messages.error.\(code)")
     }
 }

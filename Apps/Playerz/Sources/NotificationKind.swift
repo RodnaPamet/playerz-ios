@@ -7,7 +7,7 @@ enum NotificationKind: String, CaseIterable, Hashable {
     case confirmation, reminder, clubChanges, messages, openPlay, lessonsTaught
 
     var label: String {
-        String(localized: String.LocalizationValue("profile.kind.\(rawValue)"))
+        localized(key: "profile.kind.\(rawValue)")
     }
 
     func read(_ email: Components.Schemas.NotificationSettings.emailPayload) -> Bool {

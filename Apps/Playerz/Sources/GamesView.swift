@@ -5,7 +5,7 @@ import SwiftUI
 struct GamesView: View {
     @Bindable var session: SessionModel
     @State private var model = GamesModel()
-    @State private var showing: Showing = .open
+    @State private var showing: Showing = DebugLaunch.gamesMine ? .mine : .open
 
     enum Showing: Hashable { case open, mine }
 
@@ -18,6 +18,9 @@ struct GamesView: View {
                 }
             }
             .navigationTitle(String(localized: "games.title"))
+            // Inline: with a segmented control inset below the bar, iOS 26 hid the large
+            // title under the bar's material.
+            .navigationBarTitleDisplayMode(.inline)
             .safeAreaInset(edge: .top) {
                 Picker(String(localized: "games.tabs"), selection: $showing) {
                     Text(String(localized: "games.tab.open")).tag(Showing.open)
@@ -40,7 +43,10 @@ struct GamesView: View {
                 }
             }
         }
-        .task { await model.load(session) }
+        .task {
+            await model.load(session)
+            if showing == .mine { await model.loadMine(session) }
+        }
         .onChange(of: showing) { _, now in
             if now == .mine { Task { await model.loadMine(session) } }
         }

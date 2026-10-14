@@ -4,11 +4,11 @@ import PlayerzAPI
 /// The words Игри puts on screen (#510), as the web says them (#376).
 enum GameText {
     static func sport(_ sport: Components.Schemas.SportType) -> String {
-        String(localized: String.LocalizationValue("sport.\(sport.rawValue)"))
+        localized(key: "sport.\(sport.rawValue)")
     }
 
     static func status(_ status: Components.Schemas.OpenGameRequestStatus) -> String {
-        String(localized: String.LocalizationValue("games.status.\(status.rawValue)"))
+        localized(key: "games.status.\(status.rawValue)")
     }
 
     /// The level wish, which is a wish and not a rule (#376).
@@ -47,6 +47,6 @@ enum GameText {
             "NOTE_TOO_LONG",
         ]
         guard let code, known.contains(code) else { return String(localized: "games.error.generic") }
-        return String(localized: String.LocalizationValue("games.error.\(code)"))
+        return localized(key: "games.error.\(code)")
     }
 }
