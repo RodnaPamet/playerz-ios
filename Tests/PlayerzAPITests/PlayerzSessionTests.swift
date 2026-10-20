@@ -269,3 +269,72 @@ struct PlayerzSessionTests {
         #expect(await session.isSignedIn)
     }
 }
+
+/// Signing out removes this phone's push registration first (playerz-ios#12).
+private actor Calls: ClientTransport {
+    private let offline: Set<String>
+    private(set) var made: [String] = []
+    private(set) var unregistered: String?
+
+    init(offline: Set<String> = []) { self.offline = offline }
+
+    struct Offline: Error {}
+
+    func send(
+        _ request: HTTPRequest,
+        body: HTTPBody?,
+        baseURL: URL,
+        operationID: String
+    ) async throws -> (HTTPResponse, HTTPBody?) {
+        made.append(operationID)
+        if offline.contains(operationID) { throw Offline() }
+        switch operationID {
+        case "authSignIn":
+            return (HTTPResponse(status: .ok, headerFields: [.contentType: "application/json"]), HTTPBody(tokensJSON(refresh: "r1")))
+        case "unregisterDevice":
+            unregistered = request.path
+            return (HTTPResponse(status: .noContent), nil)
+        default:
+            return (HTTPResponse(status: .noContent), nil)
+        }
+    }
+
+    func operations() -> [String] { made }
+    func unregisterPath() -> String? { unregistered }
+}
+
+@Suite("Signing out stops this phone's pushes (playerz-ios#12)")
+struct SignOutUnregistersTests {
+    @Test func theDeviceIsRemovedBeforeTheSessionEnds() async throws {
+        let calls = Calls()
+        let session = PlayerzSession(baseURL: BASE, persistence: MemoryPersistence(), transport: calls)
+        try await session.signIn(email: "a@b.bg", password: "pw")
+
+        try await session.signOut(unregistering: "abc123")
+
+        #expect(await calls.operations() == ["authSignIn", "unregisterDevice", "authLogout"])
+        #expect(await calls.unregisterPath() == "/devices?deviceToken=abc123")
+        #expect(await session.isSignedIn == false)
+    }
+
+    @Test func withoutATokenNothingIsUnregistered() async throws {
+        let calls = Calls()
+        let session = PlayerzSession(baseURL: BASE, persistence: MemoryPersistence(), transport: calls)
+        try await session.signIn(email: "a@b.bg", password: "pw")
+
+        try await session.signOut()
+
+        #expect(await calls.operations() == ["authSignIn", "authLogout"])
+    }
+
+    @Test func aFailedRemovalDoesNotStopTheSignOut() async throws {
+        let calls = Calls(offline: ["unregisterDevice"])
+        let session = PlayerzSession(baseURL: BASE, persistence: MemoryPersistence(), transport: calls)
+        try await session.signIn(email: "a@b.bg", password: "pw")
+
+        try await session.signOut(unregistering: "abc123")
+
+        #expect(await session.isSignedIn == false)
+        #expect(await calls.operations().last == "authLogout")
+    }
+}

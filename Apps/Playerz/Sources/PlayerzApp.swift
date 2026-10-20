@@ -10,7 +10,10 @@ struct PlayerzApp: App {
     var body: some Scene {
         WindowGroup {
             RootView(session: session)
-                .task { await session.restore() }
+                .task {
+                    await session.restore()
+                    if session.state == .signedIn { await PushRegistrar.shared.refreshIfAllowed(session) }
+                }
         }
     }
 }

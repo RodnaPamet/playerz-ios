@@ -87,7 +87,12 @@ public actor PlayerzSession {
         }
     }
 
-    public func signOut() async throws {
+    /// Sign out of this device. `deviceToken` is this phone's APNs token, if
+    /// it has one: its registration is removed first, with the session that
+    /// owns it, so the next person to use the phone does not receive this
+    /// account's notifications (playerz-ios#12). The server's logout leaves
+    /// devices alone, so nothing else would.
+    public func signOut(unregistering deviceToken: String? = nil) async throws {
         // The server ends the session the ACCESS token names, and an
         // anonymous or expired one names nothing (projectZ's logout route).
         // So take a live one first, refreshing only if it has expired. A
@@ -107,6 +112,13 @@ public actor PlayerzSession {
             middlewares: [StaticBearerMiddleware(token: presented)],
             transport: transport
         )
+        // Before the logout: the registration is the account's, and once the
+        // session is gone nothing on this phone may remove it. Best effort, as
+        // the logout is: offline, the next sign-in here re-registers the token
+        // to whoever signs in, which moves it off this account.
+        if let deviceToken {
+            _ = try? await bearer.unregisterDevice(.init(query: .init(deviceToken: deviceToken)))
+        }
         _ = try? await bearer.authLogout(.init(body: .json(.init())))
     }
 

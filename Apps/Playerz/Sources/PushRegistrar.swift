@@ -66,6 +66,25 @@ final class PushRegistrar {
 
     private weak var session: SessionModel?
 
+    /// At launch, once signed in: if notifications are already allowed, ask
+    /// Apple for the token again (the usual iOS practice; it is the same token
+    /// unless Apple changed it). Without this the token lives only from a
+    /// booking to the app's next launch, and signing out after a relaunch could
+    /// not remove this phone's registration (#12).
+    func refreshIfAllowed(_ session: SessionModel) async {
+        let settings = await UNUserNotificationCenter.current().notificationSettings()
+        guard settings.authorizationStatus == .authorized || settings.authorizationStatus == .provisional
+        else { return }
+        self.session = session
+        UIApplication.shared.registerForRemoteNotifications()
+    }
+
+    /// After signing out: the next account to sign in here registers the token
+    /// again, which also moves it off the old one if its removal failed.
+    func signedOut() {
+        registered = false
+    }
+
     /// Called by the app delegate when Apple hands back a token.
     func tokenArrived(_ data: Data) {
         let hex = data.map { String(format: "%02x", $0) }.joined()
