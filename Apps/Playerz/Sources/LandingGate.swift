@@ -51,10 +51,11 @@ struct LandingGate<Tabs: View>: View {
         if holdsClubRole { return .club }
         switch me.landing.reason {
         case "club", "club-unavailable": return .club
-        // `landing.club` would say whether it has a club, but the generated
-        // client drops it (playerz-ios#6). Choosing tells: the server refuses
-        // an account that holds a club role (ACCOUNT_KIND_NOT_ALLOWED).
-        case "undecided": return .chooseKind
+        // Undecided with a live club lands on it (`landing.club` names it, #6).
+        // With none, the account chooses; one holding a role at a club that is
+        // not live is refused by the server (ACCOUNT_KIND_NOT_ALLOWED) and
+        // shown the club note then.
+        case "undecided": return me.landing.club == nil ? .chooseKind : .club
         // `player`, `coach`, and a reason added later: the player's tabs, as the spec says.
         default: return .player
         }

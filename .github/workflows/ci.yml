@@ -82,7 +82,12 @@ jobs:
           python3 - <<'PY'
           import json, sys
 
-          server = json.load(open('.server/openapi/playerz-v1.json'))
+          # The vendored copy is the server's spec put through the rewrite the
+          # generator needs (#6), so the comparison applies it too.
+          sys.path.insert(0, 'scripts')
+          from spec_for_swift import for_swift
+
+          server = for_swift(json.load(open('.server/openapi/playerz-v1.json')))
           vendored = json.load(open('Sources/PlayerzAPI/openapi.json'))
 
           if server == vendored:
