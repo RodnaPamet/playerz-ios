@@ -55,6 +55,12 @@ public struct ResultDraft: Equatable, Sendable {
         rows = format == .periods ? [["", ""], ["", ""]] : [["", ""]]
     }
 
+    /// One player's seat, for a picker to bind to.
+    public subscript(seat id: String) -> Seat {
+        get { seats[id] ?? .out }
+        set { seats[id] = newValue }
+    }
+
     public var canAddSet: Bool { format == .periods && rows.count < Self.maxSets }
     public var canRemoveSet: Bool { format == .periods && rows.count > 1 }
 

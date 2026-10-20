@@ -36,6 +36,11 @@ struct ProfileView: View {
                         ProgressView()
                     }
 
+                    // «Класиране» (#18), while the ranking module is on.
+                    if me != nil, session.modules.ranking {
+                        MyRatingsSection(session: session)
+                    }
+
                     if let settings {
                         emailSection
                         // On the phone (#529): only once this account has a device registered.

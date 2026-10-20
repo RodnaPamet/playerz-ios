@@ -1173,6 +1173,142 @@
         }
       }
     },
+    "club.leaderboard.empty": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Още няма класирани играчи: в класирането влиза всеки с 5 потвърдени мача."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nobody is ranked yet: anyone with 5 confirmed matches is."
+          }
+        }
+      }
+    },
+    "club.leaderboard.hint": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нивото се мести с всеки потвърден резултат. Играч, скрил нивото си, не е тук."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A level moves with every confirmed result. A player who hides theirs is not listed."
+          }
+        }
+      }
+    },
+    "club.leaderboard.matches %lld": {
+      "localizations": {
+        "bg": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld мач"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld мача"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld match"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld matches"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "club.leaderboard.noResults": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Още няма потвърдени резултати в клуба."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No confirmed results at the club yet."
+          }
+        }
+      }
+    },
+    "club.leaderboard.sport": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Спорт"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sport"
+          }
+        }
+      }
+    },
+    "club.leaderboard.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Класиране"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leaderboard"
+          }
+        }
+      }
+    },
+    "club.leaderboard.unnamed": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Играч"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Player"
+          }
+        }
+      }
+    },
     "club.noVenues.description": {
       "localizations": {
         "bg": {
@@ -4769,6 +4905,230 @@
         }
       }
     },
+    "myBookings.result.answerUntil %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Потвърдете или оспорете до %@. След това се потвърждава сам."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirm or dispute it by %@. After that it confirms itself."
+          }
+        }
+      }
+    },
+    "myBookings.result.back": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Назад"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Back"
+          }
+        }
+      }
+    },
+    "myBookings.result.confirm": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Потвърди"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirm"
+          }
+        }
+      }
+    },
+    "myBookings.result.heading": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Резултат"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Result"
+          }
+        }
+      }
+    },
+    "myBookings.result.intro %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Въведете резултата до %@. Другият отбор има 48 часа да го потвърди или оспори."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter the result by %@. The other side has 48 hours to confirm or dispute it."
+          }
+        }
+      }
+    },
+    "myBookings.result.introNoDeadline": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Въведете резултата. Другият отбор има 48 часа да го потвърди или оспори."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter the result. The other side has 48 hours to confirm or dispute it."
+          }
+        }
+      }
+    },
+    "myBookings.result.pointsTotal %lld": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Мач до %lld точки: двете числа дават %lld."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A match to %lld points: the two numbers add up to %lld."
+          }
+        }
+      }
+    },
+    "myBookings.result.reject": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Оспори"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dispute"
+          }
+        }
+      }
+    },
+    "myBookings.result.rejectNote": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Какво не е наред? Клубът ще го прочете. (по желание)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What is wrong? The club will read it. (optional)"
+          }
+        }
+      }
+    },
+    "myBookings.result.rejectSend": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изпрати на клуба"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Send to the club"
+          }
+        }
+      }
+    },
+    "myBookings.result.report": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Въведи резултат"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter the result"
+          }
+        }
+      }
+    },
+    "myBookings.result.send": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изпрати резултата"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Send the result"
+          }
+        }
+      }
+    },
+    "myBookings.result.waitingUntil %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Чака другия отбор до %@. След това се потвърждава сам."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Waiting for the other side until %@. After that it confirms itself."
+          }
+        }
+      }
+    },
+    "myBookings.result.withClub": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Резултатът е оспорен. Клубът ще реши кой е верният."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The result was disputed. The club will decide which is right."
+          }
+        }
+      }
+    },
     "myBookings.review.alreadyThisVenue": {
       "localizations": {
         "bg": {
@@ -6401,6 +6761,146 @@
         }
       }
     },
+    "profile.ratings.hint": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нивото се мести с всеки потвърден резултат и се вижда от другите. Точките виждате само вие."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your level moves with every confirmed result, and others see it. Only you see the points."
+          }
+        }
+      }
+    },
+    "profile.ratings.hintHidden": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нивото ви е скрито: продължавате да се класирате, но другите виждат нивото, което сте посочили. Точките виждате само вие."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your level is hidden: you are still ranked, but others see the level you gave. Only you see the points."
+          }
+        }
+      }
+    },
+    "profile.ratings.noMatches": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Още няма потвърдени мачове"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No confirmed matches yet"
+          }
+        }
+      }
+    },
+    "profile.ratings.none": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изберете спортове по-горе: класирането започва от нивото, което посочите."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick your sports above: your ranking starts at the level you give."
+          }
+        }
+      }
+    },
+    "profile.ratings.points %@ %lld": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ точки · %#@matches@"
+          },
+          "substitutions": {
+            "matches": {
+              "argNum": 2,
+              "formatSpecifier": "lld",
+              "variations": {
+                "plural": {
+                  "one": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg мач"
+                    }
+                  },
+                  "other": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg мача"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ points · %#@matches@"
+          },
+          "substitutions": {
+            "matches": {
+              "argNum": 2,
+              "formatSpecifier": "lld",
+              "variations": {
+                "plural": {
+                  "one": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg match"
+                    }
+                  },
+                  "other": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg matches"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "profile.ratings.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Класиране"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ranking"
+          }
+        }
+      }
+    },
     "profile.saveFailed": {
       "localizations": {
         "bg": {
@@ -6445,6 +6945,38 @@
           "stringUnit": {
             "state": "translated",
             "value": "Other players find you by name to write to you. Off, only people you have played with or already talk to can write."
+          }
+        }
+      }
+    },
+    "profile.sports.rated %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ниво %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Level %@"
+          }
+        }
+      }
+    },
+    "profile.sports.ratedProvisional %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ниво %@ (неокончателно)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Level %@ (provisional)"
           }
         }
       }
@@ -6525,6 +7057,486 @@
           "stringUnit": {
             "state": "translated",
             "value": "Not now"
+          }
+        }
+      }
+    },
+    "results.editor.addSet": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Добави сет"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add a set"
+          }
+        }
+      }
+    },
+    "results.editor.cell %@ %lld": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, отбор %2$lld"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, side %2$lld"
+          }
+        }
+      }
+    },
+    "results.editor.out": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не игра"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Did not play"
+          }
+        }
+      }
+    },
+    "results.editor.problemScore": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Попълнете всяко поле с число."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fill in every box with a number."
+          }
+        }
+      }
+    },
+    "results.editor.problemSides": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Във всеки отбор трябва да има поне един играч."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Each side needs at least one player."
+          }
+        }
+      }
+    },
+    "results.editor.removeSet": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Махни последния сет"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove the last set"
+          }
+        }
+      }
+    },
+    "results.editor.scoreSets": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Резултат по сетове"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Score by set"
+          }
+        }
+      }
+    },
+    "results.editor.scoreTotal": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Резултат"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Score"
+          }
+        }
+      }
+    },
+    "results.editor.set %lld": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сет %lld"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Set %lld"
+          }
+        }
+      }
+    },
+    "results.editor.side %lld": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отбор %lld"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Side %lld"
+          }
+        }
+      }
+    },
+    "results.editor.sideOf %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отбор на %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@’s side"
+          }
+        }
+      }
+    },
+    "results.editor.sides": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Кой в кой отбор игра"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Who played on which side"
+          }
+        }
+      }
+    },
+    "results.editor.total": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Общо"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total"
+          }
+        }
+      }
+    },
+    "results.error.FAILED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нещо се обърка. Опитайте отново."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Something went wrong. Try again."
+          }
+        }
+      }
+    },
+    "results.error.INVALID_SCORE": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Резултатът не е наред: всеки сет има победител, а един отбор печели повече сетове."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The score is not right: every set has a winner, and one side wins more sets."
+          }
+        }
+      }
+    },
+    "results.error.INVALID_SIDES": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отборите не са наред: всеки играч е в един отбор, вие сте в един от тях, и отборите не са по-големи от позволеното."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The sides are not right: each player is on one side, you are on one of them, and no side is too large."
+          }
+        }
+      }
+    },
+    "results.error.RATE_LIMITED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Твърде много опити. Опитайте отново след малко."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Too many attempts. Try again in a moment."
+          }
+        }
+      }
+    },
+    "results.error.RESULT_ALREADY_REPORTED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Някой вече въведе резултата. Презаредете, за да го видите."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Someone has already entered this result. Reload to see it."
+          }
+        }
+      }
+    },
+    "results.error.RESULT_NOT_AWAITING": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Резултатът вече не чака това: потвърден е, оспорен е или е при клуба."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This result is no longer waiting for that: it was confirmed, disputed, or is with the club."
+          }
+        }
+      }
+    },
+    "results.error.RESULT_NOT_FOUND": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Резултатът не е намерен."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Result not found."
+          }
+        }
+      }
+    },
+    "results.error.RESULT_NOT_REPORTABLE": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Резултатът вече не може да се въведе: резервацията не е приключила или 7-те дни изтекоха."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This result can no longer be entered: the booking has not finished, or the 7 days have passed."
+          }
+        }
+      }
+    },
+    "results.error.RESULT_NOT_YOURS_TO_ANSWER": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Резултатът се потвърждава от другия отбор."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The other side confirms this result."
+          }
+        }
+      }
+    },
+    "results.place %lld %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld. %2$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld. %2$@"
+          }
+        }
+      }
+    },
+    "results.status.CONFIRMED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Потвърден"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirmed"
+          }
+        }
+      }
+    },
+    "results.status.DECIDED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Решен от клуба"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Decided by the club"
+          }
+        }
+      }
+    },
+    "results.status.REJECTED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Оспорен: при клуба"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Disputed: with the club"
+          }
+        }
+      }
+    },
+    "results.status.REPORTED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Чака потвърждение"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Waiting for confirmation"
+          }
+        }
+      }
+    },
+    "results.status.VOIDED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Анулиран"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voided"
+          }
+        }
+      }
+    },
+    "results.unnamed": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Играч"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Player"
+          }
+        }
+      }
+    },
+    "results.winner": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "победител"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "winner"
           }
         }
       }

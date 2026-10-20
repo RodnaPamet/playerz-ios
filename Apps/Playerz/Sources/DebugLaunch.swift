@@ -35,6 +35,8 @@ enum DebugLaunch {
     /// The bell's list open (#15), or a push's link as if tapped.
     static var notifications: Bool { env["PLAYERZ_NOTIFICATIONS"] == "1" }
     static var link: String? { env["PLAYERZ_LINK"] }
+    /// A booking's result (#18): `section` scrolls to it, `editor` opens «Въведи резултат».
+    static var result: String? { env["PLAYERZ_RESULT"] }
     static var profile: Profile? { env["PLAYERZ_PROFILE"].flatMap(Profile.init(rawValue:)) }
     #else
     static let credentials: (email: String, password: String)? = nil
@@ -49,6 +51,7 @@ enum DebugLaunch {
     static let invite: String? = nil
     static let notifications = false
     static let link: String? = nil
+    static let result: String? = nil
     static let profile: Profile? = nil
     #endif
 }
