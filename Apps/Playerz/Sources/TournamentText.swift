@@ -58,6 +58,8 @@ enum TournamentText {
             "TOURNAMENT_ALREADY_ENTERED", "TOURNAMENT_PARTNER_REQUIRED", "TOURNAMENT_PARTNER_UNAVAILABLE",
             "TOURNAMENT_DRAW_FULL", "TOURNAMENT_ENTRY_NOT_FOUND", "TOURNAMENT_ENTRY_NOT_ACTIVE", "TOURNAMENT_STATE",
             "PLAYER_ACCOUNT_REQUIRED", "PHONE_REQUIRED", "RATE_LIMITED",
+            "TOURNAMENT_MATCH_NOT_READY", "TOURNAMENT_MATCH_PLACED", "TOURNAMENT_NO_PROPOSAL", "SLOT_TAKEN",
+            "SLOT_NOT_BOOKABLE", "NO_SHOW_BLOCKED", "BOOKING_LIMIT_REACHED", "TOURNAMENT_PAYMENT_NOT_DUE",
         ]
         guard let code, known.contains(code) else { return String(localized: "tournaments.error.FAILED") }
         return localized(key: "tournaments.error.\(code)")

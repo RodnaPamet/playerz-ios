@@ -19,6 +19,7 @@ struct TournamentDetailView: View {
     @State private var busy = false
     @State private var problem: String?
     @State private var confirmingWithdraw = false
+    @Environment(\.openURL) private var openURL
     /// A DEBUG launch can open the draw at once (DebugLaunch).
     @State private var debugDraw = DebugLaunch.tournamentDraw
 
@@ -58,12 +59,13 @@ struct TournamentDetailView: View {
                         busy: busy,
                         choosePartner: choosePartner,
                         enter: enter,
-                        withdraw: askToWithdraw
+                        withdraw: askToWithdraw,
+                        pay: pay
                     )
                     if tournament.status == .IN_PROGRESS || tournament.status == .COMPLETE {
                         Section {
                             NavigationLink(String(localized: "tournaments.draw.heading")) {
-                                TournamentDrawView(id: id, timezone: tournament.venue?.timezone ?? "Europe/Sofia", session: session)
+                                TournamentDrawView(id: id, timezone: tournament.venue?.timezone ?? "Europe/Sofia", venueId: tournament.venue?.id, session: session)
                             }
                         }
                     }
@@ -83,7 +85,7 @@ struct TournamentDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
         .navigationDestination(isPresented: $debugDraw) {
-            TournamentDrawView(id: id, timezone: view?.value1.venue?.timezone ?? "Europe/Sofia", session: session)
+            TournamentDrawView(id: id, timezone: view?.value1.venue?.timezone ?? "Europe/Sofia", venueId: view?.value1.venue?.id, session: session)
         }
         .sheet(isPresented: $choosingPartner) {
             PartnerPickerSheet(session: session) { chosen in
@@ -146,6 +148,26 @@ struct TournamentDetailView: View {
                 let code = response.flatMap { apiErrorCode($0) }
                 if code == "PHONE_REQUIRED" { session.notice(refusal: code) }
                 problem = TournamentText.error(code)
+            }
+        }
+    }
+
+    /// Stripe's page for the fee, in Safari: a real-world service, paid as on
+    /// the web, never as an in-app purchase (guideline 3.1.3). The entry shows
+    /// as paid once Stripe tells the server; pull to refresh.
+    private func pay() {
+        guard let entry = view?.value2.myEntry else { return }
+        busy = true
+        problem = nil
+        Task {
+            defer { busy = false }
+            guard let client = await session.client() else { return }
+            let response = try? await client.openTournamentEntryCheckout(path: .init(id: entry.id))
+            if case let .created(created)? = response, let page = try? created.body.json.data,
+               let url = URL(string: page.checkoutUrl) {
+                openURL(url)
+            } else {
+                problem = TournamentText.error(response.flatMap { apiErrorCode($0) })
             }
         }
     }
