@@ -78,6 +78,13 @@ jobs:
         # parses this file, so formatting cannot reach the generated client. It
         # is only noisier, and a job that cries wolf on whitespace is a job
         # people learn to ignore — which is worse than not having it.
+        #
+        # For the same reason, PROSE is not compared (#39): a reworded
+        # description or summary reaches the client only as a doc comment, and
+        # failing every open app PR because the server reworded one sentence
+        # cried wolf three times in one day. Shapes, names, types, required
+        # fields and paths are all still compared. `make regenerate` still
+        # copies the prose, so the doc comments catch up with the next copy.
         run: |
           python3 - <<'PY'
           import json, sys
@@ -87,11 +94,29 @@ jobs:
           sys.path.insert(0, 'scripts')
           from spec_for_swift import for_swift
 
+          PROSE = {'description', 'summary', 'example', 'examples'}
+
+          def shape(node, in_properties=False):
+              """The spec without its prose. Under `properties` the keys are
+              property NAMES, and a property may be called `description`."""
+              if isinstance(node, list):
+                  return [shape(v) for v in node]
+              if not isinstance(node, dict):
+                  return node
+              return {
+                  k: shape(v, k == 'properties')
+                  for k, v in node.items()
+                  if in_properties or k not in PROSE
+              }
+
           server = for_swift(json.load(open('.server/openapi/playerz-v1.json')))
           vendored = json.load(open('Sources/PlayerzAPI/openapi.json'))
 
           if server == vendored:
               print('spec matches RodnaPamet/projectZ@main')
+              sys.exit(0)
+          if shape(server) == shape(vendored):
+              print('::notice::Only prose differs from RodnaPamet/projectZ@main; `make regenerate` will copy it.')
               sys.exit(0)
 
           print('::error::The vendored OpenAPI spec is out of date. Run `make regenerate` and commit.')
@@ -112,6 +137,6 @@ jobs:
           for op in sorted(removed):
               print(f'  - {op} (here, gone from the server)')
           if not added and not removed:
-              print('  operations match; a schema or description changed')
+              print('  operations match; a schema changed')
           sys.exit(1)
           PY
