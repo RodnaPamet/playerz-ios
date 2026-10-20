@@ -401,6 +401,410 @@
         }
       }
     },
+    "bookingInvite.court": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Корт"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Court"
+          }
+        }
+      }
+    },
+    "bookingInvite.error.FAILED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не успяхме да ви добавим. Опитайте отново."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We could not add you. Try again."
+          }
+        }
+      }
+    },
+    "bookingInvite.error.FULL": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Играта е пълна: всички места са заети."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The game is full: every place is taken."
+          }
+        }
+      }
+    },
+    "bookingInvite.error.NOT_USABLE": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тази покана вече не важи."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This invitation no longer works."
+          }
+        }
+      }
+    },
+    "bookingInvite.error.PHONE_REQUIRED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Първо потвърдете телефонен номер."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirm a phone number first."
+          }
+        }
+      }
+    },
+    "bookingInvite.error.PLAYER_ACCOUNT_REQUIRED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Само профил на играч може да се включи в игра. Влезте с профила си на играч."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only a player account can join a game. Sign in with your player account."
+          }
+        }
+      }
+    },
+    "bookingInvite.error.RATE_LIMITED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Твърде много опити. Изчакайте минута и опитайте отново."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Too many attempts. Wait a minute and try again."
+          }
+        }
+      }
+    },
+    "bookingInvite.invalid.description": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Връзката е изтекла, спряна е или играта е отменена. Помолете за нова."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The link expired, was stopped, or the game was cancelled. Ask for a new one."
+          }
+        }
+      }
+    },
+    "bookingInvite.invalid.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тази покана вече не важи"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This invitation no longer works"
+          }
+        }
+      }
+    },
+    "bookingInvite.join": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Включи се"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Join"
+          }
+        }
+      }
+    },
+    "bookingInvite.lesson.label": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Урок с треньор"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A lesson with a coach"
+          }
+        }
+      }
+    },
+    "bookingInvite.lesson.noName": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Треньор"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coach"
+          }
+        }
+      }
+    },
+    "bookingInvite.lesson.payAtClub": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Плаща се на място в клуба: кортът и треньорът."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paid at the club: the court and the coach."
+          }
+        }
+      }
+    },
+    "bookingInvite.payAtClub": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Плащането е на място в клуба."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Payment is at the club."
+          }
+        }
+      }
+    },
+    "bookingInvite.pitch.court": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Игрище"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pitch"
+          }
+        }
+      }
+    },
+    "bookingInvite.seat.court": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Място"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seat"
+          }
+        }
+      }
+    },
+    "bookingInvite.spotsLeft %lld": {
+      "localizations": {
+        "bg": {
+          "variations": {
+            "plural": {
+              "zero": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Няма свободни места"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld свободно място"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld свободни места"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "zero": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "No places left"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld place left"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld places left"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "bookingInvite.table.court": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Маса"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Table"
+          }
+        }
+      }
+    },
+    "bookingInvite.title %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ви кани да играете"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ invites you to play"
+          }
+        }
+      }
+    },
+    "bookingInvite.titleNoName": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Покана за игра"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invitation to play"
+          }
+        }
+      }
+    },
+    "bookingInvite.track.court": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Писта"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Track"
+          }
+        }
+      }
+    },
+    "bookingInvite.when": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Кога"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When"
+          }
+        }
+      }
+    },
+    "bookingInvite.where": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Къде"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Where"
+          }
+        }
+      }
+    },
     "bookingPlayers.booker": {
       "localizations": {
         "bg": {
@@ -917,6 +1321,38 @@
           "stringUnit": {
             "state": "translated",
             "value": "Venues"
+          }
+        }
+      }
+    },
+    "common.close": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Затвори"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Close"
+          }
+        }
+      }
+    },
+    "common.done": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Готово"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done"
           }
         }
       }
@@ -3369,6 +3805,390 @@
         }
       }
     },
+    "myBookings.detail.address": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Адрес"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Address"
+          }
+        }
+      }
+    },
+    "myBookings.detail.callClub %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "За промяна се обадете в клуба: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To change it, call the club: %@"
+          }
+        }
+      }
+    },
+    "myBookings.detail.cancel": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отмени резервацията"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel booking"
+          }
+        }
+      }
+    },
+    "myBookings.detail.cancelUntil %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Можете да отмените до %@."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You can cancel until %@."
+          }
+        }
+      }
+    },
+    "myBookings.detail.confirm.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Да отменим ли резервацията?"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel this booking?"
+          }
+        }
+      }
+    },
+    "myBookings.detail.confirm.yes": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отмени резервацията"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel booking"
+          }
+        }
+      }
+    },
+    "myBookings.detail.contactClub": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "За промяна се свържете с клуба."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To change it, contact the club."
+          }
+        }
+      }
+    },
+    "myBookings.detail.court": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Корт"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Court"
+          }
+        }
+      }
+    },
+    "myBookings.detail.cutoffPassed %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Срокът за отмяна изтече на %@."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The cancellation deadline passed on %@."
+          }
+        }
+      }
+    },
+    "myBookings.detail.cutoffPassedNoDate": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Срокът за отмяна изтече."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The cancellation deadline has passed."
+          }
+        }
+      }
+    },
+    "myBookings.detail.directions": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Упътване"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Directions"
+          }
+        }
+      }
+    },
+    "myBookings.detail.lesson.coach": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Треньор"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coach"
+          }
+        }
+      }
+    },
+    "myBookings.detail.lesson.noName": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Треньор"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coach"
+          }
+        }
+      }
+    },
+    "myBookings.detail.lesson.parts %@ %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ за треньора + %2$@ за корта"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ for the coach + %2$@ for the court"
+          }
+        }
+      }
+    },
+    "myBookings.detail.payAtClub": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Плащане на място"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pay at the club"
+          }
+        }
+      }
+    },
+    "myBookings.detail.pitch.court": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Игрище"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pitch"
+          }
+        }
+      }
+    },
+    "myBookings.detail.players": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Играчи"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Players"
+          }
+        }
+      }
+    },
+    "myBookings.detail.price": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Цена"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Price"
+          }
+        }
+      }
+    },
+    "myBookings.detail.seat.court": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Място"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seat"
+          }
+        }
+      }
+    },
+    "myBookings.detail.status": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Състояние"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Status"
+          }
+        }
+      }
+    },
+    "myBookings.detail.table.court": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Маса"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Table"
+          }
+        }
+      }
+    },
+    "myBookings.detail.track.court": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Писта"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Track"
+          }
+        }
+      }
+    },
+    "myBookings.detail.venuePage": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Към обекта"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Venue page"
+          }
+        }
+      }
+    },
+    "myBookings.detail.when": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Кога"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When"
+          }
+        }
+      }
+    },
     "myBookings.emptyPast": {
       "localizations": {
         "bg": {
@@ -3413,6 +4233,818 @@
           "stringUnit": {
             "state": "translated",
             "value": "Past"
+          }
+        }
+      }
+    },
+    "myBookings.players.add": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Добави"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add"
+          }
+        }
+      }
+    },
+    "myBookings.players.added": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Добавен"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Added"
+          }
+        }
+      }
+    },
+    "myBookings.players.closed": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Играта започна или е отменена: играчите вече не се променят."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The game has started or was cancelled: its players no longer change."
+          }
+        }
+      }
+    },
+    "myBookings.players.error.CLOSED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Играта започна или е отменена."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The game has started or was cancelled."
+          }
+        }
+      }
+    },
+    "myBookings.players.error.FAILED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не стана. Опитайте отново."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That did not work. Try again."
+          }
+        }
+      }
+    },
+    "myBookings.players.error.FULL": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Няма свободни места."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "There are no places left."
+          }
+        }
+      }
+    },
+    "myBookings.players.error.TOO_MANY": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Има твърде много активни връзки. Спрете старите и опитайте отново."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "There are too many live links. Stop the old ones and try again."
+          }
+        }
+      }
+    },
+    "myBookings.players.invite": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Покани играчи"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invite players"
+          }
+        }
+      }
+    },
+    "myBookings.players.leave": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Напусни играта"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leave the game"
+          }
+        }
+      }
+    },
+    "myBookings.players.leaveConfirm.description": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Резервацията остава на организатора. Ще ви трябва нова покана, за да се върнете."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The booking stays with its booker. You will need a new invitation to come back."
+          }
+        }
+      }
+    },
+    "myBookings.players.leaveConfirm.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Да напуснем ли играта?"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leave the game?"
+          }
+        }
+      }
+    },
+    "myBookings.players.leaveConfirm.yes": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Напусни"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leave"
+          }
+        }
+      }
+    },
+    "myBookings.players.linkReady": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Връзката важи до началото на играта. Всеки, който я отвори и влезе, се добавя, докато има места."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The link works until the game starts. Anyone who opens it and signs in is added while there is room."
+          }
+        }
+      }
+    },
+    "myBookings.players.linksStopped": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Връзките са спрени. Добавените играчи остават."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The links are stopped. Players already added stay."
+          }
+        }
+      }
+    },
+    "myBookings.players.liveLinks %lld": {
+      "localizations": {
+        "bg": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld активна връзка"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld активни връзки"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld live link"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld live links"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "myBookings.players.recent": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Играли сте с"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You have played with"
+          }
+        }
+      }
+    },
+    "myBookings.players.recentEmpty": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тук ще виждате хората, с които сте играли. Засега споделете връзка."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "People you have played with will show here. For now, share a link."
+          }
+        }
+      }
+    },
+    "myBookings.players.remove": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Премахни"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove"
+          }
+        }
+      }
+    },
+    "myBookings.players.removeConfirm.description": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Мястото се освобождава и може да се заеме през връзката."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The place frees up and can be taken through the link."
+          }
+        }
+      }
+    },
+    "myBookings.players.removeConfirm.title %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Да премахнем ли %@?"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove %@?"
+          }
+        }
+      }
+    },
+    "myBookings.players.removeConfirm.yes": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Премахни"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove"
+          }
+        }
+      }
+    },
+    "myBookings.players.removeLabel %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Премахни %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove %@"
+          }
+        }
+      }
+    },
+    "myBookings.players.share": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сподели връзка"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share a link"
+          }
+        }
+      }
+    },
+    "myBookings.players.shareTitle": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Покана за игра"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invitation to play"
+          }
+        }
+      }
+    },
+    "myBookings.players.sheetDescription %lld": {
+      "localizations": {
+        "bg": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Добавете до %lld играч. Плащането остава на място в клуба."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Добавете до %lld играчи. Плащането остава на място в клуба."
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Add up to %lld player. Payment stays at the club."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Add up to %lld players. Payment stays at the club."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "myBookings.players.sheetTitle": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Покани играчи"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invite players"
+          }
+        }
+      }
+    },
+    "myBookings.players.spotsLeft %lld": {
+      "localizations": {
+        "bg": {
+          "variations": {
+            "plural": {
+              "zero": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Няма свободни места"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld свободно място"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld свободни места"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "zero": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "No places left"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld place left"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld places left"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "myBookings.players.stopLinks": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Спри връзките"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stop the links"
+          }
+        }
+      }
+    },
+    "myBookings.review.alreadyThisVenue": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вече сте оценили този обект."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You have already reviewed this venue."
+          }
+        }
+      }
+    },
+    "myBookings.review.bodyHint %lld": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Другите играчи ще го видят след проверка. До %lld знака."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Other players see it once it has been checked. Up to %lld characters."
+          }
+        }
+      }
+    },
+    "myBookings.review.bodyLabel": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вашият отзив (по желание)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your review (optional)"
+          }
+        }
+      }
+    },
+    "myBookings.review.error.ALREADY_REVIEWED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вече сте оценили този обект."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You have already reviewed this venue."
+          }
+        }
+      }
+    },
+    "myBookings.review.error.FAILED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отзивът не беше изпратен. Опитайте отново."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The review was not sent. Try again."
+          }
+        }
+      }
+    },
+    "myBookings.review.error.NOT_ALLOWED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вече не можете да оценявате резервации в този клуб."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You can no longer review bookings at this club."
+          }
+        }
+      }
+    },
+    "myBookings.review.error.NO_PROOF_OF_VISIT": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Може да се оценява само приключила резервация. Тази може да е отбелязана като неявяване."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only a completed booking can be reviewed. This one may have been marked as a no-show."
+          }
+        }
+      }
+    },
+    "myBookings.review.error.RATING_REQUIRED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изберете оценка от 1 до 5 звезди."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose a rating from 1 to 5 stars."
+          }
+        }
+      }
+    },
+    "myBookings.review.rate": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Оцени обекта"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rate this venue"
+          }
+        }
+      }
+    },
+    "myBookings.review.ratingLabel": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вашата оценка"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your rating"
+          }
+        }
+      }
+    },
+    "myBookings.review.stars %lld": {
+      "localizations": {
+        "bg": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld звезда"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld звезди"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld star"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld stars"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "myBookings.review.status.PENDING_REVIEW": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "очаква модератор"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "waiting for a moderator"
+          }
+        }
+      }
+    },
+    "myBookings.review.status.PUBLISHED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "публикуван"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "published"
+          }
+        }
+      }
+    },
+    "myBookings.review.status.REJECTED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "не е публикуван"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "not published"
+          }
+        }
+      }
+    },
+    "myBookings.review.submit": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изпрати отзива"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Submit review"
+          }
+        }
+      }
+    },
+    "myBookings.review.yours %lld": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вашият отзив: %lld от 5"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your review: %lld of 5"
           }
         }
       }

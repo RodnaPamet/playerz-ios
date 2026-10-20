@@ -37,6 +37,8 @@ public struct BearerMiddleware: ClientMiddleware {
         "getClub",
         // The funnel beacon (#17): anonymous by construction.
         "postVenueUsageEvent",
+        // What an invite link is for (#14): read before signing in.
+        "previewBookingInvite",
     ]
 
     public init(
