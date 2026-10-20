@@ -7,6 +7,14 @@
        PushRegistrar.environment, which derives the same answer from #if DEBUG. -->
   <key>aps-environment</key>
   <string>development</string>
+  <!-- Universal links (playerz-ios#24): a playerz.bg link the app can open
+       opens it rather than Safari. Which paths is the server's choice, in
+       its /.well-known/apple-app-site-association; today only invites to a
+       booking. -->
+  <key>com.apple.developer.associated-domains</key>
+  <array>
+    <string>applinks:playerz.bg</string>
+  </array>
   <key>com.apple.developer.weatherkit</key>
   <true/>
 </dict>
