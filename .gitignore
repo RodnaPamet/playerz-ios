@@ -8,6 +8,8 @@ DerivedData/
 *.key
 
 # XcodeGen output — Apps/*/project.yml is the source of truth for all of it.
+# The entitlements are NOT: project.yml only points at them (per configuration,
+# for the APNs environment), so they are written by hand and committed (#47).
 *.xcodeproj
 Apps/*/Info.plist
-Apps/*/*.entitlements
+scripts/__pycache__/

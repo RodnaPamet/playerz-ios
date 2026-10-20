@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <!-- PRODUCTION. TestFlight and the App Store both register against
+       production APNs, the server's APNS_* settings.
+
+       Split per configuration on purpose. A single entitlements file has to
+       pick one, and picking `development` means every TestFlight build asks
+       Apple for a sandbox token and registers it as PRODUCTION (because
+       PushRegistrar derives that from #if DEBUG), where APNs answers
+       BadDeviceToken. The entitlement and the environment the app reports
+       must come from the same switch. -->
+  <key>aps-environment</key>
+  <string>production</string>
+  <key>com.apple.developer.weatherkit</key>
+  <true/>
+</dict>
+</plist>

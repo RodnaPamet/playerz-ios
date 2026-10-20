@@ -1,0 +1,54 @@
+{
+  "sourceLanguage": "bg",
+  "strings": {
+    "CFBundleDisplayName": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "playerz.bg"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "playerz.bg"
+          }
+        }
+      }
+    },
+    "NSCameraUsageDescription": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Използва се, за да снимате сертификата си на треньор."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Used to photograph your coaching certificate."
+          }
+        }
+      }
+    },
+    "NSLocationWhenInUseUsageDescription": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Използва се, за да покаже кортовете близо до вас."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Used to show the courts near you."
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}
