@@ -2,8 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-  <!-- SANDBOX. A development build registers against sandbox APNs, which is
-       what the V43R6ZV6BA key serves. Must agree with
+  <!-- SANDBOX. A development build registers against sandbox APNs, the
+       server's APNS_*_SANDBOX settings. Must agree with
        PushRegistrar.environment, which derives the same answer from #if DEBUG. -->
   <key>aps-environment</key>
   <string>development</string>
