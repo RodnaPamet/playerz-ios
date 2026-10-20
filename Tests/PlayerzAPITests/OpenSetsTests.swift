@@ -25,6 +25,14 @@ struct OpenSetsTests {
         #expect(sport["x-known-values"] as? [String] == Sports.known)
     }
 
+    @Test("the sports with a level are the server's, in its order")
+    func leveledSportsMatchTheSpec() throws {
+        let components = try #require(Self.spec()["components"] as? [String: Any])
+        let schemas = try #require(components["schemas"] as? [String: Any])
+        let sport = try #require(schemas["ProfileSport"] as? [String: Any])
+        #expect(sport["x-known-values"] as? [String] == Sports.leveled)
+    }
+
     @Test("a sport this build has never seen decodes")
     func anUnknownSportDecodes() async throws {
         let client = Playerz.client(

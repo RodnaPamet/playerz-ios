@@ -11,4 +11,12 @@ public enum Sports {
         "SQUASH", "FOOTBALL5", "FOOTBALL", "BASKETBALL", "VOLLEYBALL", "BEACH_VOLLEYBALL",
         "HANDBALL", "CHESS", "ESPORTS", "KARTING", "RUNNING", "CYCLING",
     ]
+
+    /// The sports a player declares a level in, and a coach teaches (`ProfileSport`):
+    /// the known sports without karting and the timed ones.
+    public static let leveled: [String] = [
+        "TENNIS", "PADEL", "BADMINTON", "TABLE_TENNIS", "BEACH_TENNIS", "PICKLEBALL",
+        "SQUASH", "FOOTBALL", "FOOTBALL5", "BASKETBALL", "VOLLEYBALL", "BEACH_VOLLEYBALL",
+        "HANDBALL", "CHESS", "ESPORTS",
+    ]
 }

@@ -7,6 +7,7 @@ import SwiftUI
 struct ProfileView: View {
     @Bindable var session: SessionModel
 
+    @State private var debugCoach = DebugLaunch.profile == .coach
     @State private var me: Components.Schemas.Me?
     @State private var settings: Components.Schemas.NotificationSettings?
     @State private var failed = false
@@ -29,6 +30,14 @@ struct ProfileView: View {
                             Toggle(String(localized: "profile.searchable"), isOn: $searchable)
                         } footer: {
                             Text(String(localized: "profile.searchableHint"))
+                        }
+                        // A coach's own area (#20), as the web's «Профил на треньор».
+                        if me.accountKind == "COACH", session.modules.coaches {
+                            Section {
+                                NavigationLink(String(localized: "coachProfile.title")) {
+                                    CoachProfileView(session: session)
+                                }
+                            }
                         }
                     } else if failed {
                         Text(String(localized: "profile.failed")).foregroundStyle(.red)
@@ -65,9 +74,13 @@ struct ProfileView: View {
                 }
                 .navigationTitle(String(localized: "profile.title"))
                 .toolbar { ToolbarItem(placement: .topBarTrailing) { NotificationBell(session: session) } }
+                // A DEBUG launch can open «Профил на треньор» (DebugLaunch).
+                .navigationDestination(isPresented: $debugCoach) {
+                    CoachProfileView(session: session)
+                }
                 .task {
                     await load()
-                    if DebugLaunch.profile != nil {
+                    if DebugLaunch.profile == .delete || DebugLaunch.profile == .confirm {
                     // After the section that `load` revealed has been laid out.
                     try? await Task.sleep(for: .milliseconds(400))
                     proxy.scrollTo(AccountDeletionSection.anchor, anchor: .bottom)
