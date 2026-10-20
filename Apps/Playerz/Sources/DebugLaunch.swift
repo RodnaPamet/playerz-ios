@@ -37,6 +37,11 @@ enum DebugLaunch {
     static var link: String? { env["PLAYERZ_LINK"] }
     /// A booking's result (#18): `section` scrolls to it, `editor` opens «Въведи резултат».
     static var result: String? { env["PLAYERZ_RESULT"] }
+    /// Играй opened on «Треньори» (`PLAYERZ_COACHES=1`), a coach (`PLAYERZ_COACH=<slug>`),
+    /// or that coach's lesson booking that many days ahead (also `PLAYERZ_COACH_BOOK=<days>`), #19.
+    static var coaches: Bool { env["PLAYERZ_COACHES"] == "1" }
+    static var coach: String? { env["PLAYERZ_COACH"] }
+    static var coachBook: Int? { env["PLAYERZ_COACH_BOOK"].flatMap(Int.init) }
     static var profile: Profile? { env["PLAYERZ_PROFILE"].flatMap(Profile.init(rawValue:)) }
     #else
     static let credentials: (email: String, password: String)? = nil
@@ -52,6 +57,9 @@ enum DebugLaunch {
     static let notifications = false
     static let link: String? = nil
     static let result: String? = nil
+    static let coaches = false
+    static let coach: String? = nil
+    static let coachBook: Int? = nil
     static let profile: Profile? = nil
     #endif
 }

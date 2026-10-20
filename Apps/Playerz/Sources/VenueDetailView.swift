@@ -9,6 +9,8 @@ struct VenueDetailView: View {
     @State private var conversation: OpenedConversation?
     @State private var writeProblem: String?
     @State private var showingWriteProblem = false
+    /// The coaches teaching here (#19), while the coaches module is on.
+    @State private var coaches: [Components.Schemas.PublicCoach] = []
 
     var body: some View {
         Group {
@@ -60,7 +62,10 @@ struct VenueDetailView: View {
         } message: { problem in
             Text(problem)
         }
-        .task { await model.load(session, venueId: venueId) }
+        .task {
+            await model.load(session, venueId: venueId)
+            await loadCoaches()
+        }
         .onChange(of: model.banner) { _, banner in
             // A banner appearing mid-list is invisible to VoiceOver: focus does
             // not move, and the user is told nothing about the booking they
@@ -181,7 +186,16 @@ struct VenueDetailView: View {
                     CourtHeader(court: court, forecast: model.forecast(for: court))
                 }
             }
+
+            if !coaches.isEmpty {
+                VenueCoachesSection(coaches: coaches, venueId: venueId, session: session)
+            }
         }
+    }
+
+    private func loadCoaches() async {
+        guard session.modules.coaches, let client = await session.client() else { return }
+        coaches = (try? await client.listVenueCoaches(path: .init(id: venueId)).ok.body.json.data.items) ?? []
     }
 
     private func writeToClub(_ slug: String) async {

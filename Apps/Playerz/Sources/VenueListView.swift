@@ -6,6 +6,8 @@ struct VenueListView: View {
     @State private var model = VenueListModel()
     @State private var debugClub: String? = DebugLaunch.club
     @State private var debugVenue: String? = DebugLaunch.venue
+    @State private var debugCoaches = DebugLaunch.coaches
+    @State private var debugCoach: String? = DebugLaunch.coach
 
     var body: some View {
         NavigationStack {
@@ -53,8 +55,24 @@ struct VenueListView: View {
             .navigationDestination(item: $debugVenue) { id in
                 VenueDetailView(venueId: id, session: session)
             }
+            .navigationDestination(isPresented: $debugCoaches) {
+                CoachesView(session: session)
+            }
+            .navigationDestination(item: $debugCoach) { slug in
+                CoachView(slug: slug, session: session)
+            }
             .navigationTitle(String(localized: "venues.title"))
-            .toolbar { ToolbarItem(placement: .topBarTrailing) { NotificationBell(session: session) } }
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) { NotificationBell(session: session) }
+                // «Треньори» (#19), while the coaches module is on.
+                if session.modules.coaches {
+                    ToolbarItem(placement: .topBarLeading) {
+                        NavigationLink(String(localized: "coaches.title")) {
+                            CoachesView(session: session)
+                        }
+                    }
+                }
+            }
             // Inline: with a segmented control inset below the bar, iOS 26 hid the large
             // title under the bar's material.
             .navigationBarTitleDisplayMode(.inline)
