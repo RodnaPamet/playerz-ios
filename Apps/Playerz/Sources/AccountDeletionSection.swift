@@ -9,9 +9,11 @@ import SwiftUI
 /// button and a typed confirmation.
 ///
 /// The server decides: `DELETE /me` refuses a club account and an account
-/// with something still to play, and deletes anything else at once. Until the
-/// API says beforehand what stands in the way (projectZ#628), a refusal is
-/// shown here after the attempt, and unused credit is stated as a rule.
+/// with something still to play, and deletes anything else at once. The
+/// section asks first (`GET /me/deletion`, projectZ#628), as the web does:
+/// what stands in the way, with no button while it does, and the credit the
+/// account would lose. If that cannot be read, the rule is stated and the
+/// refusal shows after the attempt.
 struct AccountDeletionSection: View {
     /// Where a DEBUG launch scrolls Профил to (`PLAYERZ_PROFILE`).
     static let anchor = "profile.delete"
@@ -20,6 +22,8 @@ struct AccountDeletionSection: View {
 
     @State private var confirming = false
     @State private var outcome: AccountDeletion?
+    /// What `DELETE /me` would answer; nil until read, or if it could not be.
+    @State private var check: DeletionCheck?
     @State private var exportFile: ExportFile?
     @State private var savingExport = false
     @State private var exporting = false
@@ -32,6 +36,7 @@ struct AccountDeletionSection: View {
     var body: some View {
         Section {
             Text(String(localized: "profile.delete.intro"))
+                .task { check = await session.deletionCheck() }
             Text(String(localized: "profile.delete.exportFirst"))
                 .foregroundStyle(.secondary)
             Button(action: startExport) {
@@ -63,22 +68,29 @@ struct AccountDeletionSection: View {
             Text(String(localized: "profile.delete.noShowCarry"))
                 .font(.footnote)
                 .foregroundStyle(.secondary)
-            Text(String(localized: "profile.delete.creditRule"))
-                .font(.footnote)
-                .foregroundStyle(.secondary)
+            if let check {
+                if !check.credit.isEmpty { CreditLossNotice(credit: check.credit) }
+            } else {
+                Text(String(localized: "profile.delete.creditRule"))
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
 
-            if let outcome {
-                DeletionOutcomeView(outcome: outcome, contactForm: session.contactFormURL)
+            if let shown = outcome ?? check?.refusal {
+                DeletionOutcomeView(outcome: shown, contactForm: session.contactFormURL)
                     .accessibilityElement(children: .contain)
                     .accessibilityFocused($outcomeFocused)
             }
 
-            Button(String(localized: "profile.delete.button"), role: .destructive, action: askToConfirm)
-                .id(Self.anchor)
-                .sheet(isPresented: $confirming, onDismiss: focusOutcome) {
-                    ConfirmDeletionSheet(delete: delete)
-                }
-                .task(openForDebugLaunch)
+            // Not while something stands in the way: the web offers no button then.
+            if check?.refusal == nil {
+                Button(String(localized: "profile.delete.button"), role: .destructive, action: askToConfirm)
+                    .id(Self.anchor)
+                    .sheet(isPresented: $confirming, onDismiss: focusOutcome) {
+                        ConfirmDeletionSheet(delete: delete)
+                    }
+                    .task(openForDebugLaunch)
+            }
         } header: {
             Text(String(localized: "profile.delete.title"))
         }

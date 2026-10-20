@@ -151,6 +151,11 @@ final class SessionModel {
     }
 
     /// The account's data, as the server's file (`GET /me/export`).
+    /// Whether the account may be deleted now (projectZ#628); nil if unknown.
+    func deletionCheck() async -> DeletionCheck? {
+        await session?.deletionCheck()
+    }
+
     func exportData() async throws -> Data {
         guard let session else { throw DataExportError.notSignedIn }
         return try await session.exportData()
