@@ -65,15 +65,65 @@
         <string>NSPrivacyCollectedDataTypePurposeAppFunctionality</string>
       </array>
     </dict>
+    <!-- The phone step (#11): confirmed by an SMS code and kept on the account, so linked. -->
+    <dict>
+      <key>NSPrivacyCollectedDataType</key>
+      <string>NSPrivacyCollectedDataTypePhoneNumber</string>
+      <key>NSPrivacyCollectedDataTypeLinked</key>
+      <true/>
+      <key>NSPrivacyCollectedDataTypeTracking</key>
+      <false/>
+      <key>NSPrivacyCollectedDataTypePurposes</key>
+      <array>
+        <string>NSPrivacyCollectedDataTypePurposeAppFunctionality</string>
+      </array>
+    </dict>
+    <!-- What a person writes: messages (#484), reviews of venues and coaches, results, a coach's profile text. Linked: it is theirs, by name. -->
+    <dict>
+      <key>NSPrivacyCollectedDataType</key>
+      <string>NSPrivacyCollectedDataTypeOtherUserContent</string>
+      <key>NSPrivacyCollectedDataTypeLinked</key>
+      <true/>
+      <key>NSPrivacyCollectedDataTypeTracking</key>
+      <false/>
+      <key>NSPrivacyCollectedDataTypePurposes</key>
+      <array>
+        <string>NSPrivacyCollectedDataTypePurposeAppFunctionality</string>
+      </array>
+    </dict>
+    <!-- A coach's certificate (#20), from the camera or the library: seen only by playerz's own team, kept with the account. -->
+    <dict>
+      <key>NSPrivacyCollectedDataType</key>
+      <string>NSPrivacyCollectedDataTypePhotosorVideos</string>
+      <key>NSPrivacyCollectedDataTypeLinked</key>
+      <true/>
+      <key>NSPrivacyCollectedDataTypeTracking</key>
+      <false/>
+      <key>NSPrivacyCollectedDataTypePurposes</key>
+      <array>
+        <string>NSPrivacyCollectedDataTypePurposeAppFunctionality</string>
+      </array>
+    </dict>
   </array>
 
   <!--
-    Empty, and checked rather than assumed: the required-reason APIs are file
+    Checked rather than assumed: the required-reason APIs are file
     timestamps, system boot time, disk space, active keyboards and UserDefaults.
-    This app uses none of them. The session lives in the Keychain, which is not
-    in that list.
+    The app uses UserDefaults only (#47): the phone step remembers, per account
+    on this phone, that «Не сега» was chosen (#11). Read and written by the app
+    itself, so CA92.1. The session lives in the Keychain, which is not in that
+    list.
   -->
   <key>NSPrivacyAccessedAPITypes</key>
-  <array/>
+  <array>
+    <dict>
+      <key>NSPrivacyAccessedAPIType</key>
+      <string>NSPrivacyAccessedAPICategoryUserDefaults</string>
+      <key>NSPrivacyAccessedAPITypeReasons</key>
+      <array>
+        <string>CA92.1</string>
+      </array>
+    </dict>
+  </array>
 </dict>
 </plist>

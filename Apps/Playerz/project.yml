@@ -43,6 +43,11 @@ targets:
         # capability is declared where the forecast row will read it.
         NSLocationWhenInUseUsageDescription: >-
           Използва се, за да покаже кортовете близо до вас.
+        # The coach photographs their certificate (#20). Without this key iOS
+        # ends the app the moment the camera opens (#47). Photos from the
+        # library come through PhotosPicker, which needs no permission.
+        NSCameraUsageDescription: >-
+          Използва се, за да снимате сертификата си на треньор.
         # ═══ EXPORT COMPLIANCE ═══
         #
         # Declared here so every upload does not stop to ask. The app uses only
