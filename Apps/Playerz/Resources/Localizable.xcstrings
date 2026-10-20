@@ -1461,6 +1461,934 @@
         }
       }
     },
+    "coachProfile.about.bio": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Представяне"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Introduction"
+          }
+        }
+      }
+    },
+    "coachProfile.about.bioHint %lld %lld": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Какво преподавате, откога и на кого. Вижда се от играчите. %1$lld от %2$lld знака."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What you teach, since when and to whom. Players see it. %1$lld of %2$lld characters."
+          }
+        }
+      }
+    },
+    "coachProfile.about.qualifications": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Квалификации"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qualifications"
+          }
+        }
+      }
+    },
+    "coachProfile.about.qualificationsHint": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Лицензи, курсове, състезателен опит. По избор."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Licences, courses, competitive experience. Optional."
+          }
+        }
+      }
+    },
+    "coachProfile.about.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "За вас"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "About you"
+          }
+        }
+      }
+    },
+    "coachProfile.certificate.fromCamera": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Снимайте документа"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Take a photo of it"
+          }
+        }
+      }
+    },
+    "coachProfile.certificate.fromFiles": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Файл"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A file"
+          }
+        }
+      }
+    },
+    "coachProfile.certificate.fromPhotos": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Снимка от галерията"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A photo from the library"
+          }
+        }
+      }
+    },
+    "coachProfile.certificate.hint %lld": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Документ или снимка, до %lld MB. Вижда го само екипът на playerz.bg, никога клубовете и играчите."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A document or a photo, up to %lld MB. Only the playerz.bg team sees it, never clubs or players."
+          }
+        }
+      }
+    },
+    "coachProfile.certificate.keptDays %lld": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сертификат на неизпратен профил се пази %lld дни. Ако дотогава не изпратите профила за одобрение, сертификатът се изтрива и ще трябва да го качите отново."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A certificate on a profile that is not sent is kept for %lld days. If the profile is not sent for approval by then, the certificate is deleted and you will need to upload it again."
+          }
+        }
+      }
+    },
+    "coachProfile.certificate.lockedApproved": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Одобрени сте по този сертификат. За да го смените, пишете ни."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You were approved on this certificate. To change it, write to us."
+          }
+        }
+      }
+    },
+    "coachProfile.certificate.lockedSubmitted": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Докато профилът се преглежда, сертификатът не може да се сменя."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The certificate cannot be changed while the profile is being read."
+          }
+        }
+      }
+    },
+    "coachProfile.certificate.none": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Няма качен сертификат."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No certificate uploaded."
+          }
+        }
+      }
+    },
+    "coachProfile.certificate.remove": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Премахнете"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove"
+          }
+        }
+      }
+    },
+    "coachProfile.certificate.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сертификат"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Certificate"
+          }
+        }
+      }
+    },
+    "coachProfile.certificate.uploaded %@ %@ %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@ · качен на %3$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@ · uploaded on %3$@"
+          }
+        }
+      }
+    },
+    "coachProfile.error.COACH_PROFILE_INCOMPLETE": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Профилът не е пълен. Вижте какво липсва по-долу."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The profile is not complete. See what is missing below."
+          }
+        }
+      }
+    },
+    "coachProfile.error.COACH_PROFILE_LOCKED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Профилът не може да се променя в момента."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The profile cannot be changed right now."
+          }
+        }
+      }
+    },
+    "coachProfile.error.COACH_PROFILE_NOT_SUBMITTED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Профилът вече не чака одобрение."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The profile is no longer waiting for approval."
+          }
+        }
+      }
+    },
+    "coachProfile.error.EMPTY": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Файлът е празен."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The file is empty."
+          }
+        }
+      }
+    },
+    "coachProfile.error.NETWORK": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Няма връзка. Опитайте отново."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No connection. Try again."
+          }
+        }
+      }
+    },
+    "coachProfile.error.NOT_A_CERTIFICATE": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Качете документ във формат PDF или снимка във формат JPEG, PNG или WebP."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upload a PDF document, or a JPEG, PNG or WebP photo."
+          }
+        }
+      }
+    },
+    "coachProfile.error.RATE_LIMITED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Твърде много опити. Изчакайте малко и опитайте отново."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Too many attempts. Wait a little and try again."
+          }
+        }
+      }
+    },
+    "coachProfile.error.TOO_LARGE %lld": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Файлът е по-голям от %lld MB."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The file is larger than %lld MB."
+          }
+        }
+      }
+    },
+    "coachProfile.error.UNKNOWN": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нещо се обърка. Опитайте отново."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Something went wrong. Try again."
+          }
+        }
+      }
+    },
+    "coachProfile.error.VALIDATION_ERROR": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Проверете текста и нивата и опитайте отново."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check the text and the levels and try again."
+          }
+        }
+      }
+    },
+    "coachProfile.intro": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Попълнете профила си и качете сертификат. След като го изпратите, го преглеждаме и ви отговаряме с известие и имейл."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fill in your profile and upload a certificate. Once you send it, we read it and answer with a notification and an email."
+          }
+        }
+      }
+    },
+    "coachProfile.missing.bio %lld": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "представяне от поне %lld знака"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "an introduction of at least %lld characters"
+          }
+        }
+      }
+    },
+    "coachProfile.missing.certificate": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "сертификат"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "a certificate"
+          }
+        }
+      }
+    },
+    "coachProfile.missing.sports": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "поне един спорт"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "at least one sport"
+          }
+        }
+      }
+    },
+    "coachProfile.missing.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Преди да го изпратите, липсва:"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Before you send it, it still needs:"
+          }
+        }
+      }
+    },
+    "coachProfile.note": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Бележка от playerz.bg"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A note from playerz.bg"
+          }
+        }
+      }
+    },
+    "coachProfile.save": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Запазете"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save"
+          }
+        }
+      }
+    },
+    "coachProfile.saved": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Запазено."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saved."
+          }
+        }
+      }
+    },
+    "coachProfile.sports.add": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Добавете спорт"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add a sport"
+          }
+        }
+      }
+    },
+    "coachProfile.sports.from": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "От ниво"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From level"
+          }
+        }
+      }
+    },
+    "coachProfile.sports.fromLabel %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: от ниво"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: from level"
+          }
+        }
+      }
+    },
+    "coachProfile.sports.hint": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отбележете какво преподавате и на играчи от кое до кое ниво."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tick what you teach, and from which player level to which."
+          }
+        }
+      }
+    },
+    "coachProfile.sports.one %lld": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ниво %lld"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "level %lld"
+          }
+        }
+      }
+    },
+    "coachProfile.sports.range %lld %lld": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "нива %1$lld–%2$lld"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "levels %1$lld–%2$lld"
+          }
+        }
+      }
+    },
+    "coachProfile.sports.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Спортове и нива"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sports and levels"
+          }
+        }
+      }
+    },
+    "coachProfile.sports.to": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "До ниво"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To level"
+          }
+        }
+      }
+    },
+    "coachProfile.sports.toLabel %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: до ниво"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: to level"
+          }
+        }
+      }
+    },
+    "coachProfile.state.APPROVED.body": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Можете да променяте текста и спортовете. Сертификатът остава този, по който сте одобрени."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You can change the text and the sports. The certificate stays the one you were approved on."
+          }
+        }
+      }
+    },
+    "coachProfile.state.APPROVED.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Профилът е одобрен"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The profile is approved"
+          }
+        }
+      }
+    },
+    "coachProfile.state.DECLINED.body": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Прочетете бележката, поправете профила и го изпратете отново."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Read the note, correct the profile and send it again."
+          }
+        }
+      }
+    },
+    "coachProfile.state.DECLINED.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Профилът не е одобрен"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The profile was not approved"
+          }
+        }
+      }
+    },
+    "coachProfile.state.DRAFT.body": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Попълнете го и го изпратете за одобрение."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fill it in and send it for approval."
+          }
+        }
+      }
+    },
+    "coachProfile.state.DRAFT.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Профилът още не е изпратен"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The profile has not been sent yet"
+          }
+        }
+      }
+    },
+    "coachProfile.state.NONE.body": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Попълнете го и го изпратете за одобрение."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fill it in and send it for approval."
+          }
+        }
+      }
+    },
+    "coachProfile.state.NONE.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Профилът още не е изпратен"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The profile has not been sent yet"
+          }
+        }
+      }
+    },
+    "coachProfile.state.SUBMITTED.body %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изпратихте го на %@ и докато го преглеждаме, не може да се променя."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You sent it on %@, and it cannot be changed while we read it."
+          }
+        }
+      }
+    },
+    "coachProfile.state.SUBMITTED.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изпратен за одобрение"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sent for approval"
+          }
+        }
+      }
+    },
+    "coachProfile.submit": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изпратете за одобрение"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Send for approval"
+          }
+        }
+      }
+    },
+    "coachProfile.submitted": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изпратено. Ще ви отговорим с известие и имейл."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sent. We will answer with a notification and an email."
+          }
+        }
+      }
+    },
+    "coachProfile.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Профил на треньор"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coach profile"
+          }
+        }
+      }
+    },
+    "coachProfile.withdraw": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Върнете за редакция"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Take back to edit"
+          }
+        }
+      }
+    },
+    "coachProfile.withdrawn": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Профилът е върнат при вас. Променете го и го изпратете отново."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The profile is back with you. Change it and send it again."
+          }
+        }
+      }
+    },
     "common.close": {
       "localizations": {
         "bg": {

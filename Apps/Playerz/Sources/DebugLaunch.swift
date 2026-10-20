@@ -14,7 +14,7 @@ enum DebugLaunch {
     enum Tab: String { case play, games, bookings, messages, profile }
     /// Профил's deletion section (#9): `delete` scrolls to it, `confirm` also
     /// opens the confirmation. Nothing here deletes: the word is still typed.
-    enum Profile: String { case delete, confirm }
+    enum Profile: String { case delete, confirm, coach }
 
     #if DEBUG
     private static let env = ProcessInfo.processInfo.environment
