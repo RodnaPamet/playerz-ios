@@ -303,6 +303,15 @@ public actor PlayerzSession {
         )
     }
 
+    /// Write the app's language to the account (playerz-ios#13), for its
+    /// emails and pushes. False when the server could not be told; the next
+    /// launch tries again.
+    public func saveLanguage(_ code: AppLanguage.Code) async -> Bool {
+        guard let response = try? await client().updateMe(body: .json(.init(locale: code))) else { return false }
+        if case .ok = response { return true }
+        return false
+    }
+
     /// Exchange a refresh token for a new session.
     ///
     /// Isolated as a `@Sendable` closure because `BearerMiddleware` holds it
