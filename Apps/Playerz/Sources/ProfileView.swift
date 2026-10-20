@@ -59,6 +59,7 @@ struct ProfileView: View {
                     }
                 }
                 .navigationTitle(String(localized: "profile.title"))
+                .toolbar { ToolbarItem(placement: .topBarTrailing) { NotificationBell(session: session) } }
                 .task {
                     await load()
                     if DebugLaunch.profile != nil {

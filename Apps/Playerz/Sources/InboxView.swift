@@ -40,6 +40,7 @@ struct InboxView: View {
                             searching = true
                         }
                     }
+                    ToolbarItem(placement: .topBarTrailing) { NotificationBell(session: session) }
                 }
                 .navigationDestination(for: String.self) { id in
                     ConversationView(conversationId: id, session: session)

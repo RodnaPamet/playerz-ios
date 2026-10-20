@@ -35,6 +35,7 @@ struct GamesView: View {
                 if showing == .open {
                     ToolbarItem(placement: .topBarTrailing) { filters }
                 }
+                ToolbarItem(placement: .topBarTrailing) { NotificationBell(session: session) }
             }
             .navigationDestination(for: Components.Schemas.OpenGame.self) { game in
                 GameDetailView(game: game, session: session) {
