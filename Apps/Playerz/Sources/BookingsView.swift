@@ -126,7 +126,7 @@ private struct BookingRow: View {
         }
 
         // Open play (#510): the booker looks for players for a booking to come.
-        if booking.status == "CONFIRMED", booking.startTs > .now {
+        if session.modules.openPlay, booking.status == "CONFIRMED", booking.startTs > .now {
             // Destination-style, as the rest of this stack (Играй) is: the
             // two kinds of link do not mix well in one hierarchy.
             NavigationLink {

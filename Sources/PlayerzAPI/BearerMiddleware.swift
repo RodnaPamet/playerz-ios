@@ -31,6 +31,8 @@ public struct BearerMiddleware: ClientMiddleware {
         "findVenuesNear",
         "getVenue",
         "getVenueAvailability",
+        // Which modules are on (#16): the same for everyone.
+        "getAppConfig",
     ]
 
     public init(

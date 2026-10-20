@@ -29,6 +29,8 @@ final class SessionModel {
     private(set) var state: State = .unknown
     private(set) var signInError: String?
     private(set) var busy = false
+    /// Which modules this server has on (#16); everything until it says.
+    private(set) var modules: Modules = .unknown
 
     private var session: PlayerzSession?
 
@@ -41,6 +43,7 @@ final class SessionModel {
         let s = PlayerzSession(baseURL: url)
         session = s
         state = await s.isSignedIn ? .signedIn : .signedOut
+        await refreshModules()
         // A DEBUG launch with credentials signs in as THEM (DebugLaunch): a
         // session kept from an earlier launch would otherwise win.
         if let debug = DebugLaunch.credentials {
@@ -67,6 +70,7 @@ final class SessionModel {
             // This phone's token, if notifications are allowed, now belongs to
             // this account (#12).
             await PushRegistrar.shared.refreshIfAllowed(self)
+            await refreshModules()
         } catch SessionError.invalidCredentials {
             // One message for both "no such account" and "wrong password".
             // `authorize()` equalises bcrypt timing precisely so the response
@@ -128,6 +132,11 @@ final class SessionModel {
         parts.query = nil
         parts.fragment = "clubs"
         return parts.url
+    }
+
+    /// Ask the server which modules are on. A failed read keeps what was known.
+    func refreshModules() async {
+        if let fresh = await session?.modules() { modules = fresh }
     }
 
     func signOut() async {
