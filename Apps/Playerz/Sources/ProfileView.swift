@@ -2,7 +2,8 @@ import PlayerzAPI
 import SwiftUI
 
 /// Профил: the account, «Показвай ме в търсенето» (#484), the emails about
-/// messages and games (#484, #510), and signing out.
+/// messages and games (#484, #510), downloading the data and deleting the
+/// account (#9), and signing out.
 struct ProfileView: View {
     @Bindable var session: SessionModel
 
@@ -17,58 +18,71 @@ struct ProfileView: View {
 
     var body: some View {
         NavigationStack {
-            Form {
-                if let me {
+            ScrollViewReader { proxy in
+                Form {
+                    if let me {
+                        Section {
+                            Text(me.name ?? String(localized: "messages.unnamed")).font(.headline)
+                            Text(me.email).foregroundStyle(.secondary)
+                        }
+                        Section {
+                            Toggle(String(localized: "profile.searchable"), isOn: $searchable)
+                        } footer: {
+                            Text(String(localized: "profile.searchableHint"))
+                        }
+                    } else if failed {
+                        Text(String(localized: "profile.failed")).foregroundStyle(.red)
+                    } else {
+                        ProgressView()
+                    }
+
+                    if let settings {
+                        emailSection
+                        // On the phone (#529): only once this account has a device registered.
+                        if settings.pushDevices > 0 {
+                            pushSection
+                        }
+                    }
+
+                    if let problem {
+                        Section { Text(problem).foregroundStyle(.red) }
+                    }
+
+                    if me != nil {
+                        AccountDeletionSection(session: session)
+                    }
+
                     Section {
-                        Text(me.name ?? String(localized: "messages.unnamed")).font(.headline)
-                        Text(me.email).foregroundStyle(.secondary)
-                    }
-                    Section {
-                        Toggle(String(localized: "profile.searchable"), isOn: $searchable)
-                    } footer: {
-                        Text(String(localized: "profile.searchableHint"))
-                    }
-                } else if failed {
-                    Text(String(localized: "profile.failed")).foregroundStyle(.red)
-                } else {
-                    ProgressView()
-                }
-
-                if let settings {
-                    emailSection
-                    // On the phone (#529): only once this account has a device registered.
-                    if settings.pushDevices > 0 {
-                        pushSection
+                        Button(String(localized: "common.signOut"), role: .destructive) {
+                            Task { await session.signOut() }
+                        }
                     }
                 }
-
-                if let problem {
-                    Section { Text(problem).foregroundStyle(.red) }
+                .navigationTitle(String(localized: "profile.title"))
+                .task {
+                    await load()
+                    if DebugLaunch.profile != nil {
+                    // After the section that `load` revealed has been laid out.
+                    try? await Task.sleep(for: .milliseconds(400))
+                    proxy.scrollTo(AccountDeletionSection.anchor, anchor: .bottom)
                 }
-
-                Section {
-                    Button(String(localized: "common.signOut"), role: .destructive) {
-                        Task { await session.signOut() }
+                }
+                .refreshable { await load() }
+                // Only a change from what the server said is written.
+                .onChange(of: searchable) { _, on in
+                    if let me, me.searchable != on { Task { await setSearchable(on) } }
+                }
+                .onChange(of: email) { _, now in
+                    guard let settings else { return }
+                    for kind in kinds where now[kind] != kind.read(settings.email) {
+                        Task { await save(email: kind, now[kind] ?? true) }
                     }
                 }
-            }
-            .navigationTitle(String(localized: "profile.title"))
-            .task { await load() }
-            .refreshable { await load() }
-            // Only a change from what the server said is written.
-            .onChange(of: searchable) { _, on in
-                if let me, me.searchable != on { Task { await setSearchable(on) } }
-            }
-            .onChange(of: email) { _, now in
-                guard let settings else { return }
-                for kind in kinds where now[kind] != kind.read(settings.email) {
-                    Task { await save(email: kind, now[kind] ?? true) }
-                }
-            }
-            .onChange(of: push) { _, now in
-                guard let settings else { return }
-                for kind in kinds where now[kind] != kind.read(settings.push) {
-                    Task { await save(push: kind, now[kind] ?? true) }
+                .onChange(of: push) { _, now in
+                    guard let settings else { return }
+                    for kind in kinds where now[kind] != kind.read(settings.push) {
+                        Task { await save(push: kind, now[kind] ?? true) }
+                    }
                 }
             }
         }

@@ -12,6 +12,9 @@ import Foundation
 /// anyone, in a shipped app.
 enum DebugLaunch {
     enum Tab: String { case play, games, bookings, messages, profile }
+    /// Профил's deletion section (#9): `delete` scrolls to it, `confirm` also
+    /// opens the confirmation. Nothing here deletes: the word is still typed.
+    enum Profile: String { case delete, confirm }
 
     #if DEBUG
     private static let env = ProcessInfo.processInfo.environment
@@ -23,11 +26,13 @@ enum DebugLaunch {
     static var conversation: String? { env["PLAYERZ_CONVERSATION"] }
     static var gamesMine: Bool { env["PLAYERZ_GAMES"] == "mine" }
     static var bookingGame: String? { env["PLAYERZ_BOOKING_GAME"] }
+    static var profile: Profile? { env["PLAYERZ_PROFILE"].flatMap(Profile.init(rawValue:)) }
     #else
     static let credentials: (email: String, password: String)? = nil
     static let tab: Tab? = nil
     static let conversation: String? = nil
     static let gamesMine = false
     static let bookingGame: String? = nil
+    static let profile: Profile? = nil
     #endif
 }

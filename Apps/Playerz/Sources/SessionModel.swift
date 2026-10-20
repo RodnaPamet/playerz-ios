@@ -76,6 +76,34 @@ final class SessionModel {
         }
     }
 
+    /// Delete the account (playerz-ios#9). On success the server has already
+    /// ended every session, so this device is simply signed out.
+    func deleteAccount() async -> AccountDeletion {
+        guard let session else { return .failed }
+        let outcome = await session.deleteAccount()
+        if outcome == .deleted {
+            self.session = nil
+            state = .signedOut
+        }
+        return outcome
+    }
+
+    /// The account's data, as the server's file (`GET /me/export`).
+    func exportData() async throws -> Data {
+        guard let session else { throw DataExportError.notSignedIn }
+        return try await session.exportData()
+    }
+
+    /// The web's contact form, where a club account asks to be deleted
+    /// (`CONTACT_FORM_HREF` on the server: the home page's clubs section).
+    var contactFormURL: URL? {
+        guard var parts = URLComponents(string: serverURL), parts.host != nil else { return nil }
+        parts.path = "/"
+        parts.query = nil
+        parts.fragment = "clubs"
+        return parts.url
+    }
+
     func signOut() async {
         try? await session?.signOut()
         session = nil
