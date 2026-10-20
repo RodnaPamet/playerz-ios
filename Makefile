@@ -37,8 +37,13 @@ test:
 
 # The spec is the source of truth and lives in the SERVER repo, where a
 # guardrail keeps it in step with the routes. Copy, never hand-edit.
+#
+# Copied through scripts/spec_for_swift.py, which rewrites the server's
+# "X or null" (oneOf with null) into the form the generator reads; without it
+# the generator drops those properties (#6). CI compares the vendored file
+# with the server's spec put through the same rewrite.
 regenerate:
-	cp ../playerz.bg/openapi/playerz-v1.json Sources/PlayerzAPI/openapi.json
+	python3 scripts/spec_for_swift.py ../playerz.bg/openapi/playerz-v1.json Sources/PlayerzAPI/openapi.json
 	swift build
 
 clean:

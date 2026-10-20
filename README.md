@@ -7,7 +7,7 @@ The native iOS client for [playerz.bg](https://playerz.bg). Phase 1 of #167 in
 
 | | |
 |---|---|
-| `Sources/PlayerzAPI/openapi.json` | copied verbatim from the server repo — never hand-edited |
+| `Sources/PlayerzAPI/openapi.json` | the server's spec, put through `scripts/spec_for_swift.py` — never hand-edited |
 | generated client | 23 operations, produced at build time by swift-openapi-generator |
 | `TokenStore.swift` | the session actor: storage, refresh, coalescing |
 
@@ -27,6 +27,14 @@ request/response *shapes* as unverified until something round-trips them against
 a running server.
 
     make regenerate   # re-copy the spec and rebuild
+
+The copy goes through `scripts/spec_for_swift.py`. The server writes "an X, or
+null" as `oneOf: [{$ref: X}, {type: null}]`, which swift-openapi-generator
+skips, taking the whole property out of the Swift type (#6). The script
+rewrites each one into a form the generator reads as `X?`. The server's own
+spec stays as it is, because that form is the correct JSON Schema. CI applies
+the same rewrite to the server's spec before comparing it with this copy, and a
+nullable shape the script cannot rewrite stops both.
 
 ## Building and testing
 
