@@ -44,6 +44,10 @@ struct BookingResultSection: View {
                             .disabled(busy)
                         Button(String(localized: "myBookings.result.reject"), role: .destructive, action: reject)
                             .disabled(busy)
+                            // On the button, not the Section: a Section's modifiers apply to each row.
+                            .sheet(isPresented: $rejecting) {
+                                RejectResultSheet(send: sendReject)
+                            }
                     }
                 } else {
                     Text(intro(standing)).font(.footnote).foregroundStyle(.secondary)
@@ -54,9 +58,6 @@ struct BookingResultSection: View {
                 if let problem {
                     Text(problem).foregroundStyle(.red)
                 }
-            }
-            .sheet(isPresented: $rejecting) {
-                RejectResultSheet(send: sendReject)
             }
         }
     }
