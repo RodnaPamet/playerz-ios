@@ -18,7 +18,7 @@ final class GamesModel {
     private(set) var minePhase: Phase = .loading
     private(set) var mine: [Components.Schemas.MyGameRequest] = []
 
-    var sport: Components.Schemas.SportType?
+    var sport: String?
     var day: Day = .any
 
     /// `date` is a day AT THE VENUE; a Sofia club's "today" is Sofia's. The

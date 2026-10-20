@@ -38,7 +38,7 @@ struct OpenPlayDecodingTests {
         let page = try await client().listOpenGames(.init()).ok.body.json.data
         let game = try #require(page.items.first)
         #expect(page.nextCursor == nil)
-        #expect(game.sport == .PADEL)
+        #expect(game.sport == "PADEL")
         #expect(game.spotsLeft == 2)
         #expect(game.levelMin == 3 && game.levelMax == 5)
         #expect(game.booker.firstName == "Иван")
