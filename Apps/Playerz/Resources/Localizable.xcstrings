@@ -12689,6 +12689,22 @@
         }
       }
     },
+    "tournaments.error.BOOKING_LIMIT_REACHED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Имате максималния брой предстоящи резервации в клуба."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You have the most upcoming bookings the club allows."
+          }
+        }
+      }
+    },
     "tournaments.error.FAILED": {
       "localizations": {
         "bg": {
@@ -12701,6 +12717,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Something went wrong. Try again."
+          }
+        }
+      }
+    },
+    "tournaments.error.NO_SHOW_BLOCKED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Клубът не приема резервации от вас след неявявания. Свържете се с клуба."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The club is not taking your bookings after missed bookings. Contact the club."
           }
         }
       }
@@ -12749,6 +12781,38 @@
           "stringUnit": {
             "state": "translated",
             "value": "Too many attempts. Try again in a moment."
+          }
+        }
+      }
+    },
+    "tournaments.error.SLOT_NOT_BOOKABLE": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Този час не може да се запази. Изберете друг."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That time cannot be booked. Choose another."
+          }
+        }
+      }
+    },
+    "tournaments.error.SLOT_TAKEN": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Този час току-що беше зает. Изберете друг."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That time was just taken. Choose another."
           }
         }
       }
@@ -12833,6 +12897,38 @@
         }
       }
     },
+    "tournaments.error.TOURNAMENT_MATCH_NOT_READY": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Този мач не чака час."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This match is not waiting for a time."
+          }
+        }
+      }
+    },
+    "tournaments.error.TOURNAMENT_MATCH_PLACED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Мачът вече има час или чака отговор за предложен."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The match already has a time, or one is waiting for an answer."
+          }
+        }
+      }
+    },
     "tournaments.error.TOURNAMENT_NOT_FOUND": {
       "localizations": {
         "bg": {
@@ -12861,6 +12957,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sign-up for this tournament is closed."
+          }
+        }
+      }
+    },
+    "tournaments.error.TOURNAMENT_NO_PROPOSAL": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Няма предложен час, на който да отговорите."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "There is no proposed time for you to answer."
           }
         }
       }
@@ -12909,6 +13021,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "That player can’t be your partner: they are already in, or not available."
+          }
+        }
+      }
+    },
+    "tournaments.error.TOURNAMENT_PAYMENT_NOT_DUE": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Няма такса за плащане по това записване."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "There is no fee to pay on this entry."
           }
         }
       }
@@ -13297,6 +13425,102 @@
         }
       }
     },
+    "tournaments.payment.PAID": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Таксата е платена онлайн."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The fee is paid online."
+          }
+        }
+      }
+    },
+    "tournaments.payment.REFUNDED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Таксата е върната по картата ви."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The fee has been refunded to your card."
+          }
+        }
+      }
+    },
+    "tournaments.payment.REFUND_DUE": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Таксата се връща по картата ви."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The fee is being refunded to your card."
+          }
+        }
+      }
+    },
+    "tournaments.payment.due %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Записването става, когато платите таксата. Платете до %@, иначе отпада."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your entry counts once you pay the fee. Pay by %@, or it lapses."
+          }
+        }
+      }
+    },
+    "tournaments.payment.dueByEntrant": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Записването чака таксата, която плаща записалият ви."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The entry waits for the fee, which the player who entered you pays."
+          }
+        }
+      }
+    },
+    "tournaments.payment.pay": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Плати таксата"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pay the fee"
+          }
+        }
+      }
+    },
     "tournaments.places %lld %lld": {
       "localizations": {
         "bg": {
@@ -13325,6 +13549,230 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$lld of %2$lld pairs"
+          }
+        }
+      }
+    },
+    "tournaments.propose.accept": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Приеми"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accept"
+          }
+        }
+      }
+    },
+    "tournaments.propose.cancel": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отказ"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel"
+          }
+        }
+      }
+    },
+    "tournaments.propose.court": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Корт"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Court"
+          }
+        }
+      }
+    },
+    "tournaments.propose.day": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ден"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Day"
+          }
+        }
+      }
+    },
+    "tournaments.propose.decline": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Откажи"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Decline"
+          }
+        }
+      }
+    },
+    "tournaments.propose.description %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Срещу %@. Кортът се запазва на ваше име и се плаща в клуба; потвърждава се, когато другата страна приеме."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Against %@. The court is held in your name and paid at the club; it is confirmed when the other side accepts."
+          }
+        }
+      }
+    },
+    "tournaments.propose.hint": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Най-рано след два часа. Ако никой не отговори до един ден, кортът се освобождава."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Two hours from now at the earliest. If nobody answers within a day, the court is released."
+          }
+        }
+      }
+    },
+    "tournaments.propose.none": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Няма свободни часове този ден."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No free times that day."
+          }
+        }
+      }
+    },
+    "tournaments.propose.open": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Предложи час"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Propose a time"
+          }
+        }
+      }
+    },
+    "tournaments.propose.ours %@ %@ %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Предложихте %1$@, %2$@ — чака отговор до %3$@."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You proposed %1$@, %2$@ — awaiting an answer until %3$@."
+          }
+        }
+      }
+    },
+    "tournaments.propose.theirs %@ %@ %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Предлагат ви %1$@, %2$@. Кортът е запазен до %3$@."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "They propose %1$@, %2$@. The court is held until %3$@."
+          }
+        }
+      }
+    },
+    "tournaments.propose.times %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Свободни часове на %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Free times on %@"
+          }
+        }
+      }
+    },
+    "tournaments.propose.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Предложете час за мача"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Propose a time for the match"
+          }
+        }
+      }
+    },
+    "tournaments.propose.withdraw": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Оттегли"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Take back"
           }
         }
       }

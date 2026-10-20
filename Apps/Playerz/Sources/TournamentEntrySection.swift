@@ -11,6 +11,8 @@ struct TournamentEntrySection: View {
     let choosePartner: () -> Void
     let enter: () -> Void
     let withdraw: () -> Void
+    /// The online fee's page (#23).
+    let pay: () -> Void
 
     var body: some View {
         Section {
@@ -23,6 +25,10 @@ struct TournamentEntrySection: View {
                 }
                 if let place = entry.waitingPosition {
                     Text(String(localized: "tournaments.waitingPosition \(place)")).foregroundStyle(.secondary)
+                }
+                if let payment = entry.payment {
+                    TournamentPaymentLine(payment: payment, entrant: entry.role == .entrant, timezone: tournament.venue?.timezone ?? "Europe/Sofia", pay: pay)
+                        .disabled(busy)
                 }
                 if entry.status == .PENDING || entry.status == .CONFIRMED {
                     Button(String(localized: "tournaments.withdraw"), role: .destructive, action: withdraw)
