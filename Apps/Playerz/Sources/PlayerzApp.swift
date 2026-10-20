@@ -18,8 +18,8 @@ struct PlayerzApp: App {
                         session.phoneStepNeeded = false
                     }
                 }
-                // An invite link (#14). Universal links are the release's
-                // (#24); until then this is reached by a DEBUG launch.
+                // An invite link (#14), tapped anywhere: a universal link
+                // (#24) lands here too.
                 .onOpenURL { session.open($0) }
                 .task {
                     // A tapped push opens its screen (#15), also one that launched the app.
