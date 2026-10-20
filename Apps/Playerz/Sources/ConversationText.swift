@@ -27,6 +27,8 @@ enum ConversationText {
 
     /// A refusal the server named, in the user's words; the generic line otherwise.
     static func error(_ code: String?) -> String {
+        // The phone step opens over the screen (#11); this says why.
+        if code == "PHONE_REQUIRED" { return String(localized: "phone.required.title") }
         let known: Set<String> = [
             "MESSAGE_TOO_LONG", "CONVERSATION_BLOCKED", "CONVERSATION_NOT_FOUND", "RECIPIENT_GONE",
             "REQUEST_PENDING", "RATE_LIMITED", "PLAYER_NOT_FOUND", "CLUB_NOT_FOUND",

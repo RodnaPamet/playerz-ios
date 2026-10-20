@@ -192,8 +192,13 @@ final class VenueDetailModel {
                 banner = String(localized: "venue.slotTaken")
                 await load(session, venueId: venueId)
             default:
+                let code = apiErrorCode(response)
+                session.notice(refusal: code)
                 bannerIsError = true
-                banner = String(localized: "venue.bookFailed")
+                banner =
+                    code == "PHONE_REQUIRED"
+                    ? String(localized: "phone.required.title")
+                    : String(localized: "venue.bookFailed")
             }
         } catch {
             bannerIsError = true

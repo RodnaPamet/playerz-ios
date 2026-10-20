@@ -144,7 +144,9 @@ struct GameDetailView: View {
             case .created(let created):
                 game = try created.body.json.data
             default:
-                problem = GameText.error(apiErrorCode(response))
+                let code = apiErrorCode(response)
+                session.notice(refusal: code)
+                problem = GameText.error(code)
             }
             asking = false
             note = ""

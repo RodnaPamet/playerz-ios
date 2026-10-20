@@ -24,12 +24,21 @@ struct LandingGate<Tabs: View>: View {
     @State private var holdsClubRole = false
     /// The texts still to accept; nil until known.
     @State private var owed: OwedTexts?
+    /// «Не сега» on the phone step, this launch (also remembered per account).
+    @State private var skippedPhone = false
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         Group {
             if me != nil, let owed, !owed.isEmpty {
                 LegalStepView(session: session, owed: owed) { self.owed = $0 }
+            } else if let me, offersPhone(me) {
+                PhoneStepView(session: session) {
+                    Task { await load() }
+                } later: {
+                    session.rememberAskedForPhone(me.id)
+                    skippedPhone = true
+                }
             } else if let me {
                 switch destination(me) {
                 case .player: tabs()
@@ -62,6 +71,14 @@ struct LandingGate<Tabs: View>: View {
     /// nor put it up when nothing is owed.
     private func checkTexts() async {
         if let fresh = try? await session.owedTexts() { owed = fresh }
+    }
+
+    /// The phone step, offered once (#11): the rule is on, nothing is confirmed
+    /// yet, and the account books, plays or writes as a player or a coach.
+    private func offersPhone(_ me: Components.Schemas.Me) -> Bool {
+        guard !skippedPhone, me.phone.required, !me.phone.verified else { return false }
+        guard me.accountKind == "PLAYER" || me.accountKind == "COACH" else { return false }
+        return !session.wasAskedForPhone(me.id)
     }
 
     private enum Destination { case player, chooseKind, club }

@@ -3457,6 +3457,358 @@
         }
       }
     },
+    "phone.required.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Първо потвърдете телефонен номер"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirm a phone number first"
+          }
+        }
+      }
+    },
+    "phone.step.code.change": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Друг номер"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Another number"
+          }
+        }
+      }
+    },
+    "phone.step.code.label": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Код от SMS-а"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Code from the SMS"
+          }
+        }
+      }
+    },
+    "phone.step.code.resend": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изпрати отново"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Send again"
+          }
+        }
+      }
+    },
+    "phone.step.code.resent": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изпратихме нов код."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We sent a new code."
+          }
+        }
+      }
+    },
+    "phone.step.code.sentTo %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изпратихме код на %@."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We sent a code to %@."
+          }
+        }
+      }
+    },
+    "phone.step.code.submit": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Потвърди"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirm"
+          }
+        }
+      }
+    },
+    "phone.step.description": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Преди първата резервация, заявка за игра или съобщение потвърждаваме, че номерът е ваш. Еднократно."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Before your first booking, join request or message we confirm the number is yours. Once."
+          }
+        }
+      }
+    },
+    "phone.step.error.FAILED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нещо се обърка. Опитайте отново."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Something went wrong. Try again."
+          }
+        }
+      }
+    },
+    "phone.step.error.PHONE_CODE_EXPIRED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Кодът е изтекъл. Поискайте нов."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The code has expired. Ask for a new one."
+          }
+        }
+      }
+    },
+    "phone.step.error.PHONE_CODE_WRONG": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Кодът не е верен. Проверете SMS-а и опитайте отново."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That is not the code. Check the SMS and try again."
+          }
+        }
+      }
+    },
+    "phone.step.error.PHONE_INVALID": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Това не е номер, на който можем да изпратим SMS. Проверете го и опитайте отново."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That is not a number we can text. Check it and try again."
+          }
+        }
+      }
+    },
+    "phone.step.error.PHONE_IN_USE": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Този номер вече потвърждава друг профил. Влезте с него или използвайте друг номер."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This number already confirms another account. Sign in with that one, or use another number."
+          }
+        }
+      }
+    },
+    "phone.step.error.PHONE_VERIFY_UNAVAILABLE": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "В момента не можем да изпратим код. Опитайте отново след малко."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We cannot send a code right now. Try again in a moment."
+          }
+        }
+      }
+    },
+    "phone.step.error.RATE_LIMITED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Твърде много опити. Опитайте отново по-късно."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Too many attempts. Try again later."
+          }
+        }
+      }
+    },
+    "phone.step.later": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не сега"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not now"
+          }
+        }
+      }
+    },
+    "phone.step.number.hint": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ще ви изпратим код с SMS."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We will text you a code."
+          }
+        }
+      }
+    },
+    "phone.step.number.label": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Телефон"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Phone"
+          }
+        }
+      }
+    },
+    "phone.step.number.placeholder": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "0888 123 456"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "0888 123 456"
+          }
+        }
+      }
+    },
+    "phone.step.number.submit": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изпрати код"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Send code"
+          }
+        }
+      }
+    },
+    "phone.step.privacy": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Номерът потвърждава, че профилът е ваш. Други играчи не го виждат. Клуб го вижда само докато имате предстояща резервация при него, за да може да ви се обади за нея."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The number confirms the account is yours. Other players never see it. A club sees it only while you have an upcoming booking there, so it can call you about it."
+          }
+        }
+      }
+    },
+    "phone.step.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Потвърдете телефонен номер"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirm a phone number"
+          }
+        }
+      }
+    },
     "profile.data.download": {
       "localizations": {
         "bg": {

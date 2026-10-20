@@ -142,7 +142,10 @@ enum ConversationOpener {
             switch response {
             case .ok(let ok): return .success(try ok.body.json.data.id)
             case .created(let created): return .success(try created.body.json.data.id)
-            default: return .failure(.init(text: ConversationText.error(apiErrorCode(response))))
+            default:
+                let code = apiErrorCode(response)
+                await session.notice(refusal: code)
+                return .failure(.init(text: ConversationText.error(code)))
             }
         } catch {
             return .failure(.init(text: ConversationText.error(nil)))
