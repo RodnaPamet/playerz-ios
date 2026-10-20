@@ -91,6 +91,14 @@ struct VenueDetailView: View {
     @ViewBuilder
     private var content: some View {
         List {
+            // «Обект на …», to the club's page, as on the web (#17).
+            if let slug = model.venue?.clubSlug, let name = model.clubName {
+                Section {
+                    NavigationLink(String(localized: "venue.club \(name)")) {
+                        ClubView(slug: slug, session: session)
+                    }
+                }
+            }
             if model.days.count > 1 {
                 Section {
                     ScrollView(.horizontal, showsIndicators: false) {

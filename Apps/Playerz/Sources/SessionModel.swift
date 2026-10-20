@@ -171,6 +171,13 @@ final class SessionModel {
         UserDefaults.standard.set(true, forKey: "phone.asked.\(userId)")
     }
 
+    /// A step of the booking funnel, for the club's counts (#17). Never waited
+    /// on by a screen: a count must not slow a booking.
+    func send(_ event: UsageBeacon, venueId: String) {
+        guard let session else { return }
+        Task { await session.send(event, venueId: venueId) }
+    }
+
     func signOut() async {
         // This phone's registration goes with the session (#12).
         try? await session?.signOut(unregistering: PushRegistrar.shared.deviceToken)

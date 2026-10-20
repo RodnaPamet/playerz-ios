@@ -291,6 +291,18 @@ public actor PlayerzSession {
         }
     }
 
+    /// Count a step of the booking funnel at a venue (#17). Anonymous by
+    /// construction, as the web sends it: the body is the event's name, with
+    /// no session. Always 204 on the server; a failure here is ignored, since
+    /// a count must never stand in the way of booking.
+    public func send(_ event: UsageBeacon, venueId: String) async {
+        guard let payload = Components.Schemas.UsageEventRequest.eventPayload(rawValue: event.rawValue) else { return }
+        _ = try? await anonymous.postVenueUsageEvent(
+            path: .init(id: venueId),
+            body: .json(.init(event: payload))
+        )
+    }
+
     /// Exchange a refresh token for a new session.
     ///
     /// Isolated as a `@Sendable` closure because `BearerMiddleware` holds it

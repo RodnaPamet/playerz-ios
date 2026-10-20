@@ -23,6 +23,8 @@ final class VenueDetailModel {
 
     private(set) var phase: Phase = .loading
     private(set) var venue: Components.Schemas.VenueDetail?
+    /// The club's name, for «Обект на …» linking to its page (#17); nil until read.
+    private(set) var clubName: String?
     private(set) var courts: [Court] = []
     private(set) var banner: String?
     private(set) var bannerIsError = false
@@ -110,6 +112,13 @@ final class VenueDetailModel {
             )
 
             venue = detail
+            // The club's name, for the link to its page (#17). Public, and the
+            // screen works without it.
+            if clubName == nil,
+                let club = try? await client.getClub(.init(path: .init(slug: detail.clubSlug))).ok.body.json.data
+            {
+                clubName = club.name
+            }
             // The venue's own zone decides what "today" is and what the strip
             // offers — not the device's.
             timezone = availability.timezone
@@ -160,6 +169,10 @@ final class VenueDetailModel {
 
         bookingSlot = slot.startTs
         banner = nil
+        // The app books from the slot itself, so one tap is both of the web's
+        // steps: a slot picked, and the confirm sheet opened (#17).
+        session.send(.slotPicked, venueId: venueId)
+        session.send(.sheetOpened, venueId: venueId)
         defer { bookingSlot = nil }
 
         do {
