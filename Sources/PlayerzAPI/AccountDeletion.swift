@@ -88,6 +88,50 @@ public struct UpcomingStanding: Sendable, Equatable {
     }
 }
 
+/// What `DELETE /me` would answer, read before asking (`GET /me/deletion`,
+/// projectZ#628), and the unused credit deleting would lose.
+public struct DeletionCheck: Sendable, Equatable {
+    /// Unused credit at one club, lost with the account (the owner's rule:
+    /// warn, then allow).
+    public struct Credit: Sendable, Equatable, Identifiable {
+        public let club: String
+        public let amountCents: Int
+        public let currency: String
+        public var id: String { club }
+    }
+
+    /// Nil when the account may go now; else why not, as the refusal says it.
+    public let refusal: AccountDeletion?
+    public let credit: [Credit]
+
+    init(_ standing: Components.Schemas.DeletionStanding) {
+        credit = standing.credit.map { Credit(club: $0.club, amountCents: $0.amountCents, currency: $0.currency) }
+        switch standing.kind {
+        case "club":
+            refusal = .clubAccount
+        case "blocked":
+            refusal = standing.blocked.map { .blocked(UpcomingStanding($0)) }
+        default:
+            // `allowed`, and a kind added later: the server decides at `DELETE /me`.
+            refusal = nil
+        }
+    }
+}
+
+extension UpcomingStanding {
+    init(_ blocked: Components.Schemas.DeletionStanding.blockedPayload) {
+        self.total = blocked.total
+        self.lessons = blocked.lessons
+        self.tournaments = blocked.tournaments
+        self.bookings = blocked.bookings.map {
+            Booking(
+                id: $0.bookingId, role: $0.role, cure: $0.cure, start: $0.startTs, end: $0.endTs,
+                cancellableUntil: $0.cancellableUntil, deletableFrom: $0.deletableFrom
+            )
+        }
+    }
+}
+
 /// Why `exportData()` has no file to give.
 public enum DataExportError: Error, Equatable {
     case notSignedIn

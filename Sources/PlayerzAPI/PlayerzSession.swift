@@ -312,6 +312,17 @@ public actor PlayerzSession {
         return false
     }
 
+    /// Whether the account may be deleted now, and the credit it would lose
+    /// (projectZ#628). Nil when the server could not be asked: the section
+    /// then says the general rule, and `DELETE /me` still decides.
+    public func deletionCheck() async -> DeletionCheck? {
+        guard let response = try? await client().getMyDeletionStanding(),
+              case let .ok(ok) = response,
+              let standing = try? ok.body.json.data
+        else { return nil }
+        return DeletionCheck(standing)
+    }
+
     /// Exchange a refresh token for a new session.
     ///
     /// Isolated as a `@Sendable` closure because `BearerMiddleware` holds it

@@ -10293,6 +10293,70 @@
         }
       }
     },
+    "profile.delete.credit.body": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Неизползваният кредит в клубовете не се връща след изтриване на профила:"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unused credit at a club is not returned once the account is deleted:"
+          }
+        }
+      }
+    },
+    "profile.delete.credit.hint": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Използвайте го или попитайте клуба какво може да се направи, преди да изтриете профила."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use it, or ask the club what can be done, before you delete your account."
+          }
+        }
+      }
+    },
+    "profile.delete.credit.line %@ %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: %2$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: %2$@"
+          }
+        }
+      }
+    },
+    "profile.delete.credit.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ще загубите кредита си"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You will lose your credit"
+          }
+        }
+      }
+    },
     "profile.delete.creditRule": {
       "localizations": {
         "bg": {
