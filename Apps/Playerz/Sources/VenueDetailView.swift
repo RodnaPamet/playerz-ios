@@ -39,8 +39,9 @@ struct VenueDetailView: View {
                     }
                 }
             }
-            // «Пиши на клуба» (#484): the club's conversation, by the club's slug.
-            if let club = model.venue?.clubSlug {
+            // «Пиши на клуба» (#484): the club's conversation, by the club's slug;
+            // not while the server has messaging off (#16).
+            if session.modules.messaging, let club = model.venue?.clubSlug {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(String(localized: "messages.writeToClub"), systemImage: "bubble.left") {
                         Task { await writeToClub(club) }
@@ -91,6 +92,14 @@ struct VenueDetailView: View {
     @ViewBuilder
     private var content: some View {
         List {
+            // «Обект на …», to the club's page, as on the web (#17).
+            if let slug = model.venue?.clubSlug, let name = model.clubName {
+                Section {
+                    NavigationLink(String(localized: "venue.club \(name)")) {
+                        ClubView(slug: slug, session: session)
+                    }
+                }
+            }
             if model.days.count > 1 {
                 Section {
                     ScrollView(.horizontal, showsIndicators: false) {

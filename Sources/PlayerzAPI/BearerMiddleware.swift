@@ -33,6 +33,10 @@ public struct BearerMiddleware: ClientMiddleware {
         "getVenueAvailability",
         // Which modules are on (#16): the same for everyone.
         "getAppConfig",
+        // A club's public page (#17): read signed out on the web too.
+        "getClub",
+        // The funnel beacon (#17): anonymous by construction.
+        "postVenueUsageEvent",
     ]
 
     public init(

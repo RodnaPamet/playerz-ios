@@ -4,6 +4,8 @@ import SwiftUI
 struct VenueListView: View {
     @Bindable var session: SessionModel
     @State private var model = VenueListModel()
+    @State private var debugClub: String? = DebugLaunch.club
+    @State private var debugVenue: String? = DebugLaunch.venue
 
     var body: some View {
         NavigationStack {
@@ -44,6 +46,12 @@ struct VenueListView: View {
                     }
                     .refreshable { await model.load(session) }
                 }
+            }
+            .navigationDestination(item: $debugClub) { slug in
+                ClubView(slug: slug, session: session)
+            }
+            .navigationDestination(item: $debugVenue) { id in
+                VenueDetailView(venueId: id, session: session)
             }
             .navigationTitle(String(localized: "venues.title"))
             // Inline: with a segmented control inset below the bar, iOS 26 hid the large

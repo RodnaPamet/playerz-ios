@@ -721,6 +721,22 @@
         }
       }
     },
+    "club.contactLabel": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Контакти"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Contact"
+          }
+        }
+      }
+    },
     "club.description": {
       "localizations": {
         "bg": {
@@ -733,6 +749,54 @@
           "stringUnit": {
             "state": "translated",
             "value": "A club is run from playerz.bg in a browser: its calendar, courts, players and messages. The app is for players."
+          }
+        }
+      }
+    },
+    "club.failed": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Клубът не се зареди. Опитайте отново."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The club did not load. Try again."
+          }
+        }
+      }
+    },
+    "club.noVenues.description": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Когато клубът добави обект, ще можете да резервирате тук."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Once the club adds a venue, you can book here."
+          }
+        }
+      }
+    },
+    "club.noVenues.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Клубът все още няма обекти"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This club has no venues yet"
           }
         }
       }
@@ -753,6 +817,38 @@
         }
       }
     },
+    "club.phone %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Телефон: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Phone: %@"
+          }
+        }
+      }
+    },
+    "club.sportsLabel": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Спортове"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sports"
+          }
+        }
+      }
+    },
     "club.title": {
       "localizations": {
         "bg": {
@@ -765,6 +861,62 @@
           "stringUnit": {
             "state": "translated",
             "value": "Club account"
+          }
+        }
+      }
+    },
+    "club.venuesCount %lld": {
+      "localizations": {
+        "bg": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld обект"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld обекта"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld venue"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld venues"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "club.venuesTitle": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Обекти"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Venues"
           }
         }
       }
@@ -5205,6 +5357,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Booking…"
+          }
+        }
+      }
+    },
+    "venue.club %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Обект на %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Run by %@"
           }
         }
       }
