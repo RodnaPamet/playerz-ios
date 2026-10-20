@@ -22,6 +22,8 @@ struct PlayerzApp: App {
                 // (#24); until then this is reached by a DEBUG launch.
                 .onOpenURL { session.open($0) }
                 .task {
+                    // A tapped push opens its screen (#15), also one that launched the app.
+                    delegate.onLink { session.open($0) }
                     await session.restore()
                     if session.state == .signedIn { await PushRegistrar.shared.refreshIfAllowed(session) }
                 }
@@ -33,6 +35,10 @@ struct PlayerzApp: App {
 /// alternative, so the delegate exists to forward the token and to make sure a
 /// notification arriving while the app is OPEN is actually shown.
 final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
+    /// A push tapped before the app could take it: the tap that launched it.
+    private var tappedLink: AppLink?
+    private var openLink: ((AppLink) -> Void)?
+
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions options: [UIApplication.LaunchOptionsKey: Any]? = nil
@@ -64,6 +70,30 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
         willPresent notification: UNNotification
     ) async -> UNNotificationPresentationOptions {
         [.banner, .sound, .list]
+    }
+
+    /// A tapped push (#15): the server puts the notification's web path in
+    /// `url`, and the app opens the same screen the bell's row would.
+    nonisolated func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        didReceive response: UNNotificationResponse
+    ) async {
+        let path = response.notification.request.content.userInfo["url"] as? String
+        guard let link = path.flatMap(AppLink.init(path:)) else { return }
+        await tapped(link)
+    }
+
+    /// Where tapped pushes go from now on; one already tapped goes there now.
+    func onLink(_ open: @escaping (AppLink) -> Void) {
+        openLink = open
+        if let link = tappedLink {
+            tappedLink = nil
+            open(link)
+        }
+    }
+
+    private func tapped(_ link: AppLink) {
+        if let openLink { openLink(link) } else { tappedLink = link }
     }
 }
 
@@ -127,9 +157,24 @@ struct RootView: View {
                             try? await Task.sleep(for: .seconds(60))
                         }
                     }
+                    // The bell's count (#15): read on launch, then each minute.
+                    .task {
+                        while !Task.isCancelled {
+                            await session.refreshNotificationCount()
+                            try? await Task.sleep(for: .seconds(60))
+                        }
+                    }
                     // An invite link opened in the app (#14), once past the gate's steps.
                     .sheet(item: $session.pendingInvite) { invite in
                         BookingInviteView(token: invite.token, session: session)
+                    }
+                    // The bell's list (#15), one for every tab's bell.
+                    .sheet(isPresented: $session.notificationsOpen) {
+                        NotificationsView(session: session)
+                    }
+                    // A tapped push's screen (#15).
+                    .sheet(item: $session.pendingLink) { link in
+                        LinkedSheet(link: link, session: session)
                     }
                 }
             }
@@ -138,6 +183,12 @@ struct RootView: View {
         // whenever it comes back (#16).
         .task(id: scenePhase) {
             if scenePhase == .active { await session.refreshModules() }
+        }
+        // A link that names a tab (#15): the bell's row or a tapped push.
+        .onChange(of: session.requestedTab) { _, requested in
+            guard let requested else { return }
+            tab = requested
+            session.requestedTab = nil
         }
         .onChange(of: session.modules) { _, modules in
             if (tab == .games && !modules.openPlay) || (tab == .messages && !modules.messaging) {

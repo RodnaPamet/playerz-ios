@@ -34,12 +34,50 @@ final class SessionModel {
     /// An invite link opened in the app (#14), shown once signed in; kept
     /// across signing in, as the web returns to the invite after its sign-in.
     var pendingInvite: PendingInvite? = DebugLaunch.invite.map(PendingInvite.init(token:))
+    /// The bell's count (#15), read every minute by RootView and set to what
+    /// the server answers when the list marks everything read.
+    var notificationsUnread = 0
+    /// The bell's list, open over the tabs.
+    var notificationsOpen = DebugLaunch.notifications
+    /// A screen to open over the tabs: a tapped push (#15).
+    var pendingLink: AppLink? = DebugLaunch.link.flatMap(AppLink.init(path:))
+    /// A tab a link asked for; RootView switches to it.
+    var requestedTab: DebugLaunch.Tab?
 
     /// Raised when an action was refused for want of a confirmed phone
     /// (`PHONE_REQUIRED`, #11): RootView opens the phone step over the screen.
     var phoneStepNeeded = false
 
     private var session: PlayerzSession?
+
+    /// Whether `link` is a whole tab rather than one screen.
+    func isTab(_ link: AppLink) -> Bool {
+        switch link {
+        case .bookings, .messages, .games: true
+        case .booking, .conversation: false
+        }
+    }
+
+    /// Open `link`: a tab is switched to, a screen opened over the tabs. A
+    /// module the server has off opens nothing (#16).
+    func open(_ link: AppLink) {
+        switch link {
+        case .bookings: requestedTab = .bookings
+        case .messages: if modules.messaging { requestedTab = .messages }
+        case .games: if modules.openPlay { requestedTab = .games }
+        case .conversation: if modules.messaging { pendingLink = link }
+        case .booking: pendingLink = link
+        }
+    }
+
+    /// The bell's count: the first page's `unreadCount`. A failed read keeps
+    /// the count it had.
+    func refreshNotificationCount() async {
+        guard let client = await client(),
+              let page = try? await client.listMyNotifications(query: .init(limit: 1)).ok.body.json.data
+        else { return }
+        notificationsUnread = page.unreadCount
+    }
 
     /// A link the app was opened with. Answers whether it was one of ours.
     @discardableResult

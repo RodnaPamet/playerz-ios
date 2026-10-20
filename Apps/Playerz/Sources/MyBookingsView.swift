@@ -27,6 +27,7 @@ struct MyBookingsView: View {
         NavigationStack {
             content
                 .navigationTitle(String(localized: "myBookings.title"))
+                .toolbar { ToolbarItem(placement: .topBarTrailing) { NotificationBell(session: session) } }
                 // Inline: with a segmented control inset below the bar, iOS 26 hid the large
                 // title under the bar's material.
                 .navigationBarTitleDisplayMode(.inline)
