@@ -5,16 +5,19 @@ import SwiftUI
 struct GamesView: View {
     @Bindable var session: SessionModel
     @State private var model = GamesModel()
-    @State private var showing: Showing = DebugLaunch.gamesMine ? .mine : .open
+    @State private var showing: Showing = DebugLaunch.gamesTournaments ? .tournaments : DebugLaunch.gamesMine ? .mine : .open
+    /// A DEBUG launch can open a tournament straight away (DebugLaunch).
+    @State private var path = NavigationPath(DebugLaunch.tournament.map { [TournamentRoute(id: $0)] } ?? [])
 
-    enum Showing: Hashable { case open, mine }
+    enum Showing: Hashable { case open, mine, tournaments }
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             Group {
                 switch showing {
                 case .open: openList
                 case .mine: mineList
+                case .tournaments: TournamentsList(session: session)
                 }
             }
             .navigationTitle(String(localized: "games.title"))
@@ -25,6 +28,10 @@ struct GamesView: View {
                 Picker(String(localized: "games.tabs"), selection: $showing) {
                     Text(String(localized: "games.tab.open")).tag(Showing.open)
                     Text(String(localized: "games.tab.mine")).tag(Showing.mine)
+                    // «Турнири» (#22), while the ranking module is on.
+                    if session.modules.ranking {
+                        Text(String(localized: "games.tab.tournaments")).tag(Showing.tournaments)
+                    }
                 }
                 .pickerStyle(.segmented)
                 .padding(.horizontal)
@@ -36,6 +43,9 @@ struct GamesView: View {
                     ToolbarItem(placement: .topBarTrailing) { filters }
                 }
                 ToolbarItem(placement: .topBarTrailing) { NotificationBell(session: session) }
+            }
+            .navigationDestination(for: TournamentRoute.self) { route in
+                TournamentDetailView(id: route.id, session: session)
             }
             .navigationDestination(for: Components.Schemas.OpenGame.self) { game in
                 GameDetailView(game: game, session: session) {
