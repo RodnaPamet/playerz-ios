@@ -99,6 +99,27 @@ final class SessionModel {
         return try await session.exportData()
     }
 
+    /// The texts still to accept (#10).
+    func owedTexts() async throws -> OwedTexts {
+        guard let session else { throw LegalStepError.notSignedIn }
+        return try await session.owedTexts()
+    }
+
+    /// Accept every text in force.
+    func acceptTexts() async throws -> OwedTexts {
+        guard let session else { throw LegalStepError.notSignedIn }
+        return try await session.acceptTexts()
+    }
+
+    /// A legal text on the web (`/terms`, `/privacy`), where it is read.
+    func legalTextURL(_ id: String) -> URL? {
+        guard var parts = URLComponents(string: serverURL), parts.host != nil else { return nil }
+        parts.path = "/\(id)"
+        parts.query = nil
+        parts.fragment = nil
+        return parts.url
+    }
+
     /// The web's contact form, where a club account asks to be deleted
     /// (`CONTACT_FORM_HREF` on the server: the home page's clubs section).
     var contactFormURL: URL? {

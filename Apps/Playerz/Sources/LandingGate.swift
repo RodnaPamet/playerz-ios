@@ -9,6 +9,11 @@ import SwiftUI
 ///   undecided                    «Играч или треньор?» first: the choice is made once
 ///   club, club-unavailable,      a note that a club is run from the web: a club
 ///   undecided with a club role   account is not a player, and its admin is not here
+///
+/// Before all of them, new terms or a new privacy policy to accept (#10): the
+/// server never holds the API back for them, so the app asks, as the web's
+/// `/start/terms` does. Checked after loading and on every return to the
+/// foreground, since a text can be published while the app is open.
 struct LandingGate<Tabs: View>: View {
     @Bindable var session: SessionModel
     @ViewBuilder let tabs: () -> Tabs
@@ -17,10 +22,15 @@ struct LandingGate<Tabs: View>: View {
     @State private var failed = false
     /// An undecided account the server would not let choose: it holds a club role.
     @State private var holdsClubRole = false
+    /// The texts still to accept; nil until known.
+    @State private var owed: OwedTexts?
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         Group {
-            if let me {
+            if me != nil, let owed, !owed.isEmpty {
+                LegalStepView(session: session, owed: owed) { self.owed = $0 }
+            } else if let me {
                 switch destination(me) {
                 case .player: tabs()
                 case .chooseKind:
@@ -43,6 +53,15 @@ struct LandingGate<Tabs: View>: View {
             }
         }
         .task { await load() }
+        .task(id: scenePhase) {
+            if scenePhase == .active, me != nil { await checkTexts() }
+        }
+    }
+
+    /// A failed check keeps what was known: an error must not unlock the step,
+    /// nor put it up when nothing is owed.
+    private func checkTexts() async {
+        if let fresh = try? await session.owedTexts() { owed = fresh }
     }
 
     private enum Destination { case player, chooseKind, club }
@@ -67,7 +86,10 @@ struct LandingGate<Tabs: View>: View {
             return
         }
         do {
-            me = try await client.getMe().ok.body.json.data
+            let fresh = try await client.getMe().ok.body.json.data
+            // The texts first, so the tabs never show for a moment before the step.
+            await checkTexts()
+            me = fresh
             failed = false
         } catch {
             failed = true

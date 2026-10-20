@@ -3313,6 +3313,150 @@
         }
       }
     },
+    "onboarding.terms.accept": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Приемам"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I accept"
+          }
+        }
+      }
+    },
+    "onboarding.terms.continuing": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Продължаваме…"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continuing…"
+          }
+        }
+      }
+    },
+    "onboarding.terms.decline": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ако не приемате, от Профил можете да изтеглите данните си или да изтриете профила си."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "If you do not accept, you can download your data or delete your account from Profile."
+          }
+        }
+      }
+    },
+    "onboarding.terms.description": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Публикувахме нова версия. Прегледайте я и я приемете, за да продължите."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We published a new version. Read it and accept it to continue."
+          }
+        }
+      }
+    },
+    "onboarding.terms.document.privacy": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Политика за поверителност"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Privacy policy"
+          }
+        }
+      }
+    },
+    "onboarding.terms.document.terms": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Общи условия"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Terms of use"
+          }
+        }
+      }
+    },
+    "onboarding.terms.error": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не успяхме да запишем. Опитайте отново."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We could not save that. Try again."
+          }
+        }
+      }
+    },
+    "onboarding.terms.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Условия и поверителност"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Terms and privacy"
+          }
+        }
+      }
+    },
+    "onboarding.terms.version %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "версия %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "version %@"
+          }
+        }
+      }
+    },
     "profile.data.download": {
       "localizations": {
         "bg": {

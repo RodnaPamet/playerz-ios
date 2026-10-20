@@ -187,6 +187,49 @@ public actor PlayerzSession {
         }
     }
 
+    /// The texts this account still has to accept (playerz-ios#10).
+    public func owedTexts() async throws -> OwedTexts {
+        let response: Operations.getLegalStanding.Output
+        do {
+            response = try await client().getLegalStanding()
+        } catch {
+            throw LegalStepError.failed
+        }
+        switch response {
+        case let .ok(ok):
+            // A text the spec does not know yet fails to decode: say "failed",
+            // and let the caller decide; it must not read as "nothing owed".
+            guard let standing = try? ok.body.json.data else { throw LegalStepError.failed }
+            return OwedTexts(standing)
+        case .unauthorized:
+            throw LegalStepError.notSignedIn
+        default:
+            throw LegalStepError.failed
+        }
+    }
+
+    /// Accept every text in force, at its current version. Answers what is
+    /// still owed afterwards, which is nothing.
+    public func acceptTexts() async throws -> OwedTexts {
+        let response: Operations.acceptLegal.Output
+        do {
+            response = try await client().acceptLegal()
+        } catch {
+            throw LegalStepError.failed
+        }
+        switch response {
+        case let .ok(ok):
+            guard let standing = try? ok.body.json.data else { throw LegalStepError.failed }
+            return OwedTexts(standing)
+        case .unauthorized:
+            throw LegalStepError.notSignedIn
+        case .tooManyRequests:
+            throw LegalStepError.rateLimited
+        default:
+            throw LegalStepError.failed
+        }
+    }
+
     /// Exchange a refresh token for a new session.
     ///
     /// Isolated as a `@Sendable` closure because `BearerMiddleware` holds it
