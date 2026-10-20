@@ -23,6 +23,14 @@ struct ClubView: View {
                             Link(String(localized: "club.phone \(phone)"), destination: call)
                         }
                     }
+                    // «Класиране» (#18), while the ranking module is on.
+                    if session.modules.ranking {
+                        Section {
+                            NavigationLink(String(localized: "club.leaderboard.title")) {
+                                ClubLeaderboardView(slug: slug, session: session)
+                            }
+                        }
+                    }
                     Section {
                         if club.venues.isEmpty {
                             ContentUnavailableView(
