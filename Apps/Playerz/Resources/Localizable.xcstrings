@@ -1461,6 +1461,526 @@
         }
       }
     },
+    "coachLessons.cancel.button": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отмени урока"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel lesson"
+          }
+        }
+      }
+    },
+    "coachLessons.cancel.description %@ %@ %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ от %2$@, %3$@. Кортът ще се освободи, а играчът ще получи известие и имейл."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ at %2$@, %3$@. The court will be released, and the player will get a notification and an email."
+          }
+        }
+      }
+    },
+    "coachLessons.cancel.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Да отмените ли урока?"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel the lesson?"
+          }
+        }
+      }
+    },
+    "coachLessons.cancel.yes": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отмени урока"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel lesson"
+          }
+        }
+      }
+    },
+    "coachLessons.error.alreadyNoShow": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Неявяването вече е отбелязано."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The no-show is already marked."
+          }
+        }
+      }
+    },
+    "coachLessons.error.failed": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не се получи. Опитайте отново."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That did not work. Try again."
+          }
+        }
+      }
+    },
+    "coachLessons.error.gone": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Този урок не е намерен."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That lesson was not found."
+          }
+        }
+      }
+    },
+    "coachLessons.error.notAttendable": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Урокът вече е отменен."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The lesson is already cancelled."
+          }
+        }
+      }
+    },
+    "coachLessons.error.notStarted": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Неявяване се отбелязва, след като урокът е започнал."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A no-show is marked once the lesson has started."
+          }
+        }
+      }
+    },
+    "coachLessons.error.reviewed": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Играчът вече е оценил този урок и неявяване не може да се отбележи."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The player has already reviewed this lesson, so a no-show cannot be marked."
+          }
+        }
+      }
+    },
+    "coachLessons.error.started": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Урокът вече е започнал и не може да се отмени."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The lesson has already started and cannot be cancelled."
+          }
+        }
+      }
+    },
+    "coachLessons.fee %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вашият хонорар: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your fee: %@"
+          }
+        }
+      }
+    },
+    "coachLessons.group %lld": {
+      "localizations": {
+        "bg": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld играч"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld играчи"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld player"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld players"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "coachLessons.keep": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No"
+          }
+        }
+      }
+    },
+    "coachLessons.noPlayer": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Играч с изтрит профил"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A player whose account was deleted"
+          }
+        }
+      }
+    },
+    "coachLessons.noShow.button": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не се яви"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Did not come"
+          }
+        }
+      }
+    },
+    "coachLessons.noShow.description %@ %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ ще бъде отбелязан като неявил се в %2$@. Това се брои като всяко неявяване там: след три клубът спира онлайн резервациите му."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ will be marked as a no-show at %2$@. It counts as any no-show there: after three the club stops their online bookings."
+          }
+        }
+      }
+    },
+    "coachLessons.noShow.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Играчът не се яви?"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The player did not come?"
+          }
+        }
+      }
+    },
+    "coachLessons.noShow.yes": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отбележи неявяване"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mark as no-show"
+          }
+        }
+      }
+    },
+    "coachLessons.nonePast": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нямате минали уроци."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You have no past lessons."
+          }
+        }
+      }
+    },
+    "coachLessons.noneUpcoming": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нямате предстоящи уроци."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You have no upcoming lessons."
+          }
+        }
+      }
+    },
+    "coachLessons.player %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Играч: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Player: %@"
+          }
+        }
+      }
+    },
+    "coachLessons.playerLevel %@ %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Играч: %1$@ · ниво %2$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Player: %1$@ · level %2$@"
+          }
+        }
+      }
+    },
+    "coachLessons.playerLevelProvisional %@ %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Играч: %1$@ · ниво %2$@ (неокончателно)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Player: %1$@ · level %2$@ (provisional)"
+          }
+        }
+      }
+    },
+    "coachLessons.retry": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Опитай отново"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Try again"
+          }
+        }
+      }
+    },
+    "coachLessons.tabs.past": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Минали"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Past"
+          }
+        }
+      }
+    },
+    "coachLessons.tabs.upcoming": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Предстоящи"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upcoming"
+          }
+        }
+      }
+    },
+    "coachLessons.tabsLabel": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Кои уроци"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Which lessons"
+          }
+        }
+      }
+    },
+    "coachLessons.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Уроци"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lessons"
+          }
+        }
+      }
+    },
+    "coachLessons.unnamed": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Играч"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Player"
+          }
+        }
+      }
+    },
+    "coachLessons.where %@ %@ %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@ · %3$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@ · %3$@"
+          }
+        }
+      }
+    },
     "coachProfile.about.bio": {
       "localizations": {
         "bg": {
@@ -2385,6 +2905,1158 @@
           "stringUnit": {
             "state": "translated",
             "value": "The profile is back with you. Change it and send it again."
+          }
+        }
+      }
+    },
+    "coachVenues.action.again": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Поискайте отново"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ask again"
+          }
+        }
+      }
+    },
+    "coachVenues.action.cancel": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отказ"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel"
+          }
+        }
+      }
+    },
+    "coachVenues.action.end": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Спрете да преподавате тук"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stop teaching here"
+          }
+        }
+      }
+    },
+    "coachVenues.action.terms": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Цена и часове"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Price and hours"
+          }
+        }
+      }
+    },
+    "coachVenues.action.withdraw": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Оттеглете заявката"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Take the request back"
+          }
+        }
+      }
+    },
+    "coachVenues.add": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Добавете обект"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add a venue"
+          }
+        }
+      }
+    },
+    "coachVenues.at %@ %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "coachVenues.end.confirm": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нови уроци тук няма да могат да се записват. Вече записаните остават, докато не бъдат отменени."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No new lessons can be booked here. Lessons already booked stay until they are cancelled."
+          }
+        }
+      }
+    },
+    "coachVenues.end.title %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Да спрете ли да преподавате в %@?"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stop teaching at %@?"
+          }
+        }
+      }
+    },
+    "coachVenues.error.COACH_LINK_EXISTS": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вече имате заявка или преподавате в този обект."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You already have a request or teach at this venue."
+          }
+        }
+      }
+    },
+    "coachVenues.error.COACH_LINK_NOT_FOUND": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тази връзка вече не съществува."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That link no longer exists."
+          }
+        }
+      }
+    },
+    "coachVenues.error.COACH_LINK_STATE": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Това вече не може да се направи. Презаредете страницата."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That can no longer be done. Reload the page."
+          }
+        }
+      }
+    },
+    "coachVenues.error.COACH_NOT_APPROVED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Профилът ви още не е одобрен."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your profile has not been approved yet."
+          }
+        }
+      }
+    },
+    "coachVenues.error.COACH_SUSPENDED_AT_CLUB": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Профилът ви е спрян в този клуб."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your account is suspended at this club."
+          }
+        }
+      }
+    },
+    "coachVenues.error.COACH_TIME_OFF_LIMIT": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Имате твърде много отбелязани периоди. Махнете някой."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You have too many stretches marked. Remove one."
+          }
+        }
+      }
+    },
+    "coachVenues.error.NETWORK": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Няма връзка. Опитайте отново."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No connection. Try again."
+          }
+        }
+      }
+    },
+    "coachVenues.error.RATE_LIMITED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Твърде много опити. Изчакайте малко и опитайте отново."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Too many attempts. Wait a little and try again."
+          }
+        }
+      }
+    },
+    "coachVenues.error.UNKNOWN": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нещо се обърка. Опитайте отново."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Something went wrong. Try again."
+          }
+        }
+      }
+    },
+    "coachVenues.error.VENUE_NOT_FOUND": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Този обект вече не е достъпен."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That venue is no longer available."
+          }
+        }
+      }
+    },
+    "coachVenues.error.cancelCutoffHours": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Въведете часове между 0 и 168."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter hours between 0 and 168."
+          }
+        }
+      }
+    },
+    "coachVenues.error.endDate": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Крайната дата трябва да е след началната, да не е минала и периодът да е до 92 дни."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The end date must be after the start, not in the past, and the stretch at most 92 days."
+          }
+        }
+      }
+    },
+    "coachVenues.error.groupRateCents": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Въведете цена за група между 0 и 1000, или оставете празно."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter a group price between 0 and 1000, or leave it empty."
+          }
+        }
+      }
+    },
+    "coachVenues.error.hourlyRateCents": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Въведете цена на час между 0 и 1000."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter a price per hour between 0 and 1000."
+          }
+        }
+      }
+    },
+    "coachVenues.error.hours": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Проверете часовете: на четвърт час, краят след началото, без застъпване, най-много четири интервала на ден."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check the hours: on the quarter hour, the end after the start, no overlap, at most four stretches a day."
+          }
+        }
+      }
+    },
+    "coachVenues.error.lessonMinutes": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изберете поне една продължителност."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose at least one length."
+          }
+        }
+      }
+    },
+    "coachVenues.error.note": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Бележката е твърде дълга."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The note is too long."
+          }
+        }
+      }
+    },
+    "coachVenues.error.startDate": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Въведете валидна начална дата, не повече от година напред."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter a valid start date, at most a year ahead."
+          }
+        }
+      }
+    },
+    "coachVenues.missing": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "За да се записват уроци тук, задайте цена, продължителност и работни часове."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "For lessons to be booked here, set a price, a lesson length and working hours."
+          }
+        }
+      }
+    },
+    "coachVenues.missingCourts": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "В този обект няма корт или игрище в употреба за спортовете, които преподавате, затова тук не могат да се записват уроци."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This venue has no court in use for the sports you teach, so lessons cannot be booked here."
+          }
+        }
+      }
+    },
+    "coachVenues.needsApproval": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "След като playerz.bg одобри профила ви, ще можете да поискате да преподавате в клуб."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Once playerz.bg approves your profile, you can ask to teach at a club."
+          }
+        }
+      }
+    },
+    "coachVenues.none": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Още не преподавате никъде."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You do not teach anywhere yet."
+          }
+        }
+      }
+    },
+    "coachVenues.search.ask": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Поискайте"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ask"
+          }
+        }
+      }
+    },
+    "coachVenues.search.description": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изберете обект. Клубът получава заявката ви заедно с профила ви и отговаря."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose a venue. The club receives your request with your profile and answers."
+          }
+        }
+      }
+    },
+    "coachVenues.search.empty": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Няма намерени обекти."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No venues found."
+          }
+        }
+      }
+    },
+    "coachVenues.search.label": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Търсене на обект или град"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search for a venue or a city"
+          }
+        }
+      }
+    },
+    "coachVenues.search.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Къде искате да преподавате?"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Where do you want to teach?"
+          }
+        }
+      }
+    },
+    "coachVenues.status.ACTIVE": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Преподавате тук"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You teach here"
+          }
+        }
+      }
+    },
+    "coachVenues.status.DECLINED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Клубът отказа"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The club declined"
+          }
+        }
+      }
+    },
+    "coachVenues.status.ENDED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Прекратено"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ended"
+          }
+        }
+      }
+    },
+    "coachVenues.status.INVITED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Поканени сте"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You are invited"
+          }
+        }
+      }
+    },
+    "coachVenues.status.REQUESTED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Чака отговор от клуба"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Waiting for the club’s answer"
+          }
+        }
+      }
+    },
+    "coachVenues.summary %@ %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ на час · %2$@ мин"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ an hour · %2$@ min"
+          }
+        }
+      }
+    },
+    "coachVenues.terms.addStretch": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Добавете интервал"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add a stretch"
+          }
+        }
+      }
+    },
+    "coachVenues.terms.cutoff": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отказ най-късно, часове преди урока"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel at the latest, hours before the lesson"
+          }
+        }
+      }
+    },
+    "coachVenues.terms.cutoffHint": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "0 значи до началото. Ако клубът изисква повече, важи неговото."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "0 means until it starts. If the club asks for more, the club’s applies."
+          }
+        }
+      }
+    },
+    "coachVenues.terms.dayOff": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "не работя"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "not working"
+          }
+        }
+      }
+    },
+    "coachVenues.terms.description": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Какво вземате и кога работите в този обект. Към цената ви се добавя цената на корта."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What you charge and when you work at this venue. The court’s price is added to yours."
+          }
+        }
+      }
+    },
+    "coachVenues.terms.fromLabel %@ %lld": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, интервал %2$lld: от"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, stretch %2$lld: from"
+          }
+        }
+      }
+    },
+    "coachVenues.terms.group %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Цена на час за група, %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Price per hour for a group, %@"
+          }
+        }
+      }
+    },
+    "coachVenues.terms.groupHint": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "За двама или повече играчи. Оставете празно, ако не водите групови уроци тук."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "For two or more players. Leave empty if you give no group lessons here."
+          }
+        }
+      }
+    },
+    "coachVenues.terms.hourly %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Цена на час, %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Price per hour, %@"
+          }
+        }
+      }
+    },
+    "coachVenues.terms.hours": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Работни часове"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Working hours"
+          }
+        }
+      }
+    },
+    "coachVenues.terms.hoursHint": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "По времето на обекта. Без часове уроци не могат да се записват."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In the venue’s time. With no hours, no lesson can be booked."
+          }
+        }
+      }
+    },
+    "coachVenues.terms.lengths": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Продължителност на урока"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lesson length"
+          }
+        }
+      }
+    },
+    "coachVenues.terms.lengthsHint": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Колкото може да се запази корт в този обект."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "As long as a court can be booked at this venue."
+          }
+        }
+      }
+    },
+    "coachVenues.terms.minutes %lld": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld мин"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld min"
+          }
+        }
+      }
+    },
+    "coachVenues.terms.removeStretch": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Махнете интервала"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove the stretch"
+          }
+        }
+      }
+    },
+    "coachVenues.terms.save": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Запазете"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save"
+          }
+        }
+      }
+    },
+    "coachVenues.terms.saveHours": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Запазете часовете"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save the hours"
+          }
+        }
+      }
+    },
+    "coachVenues.terms.title %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: цена и часове"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: price and hours"
+          }
+        }
+      }
+    },
+    "coachVenues.terms.toLabel %@ %lld": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, интервал %2$lld: до"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, stretch %2$lld: to"
+          }
+        }
+      }
+    },
+    "coachVenues.timeOff.add": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Добавете"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add"
+          }
+        }
+      }
+    },
+    "coachVenues.timeOff.end": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "До дата"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To"
+          }
+        }
+      }
+    },
+    "coachVenues.timeOff.hint": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "В тези дни не водите уроци никъде. Вижда ги само вие."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On these days you teach nowhere. Only you see them."
+          }
+        }
+      }
+    },
+    "coachVenues.timeOff.none": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нямате отбелязани почивни дни."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You have no days off marked."
+          }
+        }
+      }
+    },
+    "coachVenues.timeOff.note": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Бележка"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Note"
+          }
+        }
+      }
+    },
+    "coachVenues.timeOff.one %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@"
+          }
+        }
+      }
+    },
+    "coachVenues.timeOff.range %@ %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ – %2$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ – %2$@"
+          }
+        }
+      }
+    },
+    "coachVenues.timeOff.remove": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Махнете"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove"
+          }
+        }
+      }
+    },
+    "coachVenues.timeOff.start": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "От дата"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From"
+          }
+        }
+      }
+    },
+    "coachVenues.timeOff.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Почивни дни"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Days off"
+          }
+        }
+      }
+    },
+    "coachVenues.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Клубове"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clubs"
           }
         }
       }

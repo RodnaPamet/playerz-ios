@@ -32,6 +32,8 @@ enum DebugLaunch {
     static var booking: String? { env["PLAYERZ_BOOKING"] }
     static var bookingPlayers: String? { env["PLAYERZ_BOOKING_PLAYERS"] }
     static var invite: String? { env["PLAYERZ_INVITE"] }
+    /// «Профил на треньор» opened on one of its screens (#21): `venues`, `terms`, `timeoff`, `lessons`.
+    static var coachArea: String? { env["PLAYERZ_COACH_AREA"] }
     /// The bell's list open (#15), or a push's link as if tapped.
     static var notifications: Bool { env["PLAYERZ_NOTIFICATIONS"] == "1" }
     static var link: String? { env["PLAYERZ_LINK"] }
@@ -54,6 +56,7 @@ enum DebugLaunch {
     static let booking: String? = nil
     static let bookingPlayers: String? = nil
     static let invite: String? = nil
+    static let coachArea: String? = nil
     static let notifications = false
     static let link: String? = nil
     static let result: String? = nil

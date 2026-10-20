@@ -4,8 +4,9 @@ import SwiftUI
 /// Where a signed-in account lands (projectZ#167, #296): `GET /me` names the
 /// account's kind and `landing.reason`, and the app maps it to its own screens.
 ///
-///   player, coach, anything new  the player's tabs (there is no coach UI yet,
-///                                on the web either, and a coach books as a player)
+///   player, coach, anything new  the player's tabs: a coach books as a player, and
+///                                their own area is «Профил на треньор» in Профил,
+///                                as on the web (#20, #21)
 ///   undecided                    «Играч или треньор?» first: the choice is made once
 ///   club, club-unavailable,      a note that a club is run from the web: a club
 ///   undecided with a club role   account is not a player, and its admin is not here

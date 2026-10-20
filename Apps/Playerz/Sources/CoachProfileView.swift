@@ -9,6 +9,9 @@ struct CoachProfileView: View {
     @Bindable var session: SessionModel
 
     @State private var model = CoachProfileModel()
+    /// A DEBUG launch can open one of the coach's screens (DebugLaunch).
+    @State private var debugArea: String?
+    @State private var debugLinks = CoachLinksModel()
 
     var body: some View {
         Group {
@@ -43,6 +46,20 @@ struct CoachProfileView: View {
                     }
                     CoachCertificateSection(profile: profile, model: model, session: session)
                     CoachProfileSubmitSection(profile: profile, model: model, session: session)
+                    // Where they teach, their days off and their lessons (#21).
+                    Section {
+                        NavigationLink(String(localized: "coachVenues.title")) {
+                            CoachVenuesView(session: session)
+                        }
+                        if profile.state == .APPROVED {
+                            NavigationLink(String(localized: "coachVenues.timeOff.title")) {
+                                CoachTimeOffView(session: session)
+                            }
+                            NavigationLink(String(localized: "coachLessons.title")) {
+                                CoachLessonsView(session: session)
+                            }
+                        }
+                    }
                 }
                 .refreshable { await model.load(session) }
             } else if model.failed {
@@ -57,7 +74,24 @@ struct CoachProfileView: View {
         }
         .navigationTitle(String(localized: "coachProfile.title"))
         .navigationBarTitleDisplayMode(.inline)
-        .task { await model.load(session) }
+        .task {
+            await model.load(session)
+            if let area = DebugLaunch.coachArea {
+                if area == "terms" { await debugLinks.load(session) }
+                debugArea = area
+            }
+        }
+        .navigationDestination(item: $debugArea) { area in
+            switch area {
+            case "terms":
+                if let link = debugLinks.links.first(where: { $0.status == .ACTIVE }) {
+                    CoachTermsView(link: link, model: debugLinks, session: session)
+                }
+            case "timeoff": CoachTimeOffView(session: session)
+            case "lessons": CoachLessonsView(session: session)
+            default: CoachVenuesView(session: session)
+            }
+        }
     }
 
     private var tooLong: Bool {
