@@ -334,25 +334,29 @@ public enum VenuePlanGeometry {
         public var origin: CGPoint
 
         public func screen(_ p: Point) -> CGPoint {
-            CGPoint(x: origin.x + p.x * scale, y: origin.y - p.y * scale)
+            let x: Double = Double(origin.x) + p.x * scale
+            let y: Double = Double(origin.y) - p.y * scale
+            return CGPoint(x: x, y: y)
         }
 
         public func plan(_ s: CGPoint) -> Point {
-            Point((s.x - origin.x) / scale, (origin.y - s.y) / scale)
+            let x: Double = Double(s.x - origin.x) / scale
+            let y: Double = Double(origin.y - s.y) / scale
+            return Point(x, y)
         }
     }
 
     public static func fit(_ bounds: (min: Point, max: Point), in size: CGSize, pad: Double) -> Fit {
-        let w = max(bounds.max.x - bounds.min.x, 1)
-        let h = max(bounds.max.y - bounds.min.y, 1)
-        let scale = max(min((size.width - 2 * pad) / w, (size.height - 2 * pad) / h), 0.01)
-        return Fit(
-            scale: scale,
-            origin: CGPoint(
-                x: pad + (size.width - 2 * pad - w * scale) / 2 - bounds.min.x * scale,
-                y: pad + (size.height - 2 * pad - h * scale) / 2 + bounds.max.y * scale
-            )
-        )
+        // Step by step, in Double: CGFloat and Double mixed in one expression
+        // is more than CI's type checker finishes in time.
+        let w: Double = max(bounds.max.x - bounds.min.x, 1)
+        let h: Double = max(bounds.max.y - bounds.min.y, 1)
+        let width: Double = Double(size.width) - 2 * pad
+        let height: Double = Double(size.height) - 2 * pad
+        let scale: Double = max(min(width / w, height / h), 0.01)
+        let x: Double = pad + (width - w * scale) / 2 - bounds.min.x * scale
+        let y: Double = pad + (height - h * scale) / 2 + bounds.max.y * scale
+        return Fit(scale: scale, origin: CGPoint(x: x, y: y))
     }
 
     /// Whether `p` lies inside the polygon (even-odd ray casting).
