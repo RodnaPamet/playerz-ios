@@ -64,6 +64,9 @@ final class SessionModel {
             try await s.signIn(email: email, password: password)
             session = s
             state = .signedIn
+            // This phone's token, if notifications are allowed, now belongs to
+            // this account (#12).
+            await PushRegistrar.shared.refreshIfAllowed(self)
         } catch SessionError.invalidCredentials {
             // One message for both "no such account" and "wrong password".
             // `authorize()` equalises bcrypt timing precisely so the response
@@ -82,6 +85,8 @@ final class SessionModel {
         guard let session else { return .failed }
         let outcome = await session.deleteAccount()
         if outcome == .deleted {
+            // The server removed this account's devices with it.
+            PushRegistrar.shared.signedOut()
             self.session = nil
             state = .signedOut
         }
@@ -105,7 +110,9 @@ final class SessionModel {
     }
 
     func signOut() async {
-        try? await session?.signOut()
+        // This phone's registration goes with the session (#12).
+        try? await session?.signOut(unregistering: PushRegistrar.shared.deviceToken)
+        PushRegistrar.shared.signedOut()
         session = nil
         state = .signedOut
     }
