@@ -1,5 +1,7 @@
 import Foundation
+import HTTPTypes
 import OpenAPIRuntime
+import OpenAPIURLSession
 
 /// Owns the session and hands out a client that carries it.
 ///
@@ -106,6 +108,71 @@ public actor PlayerzSession {
             transport: transport
         )
         _ = try? await bearer.authLogout(.init(body: .json(.init())))
+    }
+
+    /// Delete the account (`DELETE /me`, playerz-ios#9).
+    ///
+    /// On success the server has already ended every session of the account,
+    /// this one included, so there is nobody left to log out: only the
+    /// Keychain is cleared. A refusal changes nothing, here or there.
+    public func deleteAccount() async -> AccountDeletion {
+        let response: Operations.deleteMe.Output
+        do {
+            response = try await client().deleteMe()
+        } catch {
+            return .failed
+        }
+        switch response {
+        case .noContent:
+            try? await tokens.signOut()
+            return .deleted
+        case let .conflict(conflict):
+            guard let error = try? conflict.body.json.error, error.code == "UPCOMING_BOOKINGS",
+                let details = error.details,
+                let standing = UpcomingStanding(details.additionalProperties)
+            else { return .failed }
+            return .blocked(standing)
+        case let .forbidden(forbidden):
+            let code = try? forbidden.body.json.error.code
+            return code == "CLUB_ACCOUNT_DELETION_BY_REQUEST" ? .clubAccount : .failed
+        case .tooManyRequests:
+            return .rateLimited
+        default:
+            return .failed
+        }
+    }
+
+    /// The account's personal data (`GET /me/export`) exactly as the server
+    /// wrote it: the bytes of the file, for the share sheet.
+    ///
+    /// Not through the generated `exportMyData`, which would decode the
+    /// document into the spec's types and lose any field the spec does not
+    /// name. An export that silently leaves something out is the one kind
+    /// that must not happen, so this asks the same transport for the raw body,
+    /// with the session's token.
+    public func exportData() async throws -> Data {
+        guard let token = try await tokens.validAccessToken(refreshing: makeRefresher()) else {
+            throw DataExportError.notSignedIn
+        }
+        var request = HTTPRequest(method: .get, scheme: nil, authority: nil, path: "/me/export")
+        request.headerFields[.authorization] = "Bearer \(token)"
+        request.headerFields[.accept] = "application/json"
+        let (response, body) = try await (transport ?? URLSessionTransport()).send(
+            request, body: nil, baseURL: baseURL, operationID: "exportMyData"
+        )
+        switch response.status.code {
+        case 200:
+            guard let body else { throw DataExportError.refused(200) }
+            // The export is a few hundred kilobytes for a busy account; the
+            // ceiling only guards against a runaway body.
+            return try await Data(collecting: body, upTo: 50 * 1024 * 1024)
+        case 401:
+            throw DataExportError.notSignedIn
+        case 429:
+            throw DataExportError.rateLimited
+        default:
+            throw DataExportError.refused(response.status.code)
+        }
     }
 
     /// Exchange a refresh token for a new session.
