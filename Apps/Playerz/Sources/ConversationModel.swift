@@ -99,7 +99,9 @@ final class ConversationModel {
                 await load(session)
                 return true
             default:
-                problem = ConversationText.error(apiErrorCode(response))
+                let code = apiErrorCode(response)
+                session.notice(refusal: code)
+                problem = ConversationText.error(code)
                 return false
             }
         } catch {

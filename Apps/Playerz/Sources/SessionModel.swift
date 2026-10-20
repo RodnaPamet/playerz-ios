@@ -32,6 +32,10 @@ final class SessionModel {
     /// Which modules this server has on (#16); everything until it says.
     private(set) var modules: Modules = .unknown
 
+    /// Raised when an action was refused for want of a confirmed phone
+    /// (`PHONE_REQUIRED`, #11): RootView opens the phone step over the screen.
+    var phoneStepNeeded = false
+
     private var session: PlayerzSession?
 
     /// Restore a session from the Keychain, if the URL is already known.
@@ -137,6 +141,34 @@ final class SessionModel {
     /// Ask the server which modules are on. A failed read keeps what was known.
     func refreshModules() async {
         if let fresh = await session?.modules() { modules = fresh }
+    }
+
+    /// A refusal from any screen: one that needs the phone step opens it.
+    func notice(refusal code: String?) {
+        if code == "PHONE_REQUIRED" { phoneStepNeeded = true }
+    }
+
+    /// The phone step (#11).
+    func startPhone(_ number: String) async throws -> PhoneCode {
+        guard let session else { throw PhoneStepError.notSignedIn }
+        return try await session.startPhone(number)
+    }
+
+    func confirmPhone(_ number: String, code: String, challenge: String) async throws {
+        guard let session else { throw PhoneStepError.notSignedIn }
+        try await session.confirmPhone(number, code: code, challenge: challenge)
+        phoneStepNeeded = false
+    }
+
+    /// «Не сега», remembered per account on this phone, as the web remembers
+    /// it per browser: the step is offered once, then only when an action
+    /// needs it.
+    func wasAskedForPhone(_ userId: String) -> Bool {
+        UserDefaults.standard.bool(forKey: "phone.asked.\(userId)")
+    }
+
+    func rememberAskedForPhone(_ userId: String) {
+        UserDefaults.standard.set(true, forKey: "phone.asked.\(userId)")
     }
 
     func signOut() async {

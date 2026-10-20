@@ -10,6 +10,14 @@ struct PlayerzApp: App {
     var body: some Scene {
         WindowGroup {
             RootView(session: session)
+                // A refusal for want of a confirmed phone, from any screen (#11).
+                .sheet(isPresented: $session.phoneStepNeeded) {
+                    PhoneStepView(session: session) {
+                        session.phoneStepNeeded = false
+                    } later: {
+                        session.phoneStepNeeded = false
+                    }
+                }
                 .task {
                     await session.restore()
                     if session.state == .signedIn { await PushRegistrar.shared.refreshIfAllowed(session) }

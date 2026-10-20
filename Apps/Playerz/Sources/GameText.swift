@@ -40,6 +40,8 @@ enum GameText {
     /// A refusal the server named, in the user's words; the generic line for
     /// anything else.
     static func error(_ code: String?) -> String {
+        // The phone step opens over the screen (#11); this says why.
+        if code == "PHONE_REQUIRED" { return String(localized: "phone.required.title") }
         let known: Set<String> = [
             "GAME_FULL", "GAME_CLOSED", "GAME_NOT_FOUND", "OPEN_PLAY_CUTOFF_PASSED",
             "ASK_DECLINED", "ALREADY_PLAYING", "PLAYER_ACCOUNT_REQUIRED", "NO_SHOW_BLOCKED",

@@ -241,6 +241,56 @@ public actor PlayerzSession {
         return Modules(data.modules)
     }
 
+    /// The phone step, part one (playerz-ios#11): send a code to `number`, as
+    /// typed (`0888 123 456`); the server normalises it.
+    public func startPhone(_ number: String) async throws -> PhoneCode {
+        let response: Operations.startPhoneVerification.Output
+        do {
+            response = try await client().startPhoneVerification(body: .json(.init(phone: number)))
+        } catch {
+            throw PhoneStepError.failed
+        }
+        switch response {
+        case let .ok(ok):
+            guard let sent = try? ok.body.json.data else { throw PhoneStepError.failed }
+            return PhoneCode(maskedNumber: sent.number, challenge: sent.challenge)
+        case let .badRequest(refused):
+            throw (try? refused.body.json.error.code) == "PHONE_INVALID" ? PhoneStepError.invalidNumber : .failed
+        case .unauthorized: throw PhoneStepError.notSignedIn
+        case .tooManyRequests: throw PhoneStepError.rateLimited
+        case .serviceUnavailable: throw PhoneStepError.unavailable
+        default: throw PhoneStepError.failed
+        }
+    }
+
+    /// The phone step, part two: the code from the SMS, for the same number and
+    /// the challenge part one answered. On success the number is the account's.
+    public func confirmPhone(_ number: String, code: String, challenge: String) async throws {
+        let response: Operations.confirmPhoneVerification.Output
+        do {
+            response = try await client().confirmPhoneVerification(
+                body: .json(.init(phone: number, code: code, challenge: challenge))
+            )
+        } catch {
+            throw PhoneStepError.failed
+        }
+        switch response {
+        case .ok: return
+        case let .badRequest(refused):
+            switch try? refused.body.json.error.code {
+            case "PHONE_CODE_WRONG": throw PhoneStepError.wrongCode
+            case "PHONE_CODE_EXPIRED": throw PhoneStepError.expiredCode
+            case "PHONE_INVALID": throw PhoneStepError.invalidNumber
+            default: throw PhoneStepError.failed
+            }
+        case .conflict: throw PhoneStepError.numberInUse
+        case .unauthorized: throw PhoneStepError.notSignedIn
+        case .tooManyRequests: throw PhoneStepError.rateLimited
+        case .serviceUnavailable: throw PhoneStepError.unavailable
+        default: throw PhoneStepError.failed
+        }
+    }
+
     /// Exchange a refresh token for a new session.
     ///
     /// Isolated as a `@Sendable` closure because `BearerMiddleware` holds it
