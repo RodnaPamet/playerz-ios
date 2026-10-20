@@ -10,6 +10,8 @@ struct ClubView: View {
 
     @State private var club: Components.Schemas.ClubPublic?
     @State private var failed = false
+    /// The club's tournaments (#22), while the ranking module is on.
+    @State private var tournaments: [Components.Schemas.Tournament] = []
 
     var body: some View {
         Group {
@@ -28,6 +30,17 @@ struct ClubView: View {
                         Section {
                             NavigationLink(String(localized: "club.leaderboard.title")) {
                                 ClubLeaderboardView(slug: slug, session: session)
+                            }
+                        }
+                    }
+                    if session.modules.ranking, !tournaments.isEmpty {
+                        Section(String(localized: "games.tab.tournaments")) {
+                            ForEach(tournaments, id: \.id) { tournament in
+                                NavigationLink {
+                                    TournamentDetailView(id: tournament.id, session: session)
+                                } label: {
+                                    TournamentRow(tournament: tournament, entry: nil)
+                                }
                             }
                         }
                     }
@@ -81,6 +94,10 @@ struct ClubView: View {
             failed = false
         } catch {
             failed = club == nil
+        }
+        if session.modules.ranking,
+           let listed = try? await client.listClubPublicTournaments(path: .init(slug: slug)).ok.body.json.data.items {
+            tournaments = listed
         }
     }
 }

@@ -25,6 +25,11 @@ enum DebugLaunch {
     static var tab: Tab? { env["PLAYERZ_TAB"].flatMap(Tab.init(rawValue:)) }
     static var conversation: String? { env["PLAYERZ_CONVERSATION"] }
     static var gamesMine: Bool { env["PLAYERZ_GAMES"] == "mine" }
+    /// Игри on «Турнири» (`PLAYERZ_GAMES=tournaments`), a tournament
+    /// (`PLAYERZ_TOURNAMENT=<id>`), and its draw (also `PLAYERZ_TOURNAMENT_DRAW=1`), #22.
+    static var gamesTournaments: Bool { env["PLAYERZ_GAMES"] == "tournaments" }
+    static var tournament: String? { env["PLAYERZ_TOURNAMENT"] }
+    static var tournamentDraw: Bool { env["PLAYERZ_TOURNAMENT_DRAW"] == "1" }
     static var bookingGame: String? { env["PLAYERZ_BOOKING_GAME"] }
     /// Играй opened on a club's page (`PLAYERZ_CLUB=<slug>`) or a venue (`PLAYERZ_VENUE=<id>`), #17.
     static var club: String? { env["PLAYERZ_CLUB"] }
@@ -50,6 +55,9 @@ enum DebugLaunch {
     static let tab: Tab? = nil
     static let conversation: String? = nil
     static let gamesMine = false
+    static let gamesTournaments = false
+    static let tournament: String? = nil
+    static let tournamentDraw = false
     static let bookingGame: String? = nil
     static let club: String? = nil
     static let venue: String? = nil
