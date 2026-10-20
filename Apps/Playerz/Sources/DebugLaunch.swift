@@ -29,6 +29,9 @@ enum DebugLaunch {
     /// Играй opened on a club's page (`PLAYERZ_CLUB=<slug>`) or a venue (`PLAYERZ_VENUE=<id>`), #17.
     static var club: String? { env["PLAYERZ_CLUB"] }
     static var venue: String? { env["PLAYERZ_VENUE"] }
+    static var booking: String? { env["PLAYERZ_BOOKING"] }
+    static var bookingPlayers: String? { env["PLAYERZ_BOOKING_PLAYERS"] }
+    static var invite: String? { env["PLAYERZ_INVITE"] }
     static var profile: Profile? { env["PLAYERZ_PROFILE"].flatMap(Profile.init(rawValue:)) }
     #else
     static let credentials: (email: String, password: String)? = nil
@@ -38,6 +41,9 @@ enum DebugLaunch {
     static let bookingGame: String? = nil
     static let club: String? = nil
     static let venue: String? = nil
+    static let booking: String? = nil
+    static let bookingPlayers: String? = nil
+    static let invite: String? = nil
     static let profile: Profile? = nil
     #endif
 }

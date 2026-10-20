@@ -18,6 +18,9 @@ struct PlayerzApp: App {
                         session.phoneStepNeeded = false
                     }
                 }
+                // An invite link (#14). Universal links are the release's
+                // (#24); until then this is reached by a DEBUG launch.
+                .onOpenURL { session.open($0) }
                 .task {
                     await session.restore()
                     if session.state == .signedIn { await PushRegistrar.shared.refreshIfAllowed(session) }
@@ -123,6 +126,10 @@ struct RootView: View {
                             }
                             try? await Task.sleep(for: .seconds(60))
                         }
+                    }
+                    // An invite link opened in the app (#14), once past the gate's steps.
+                    .sheet(item: $session.pendingInvite) { invite in
+                        BookingInviteView(token: invite.token, session: session)
                     }
                 }
             }

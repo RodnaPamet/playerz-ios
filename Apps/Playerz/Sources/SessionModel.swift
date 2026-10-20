@@ -31,12 +31,23 @@ final class SessionModel {
     private(set) var busy = false
     /// Which modules this server has on (#16); everything until it says.
     private(set) var modules: Modules = .unknown
+    /// An invite link opened in the app (#14), shown once signed in; kept
+    /// across signing in, as the web returns to the invite after its sign-in.
+    var pendingInvite: PendingInvite? = DebugLaunch.invite.map(PendingInvite.init(token:))
 
     /// Raised when an action was refused for want of a confirmed phone
     /// (`PHONE_REQUIRED`, #11): RootView opens the phone step over the screen.
     var phoneStepNeeded = false
 
     private var session: PlayerzSession?
+
+    /// A link the app was opened with. Answers whether it was one of ours.
+    @discardableResult
+    func open(_ url: URL) -> Bool {
+        guard let token = BookingInviteLink.token(in: url) else { return false }
+        pendingInvite = PendingInvite(token: token)
+        return true
+    }
 
     /// Restore a session from the Keychain, if the URL is already known.
     func restore() async {

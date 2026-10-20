@@ -17,6 +17,9 @@ struct MyBookingsView: View {
     @State private var banner: (text: String, isError: Bool)?
     /// A DEBUG launch can open a booking's game straight away (DebugLaunch).
     @State private var debugGame: String? = DebugLaunch.bookingGame
+    /// …or the booking itself, or its players.
+    @State private var debugBooking: String? = DebugLaunch.booking
+    @State private var debugPlayers: String? = DebugLaunch.bookingPlayers
 
     enum Phase { case loading, loaded, failed }
 
@@ -41,6 +44,12 @@ struct MyBookingsView: View {
                 }
                 .navigationDestination(item: $debugGame) { id in
                     BookingGameView(bookingId: id, session: session)
+                }
+                .navigationDestination(item: $debugBooking) { id in
+                    BookingDetailView(bookingId: id, session: session)
+                }
+                .navigationDestination(item: $debugPlayers) { id in
+                    BookingPlayersView(bookingId: id, session: session)
                 }
         }
         .task(id: when) { await load() }
@@ -99,27 +108,13 @@ struct MyBookingsView: View {
         let upcoming = when == .upcoming
         // Cancelled under the club's slug; without one there is nothing to cancel under.
         let canCancel = booking.clubSlug != nil && (booking.cancellableUntil.map { $0 > .now } ?? false)
-        VStack(alignment: .leading, spacing: 2) {
-            Text(GameText.when(booking.startTs, timezone: booking.venue.timezone)).font(.headline)
-            Text("\(booking.venue.name) · \(booking.resource.name)").font(.subheadline)
-            HStack {
-                Text(BookingCancel.status(booking.status))
-                if booking.viewerRole == .PARTICIPANT {
-                    Text(String(localized: "myBookings.added"))
-                }
-                Spacer()
-                Text((Decimal(booking.totalCents) / 100).formatted(.currency(code: booking.currency)))
-            }
-            .font(.caption)
-            .foregroundStyle(.secondary)
+        // The booking in full (#14): where, the players, the review.
+        NavigationLink {
+            BookingDetailView(bookingId: booking.id, session: session)
+        } label: {
+            MyBookingSummary(booking: booking)
         }
-        .accessibilityElement(children: .combine)
 
-        if booking.status != "CANCELLED" {
-            NavigationLink(String(localized: "bookingPlayers.title")) {
-                BookingPlayersView(bookingId: booking.id, session: session)
-            }
-        }
         if session.modules.openPlay, upcoming, booking.status == "CONFIRMED" {
             NavigationLink(String(localized: "bookingGame.link")) {
                 BookingGameView(bookingId: booking.id, session: session)
