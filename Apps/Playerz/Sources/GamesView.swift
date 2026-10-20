@@ -101,8 +101,8 @@ struct GamesView: View {
             }
             Picker(String(localized: "games.filter.sport"), selection: $model.sport) {
                 Text(String(localized: "games.filter.allSports"))
-                    .tag(Components.Schemas.SportType?.none)
-                ForEach(Components.Schemas.SportType.allCases, id: \.self) { sport in
+                    .tag(String?.none)
+                ForEach(Sports.known, id: \.self) { sport in
                     Text(GameText.sport(sport)).tag(Optional(sport))
                 }
             }

@@ -3,8 +3,12 @@ import PlayerzAPI
 
 /// The words Игри puts on screen (#510), as the web says them (#376).
 enum GameText {
-    static func sport(_ sport: Components.Schemas.SportType) -> String {
-        localized(key: "sport.\(sport.rawValue)")
+    /// A sport in the web's words; one added on the server after this build
+    /// shows as the server wrote it (#34).
+    static func sport(_ sport: String) -> String {
+        let key = "sport.\(sport)"
+        let text = localized(key: key)
+        return text == key ? sport : text
     }
 
     static func status(_ status: Components.Schemas.OpenGameRequestStatus) -> String {

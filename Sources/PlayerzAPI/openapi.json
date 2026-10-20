@@ -17967,7 +17967,7 @@
       "SportType": {
         "type": "string",
         "description": "Prisma `SportType`. As a query parameter (`?sport=`) a value outside this list is a 400 BAD_REQUEST naming the field `sport` (#334). On the RESPONSE side treat it as an open string: P51 added SQUASH and KARTING, and a client generated before that cannot decode a venue that has a squash court or a karting track. The server will add values again.",
-        "enum": [
+        "x-known-values": [
           "TENNIS",
           "PADEL",
           "BADMINTON",
@@ -17986,13 +17986,14 @@
           "KARTING",
           "RUNNING",
           "CYCLING"
-        ]
+        ],
+        "x-open-enum": true
       },
       "ResourceType": {
         "type": "string",
         "title": "ResourceType",
         "description": "Prisma `ResourceType`: what a booking holds. Booking, availability and pricing treat every type alike; the type decides what the resource is CALLED. A TRACK (P51, karting, hired whole) is a \"писта\" / \"track\"; every other type reads \"корт\" / \"court\" in the web app today. On the RESPONSE side treat it as an open string: a type added later must not fail a shipped decoder, and an unknown one is best shown as a court.",
-        "enum": [
+        "x-known-values": [
           "COURT",
           "FIELD",
           "TABLE",
@@ -18000,7 +18001,8 @@
           "LOBBY",
           "ROUTE",
           "TRACK"
-        ]
+        ],
+        "x-open-enum": true
       },
       "VenueSummary": {
         "type": "object",
@@ -20821,7 +20823,7 @@
         "type": "string",
         "title": "ProfileSport",
         "description": "A sport a player can declare (#359): the bookable sports of the registry that take a self-declared level. KARTING is bookable and is NOT one: playerz neither ranks nor matches drivers, so a level would seed nothing (P51), and `PATCH /me` refuses it with a 400. On the RESPONSE side treat it as an open string, as `Booking.status`: a sport added later must not fail a shipped decoder. On the request side only these values are accepted.",
-        "enum": [
+        "x-known-values": [
           "TENNIS",
           "PADEL",
           "BADMINTON",
@@ -20837,7 +20839,8 @@
           "HANDBALL",
           "CHESS",
           "ESPORTS"
-        ]
+        ],
+        "x-open-enum": true
       },
       "SportLevel": {
         "type": "object",
@@ -22033,7 +22036,7 @@
           },
           "kind": {
             "type": "string",
-            "enum": [
+            "x-known-values": [
               "BOOKING_CONFIRMED",
               "BOOKING_REMINDER",
               "BOOKING_CANCELLED",
@@ -22072,7 +22075,8 @@
               "TOURNAMENT_ENTRY_DECIDED",
               "TOURNAMENT_ENTRY_WITHDRAWN"
             ],
-            "description": "Treat an unknown value as a generic notification: kinds are added over time."
+            "description": "Treat an unknown value as a generic notification: kinds are added over time.",
+            "x-open-enum": true
           },
           "title": {
             "type": "string",
@@ -22643,7 +22647,7 @@
           },
           "courtNouns": {
             "type": "string",
-            "enum": [
+            "x-known-values": [
               "court",
               "pitch",
               "courtPitch",
@@ -22676,7 +22680,8 @@
               "pitchTrackTableSeat",
               "courtPitchTrackTableSeat"
             ],
-            "description": "What the court column is called (P51, #454, #477): the club's one noun when all its resources are of one kind (`court` \"Корт\", `pitch` \"Игрище\", `track` \"Писта\", `table` \"Маса\": table tennis and chess, `seat` \"Място\": esports), or the nouns it holds named in the order court, pitch, track, table, seat (`courtTable`: \"Корт / маса\"). Treat an unknown value as `court`."
+            "description": "What the court column is called (P51, #454, #477): the club's one noun when all its resources are of one kind (`court` \"Корт\", `pitch` \"Игрище\", `track` \"Писта\", `table` \"Маса\": table tennis and chess, `seat` \"Място\": esports), or the nouns it holds named in the order court, pitch, track, table, seat (`courtTable`: \"Корт / маса\"). Treat an unknown value as `court`.",
+            "x-open-enum": true
           },
           "tournamentFeePercent": {
             "type": "string",

@@ -24,6 +24,13 @@ reads, and never on the server's spec.
 Anything nullable this cannot rewrite stops `make regenerate` and CI, naming
 the path, rather than being dropped from the client again without a word.
 
+The server also marks the sets of values that grow over time with
+`x-open-enum: true` (projectZ#633): sports, resource types, notification kinds.
+The generator turns an `enum` into a frozen Swift enum, which fails the whole
+response on a value this build has never seen. So for those the rewrite moves
+`enum` to `x-known-values`, which the generator ignores: the client reads a
+`String`, and the app's own lists of known values are tested against it (#34).
+
     python3 scripts/spec_for_swift.py <server spec> <out>
 """
 
@@ -47,6 +54,8 @@ def for_swift(spec):
         if not isinstance(node, dict):
             return node
         node = {k: rewrite(v, f"{path}/{k}") for k, v in node.items()}
+        if node.get("x-open-enum") is True and "enum" in node:
+            node = {("x-known-values" if k == "enum" else k): v for k, v in node.items()}
         for key in ("oneOf", "anyOf"):
             members = node.get(key)
             if not isinstance(members, list) or NULL not in members:
