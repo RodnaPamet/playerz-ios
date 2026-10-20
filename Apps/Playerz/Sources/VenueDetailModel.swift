@@ -26,6 +26,10 @@ final class VenueDetailModel {
     /// The club's name, for «Обект на …» linking to its page (#17); nil until read.
     private(set) var clubName: String?
     private(set) var courts: [Court] = []
+    /// The venue's plan (#25): nil until read, or while no court is on it.
+    private(set) var plan: VenuePlanDrawing?
+    /// Read once per screen: the plan does not change with the day.
+    private var planRead = false
     private(set) var banner: String?
     private(set) var bannerIsError = false
     private(set) var bookingSlot: Date?
@@ -140,10 +144,21 @@ final class VenueDetailModel {
             }
             phase = .loaded
 
+            await loadPlan(client, venueId: venueId)
             await loadForecasts(lat: detail.lat, lng: detail.lng)
         } catch {
             phase = .failed
         }
+    }
+
+    /// The plan, once. A failed read leaves the list alone and is tried again
+    /// with the next day.
+    private func loadPlan(_ client: Client, venueId: String) async {
+        guard !planRead,
+              let read = try? await client.getVenuePlan(path: .init(id: venueId)).ok.body.json.data
+        else { return }
+        planRead = true
+        plan = VenuePlanDrawing(read)
     }
 
     /// One fetch per outdoor court's first bookable slot.

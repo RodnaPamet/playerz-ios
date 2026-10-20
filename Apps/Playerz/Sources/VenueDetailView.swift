@@ -158,6 +158,11 @@ struct VenueDetailView: View {
                 Section { WeatherAttribution() }
             }
 
+            // The plan (#25), where the venue has one: time first, then a court.
+            if let plan = model.plan {
+                VenuePlanSection(drawing: plan, courts: model.courts, busySlot: model.bookingSlot, book: book)
+            }
+
             ForEach(model.courts, id: \.resourceId) { court in
                 Section {
                     if court.bookable.isEmpty {
@@ -191,6 +196,11 @@ struct VenueDetailView: View {
                 VenueCoachesSection(coaches: coaches, venueId: venueId, session: session)
             }
         }
+    }
+
+    /// A court booked from the plan (#25), as a slot is from the list.
+    private func book(_ court: VenueDetailModel.Court, _ slot: Components.Schemas.AvailabilitySlot) {
+        Task { await model.book(session, venueId: venueId, resourceId: court.resourceId, slot: slot) }
     }
 
     private func loadCoaches() async {
