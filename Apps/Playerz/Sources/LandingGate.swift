@@ -106,6 +106,7 @@ struct LandingGate<Tabs: View>: View {
             let fresh = try await client.getMe().ok.body.json.data
             // The texts first, so the tabs never show for a moment before the step.
             await checkTexts()
+            await session.followLanguage(of: fresh)
             me = fresh
             failed = false
         } catch {

@@ -143,6 +143,15 @@ final class SessionModel {
         if let fresh = await session?.modules() { modules = fresh }
     }
 
+    /// The account's language follows the app's (#13): written when they
+    /// differ, at launch and after signing in. Changing the app's language in
+    /// iOS Settings relaunches it, so this sees every change.
+    func followLanguage(of me: Components.Schemas.Me) async {
+        let code = AppLanguage.code(for: Bundle.main.preferredLocalizations.first)
+        guard me.locale != code.rawValue, let session else { return }
+        _ = await session.saveLanguage(code)
+    }
+
     /// A refusal from any screen: one that needs the phone step opens it.
     func notice(refusal code: String?) {
         if code == "PHONE_REQUIRED" { phoneStepNeeded = true }
