@@ -19,6 +19,8 @@ enum BookingPlayerText {
         case "NO_PROOF_OF_VISIT": String(localized: "myBookings.review.error.NO_PROOF_OF_VISIT")
         case "ALREADY_REVIEWED": String(localized: "myBookings.review.error.ALREADY_REVIEWED")
         case "FORBIDDEN": String(localized: "myBookings.review.error.NOT_ALLOWED")
+        case "NO_LESSON_TO_REVIEW": String(localized: "myBookings.review.error.NO_LESSON_TO_REVIEW")
+        case "COACH_ALREADY_REVIEWED": String(localized: "myBookings.review.error.COACH_ALREADY_REVIEWED")
         default: String(localized: "myBookings.review.error.FAILED")
         }
     }

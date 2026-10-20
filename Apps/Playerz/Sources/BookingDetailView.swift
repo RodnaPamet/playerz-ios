@@ -45,6 +45,9 @@ struct BookingDetailView: View {
                             session: session
                         )
                         .id(BookingResultSection.anchor)
+                        if session.modules.coaches, let lesson = booking.lesson {
+                            LessonCoachReview(bookingId: booking.id, lesson: lesson, session: session, reviewed: reload)
+                        }
                         BookingDetailReview(booking: booking, session: session, reviewed: reload)
                         if let cancelLine {
                             Section {

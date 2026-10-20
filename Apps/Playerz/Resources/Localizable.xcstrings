@@ -2389,6 +2389,1210 @@
         }
       }
     },
+    "coaches.allSports": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Всички"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All"
+          }
+        }
+      }
+    },
+    "coaches.cardRating %@ %lld": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ ★ (%2$lld)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ ★ (%2$lld)"
+          }
+        }
+      }
+    },
+    "coaches.empty.description": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Скоро тук ще има треньори, при които да запишете урок."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coaches you can book a lesson with will be here soon."
+          }
+        }
+      }
+    },
+    "coaches.empty.sport": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Няма треньори за този спорт."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No coaches for this sport."
+          }
+        }
+      }
+    },
+    "coaches.empty.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Още няма треньори"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No coaches yet"
+          }
+        }
+      }
+    },
+    "coaches.filterLabel": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Спорт"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sport"
+          }
+        }
+      }
+    },
+    "coaches.from %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "от %@ на час"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "from %@ an hour"
+          }
+        }
+      }
+    },
+    "coaches.intro": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Одобрени от playerz.bg треньори, при които може да се запише урок."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coaches approved by playerz.bg, with whom a lesson can be booked."
+          }
+        }
+      }
+    },
+    "coaches.lesson.at %@ %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "coaches.lesson.book": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Запиши урок"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Book lesson"
+          }
+        }
+      }
+    },
+    "coaches.lesson.dayLabel": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ден"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Day"
+          }
+        }
+      }
+    },
+    "coaches.lesson.lengthLabel": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Продължителност"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Length"
+          }
+        }
+      }
+    },
+    "coaches.lesson.minutes %lld": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld мин"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld min"
+          }
+        }
+      }
+    },
+    "coaches.lesson.none": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Няма свободни часове за урок на този ден."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No free times for a lesson on this day."
+          }
+        }
+      }
+    },
+    "coaches.lesson.priceNote %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Цената е за един играч и включва %@ за треньора и цената на корта. Плаща се на място в клуба."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The price is for one player and includes %@ for the coach and the court's price. Paid at the club."
+          }
+        }
+      }
+    },
+    "coaches.lesson.sheet.coach": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Треньор"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coach"
+          }
+        }
+      }
+    },
+    "coaches.lesson.sheet.coachFee": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "За треньора"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "For the coach"
+          }
+        }
+      }
+    },
+    "coaches.lesson.sheet.court": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Корт"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Court"
+          }
+        }
+      }
+    },
+    "coaches.lesson.sheet.courtOf %@ %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "coaches.lesson.sheet.courtPrice": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "За корта"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "For the court"
+          }
+        }
+      }
+    },
+    "coaches.lesson.sheet.error.coachTaken": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Някой току-що записа урок при този треньор по същото време. Свободните часове са обновени. Изберете друг."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Someone has just booked a lesson with this coach at that time. The free times have been refreshed. Choose another."
+          }
+        }
+      }
+    },
+    "coaches.lesson.sheet.error.failed": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Опитайте отново. Ако връзката е прекъснала, повторният опит няма да запише втори урок."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Try again. If the connection dropped, trying again will not book a second lesson."
+          }
+        }
+      }
+    },
+    "coaches.lesson.sheet.error.noCourt": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Кортовете за този час току-що бяха заети. Свободните часове са обновени. Изберете друг."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The courts for that time have just been taken. The free times have been refreshed. Choose another."
+          }
+        }
+      }
+    },
+    "coaches.lesson.sheet.error.notBookable": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "При този треньор вече не могат да се записват уроци в този обект."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lessons with this coach can no longer be booked at this venue."
+          }
+        }
+      }
+    },
+    "coaches.lesson.sheet.error.notOffered": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Този час вече не е свободен за урок. Свободните часове са обновени. Изберете друг."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That time is no longer free for a lesson. The free times have been refreshed. Choose another."
+          }
+        }
+      }
+    },
+    "coaches.lesson.sheet.error.ownLesson": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не можете да запишете урок при себе си."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You cannot book a lesson with yourself."
+          }
+        }
+      }
+    },
+    "coaches.lesson.sheet.error.priceChanged %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Кортът, за който беше тази цена, вече е зает. За този час урокът струва %@. Свободните часове са обновени. Изберете отново."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The court that price was for has been taken. The lesson at that time now costs %@. The free times have been refreshed. Choose again."
+          }
+        }
+      }
+    },
+    "coaches.lesson.sheet.error.priceChangedNoPrice": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Кортът, за който беше тази цена, вече е зает. Свободните часове са обновени. Изберете отново."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The court that price was for has been taken. The free times have been refreshed. Choose again."
+          }
+        }
+      }
+    },
+    "coaches.lesson.sheet.noOnlineCancel %lld": {
+      "localizations": {
+        "bg": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Урокът може да се отмени до %lld час преди началото. Този час започва по-скоро, затова след потвърждаване отмяната е възможна само чрез клуба."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Урокът може да се отмени до %lld часа преди началото. Този час започва по-скоро, затова след потвърждаване отмяната е възможна само чрез клуба."
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "The lesson can be cancelled up to %lld hour before it starts. This one starts sooner, so once confirmed it can only be cancelled through the club."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "The lesson can be cancelled up to %lld hours before it starts. This one starts sooner, so once confirmed it can only be cancelled through the club."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "coaches.lesson.sheet.notes": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Бележка за треньора (по желание)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A note for the coach (optional)"
+          }
+        }
+      }
+    },
+    "coaches.lesson.sheet.payAtClub": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Плаща се на място в клуба. Ако кортът междувременно бъде зает, урокът ще е на друг свободен корт, без да струва повече."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paid at the club. If the court is taken in the meantime, the lesson will be on another free court, and will not cost more."
+          }
+        }
+      }
+    },
+    "coaches.lesson.sheet.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Потвърдете урока"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirm the lesson"
+          }
+        }
+      }
+    },
+    "coaches.lesson.sheet.total": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Общо"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total"
+          }
+        }
+      }
+    },
+    "coaches.lesson.sheet.venue": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Обект"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Venue"
+          }
+        }
+      }
+    },
+    "coaches.lesson.sheet.when": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Кога"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When"
+          }
+        }
+      }
+    },
+    "coaches.lesson.sportLabel": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Спорт"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sport"
+          }
+        }
+      }
+    },
+    "coaches.lesson.timesLabel": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Свободни часове за урок"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Free times for a lesson"
+          }
+        }
+      }
+    },
+    "coaches.lesson.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Запишете урок"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Book a lesson"
+          }
+        }
+      }
+    },
+    "coaches.lesson.venueLabel": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Обект"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Venue"
+          }
+        }
+      }
+    },
+    "coaches.noName": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Треньор"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coach"
+          }
+        }
+      }
+    },
+    "coaches.page.about": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "За треньора"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "About the coach"
+          }
+        }
+      }
+    },
+    "coaches.page.at %@ %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "coaches.page.courtNote": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Към цената на треньора се добавя цената на корта. Плаща се на място в клуба."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The court’s price is added to the coach’s. Paid at the club."
+          }
+        }
+      }
+    },
+    "coaches.page.groupRate %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "за група %@ на час"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "for a group %@ an hour"
+          }
+        }
+      }
+    },
+    "coaches.page.lengths %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "уроци по %@ мин"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "lessons of %@ min"
+          }
+        }
+      }
+    },
+    "coaches.page.nowhere": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "В момента няма обект, в който може да се запише урок при този треньор."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "There is no venue right now where a lesson can be booked with this coach."
+          }
+        }
+      }
+    },
+    "coaches.page.qualifications": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Квалификации"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qualifications"
+          }
+        }
+      }
+    },
+    "coaches.page.rate %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ на час"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ an hour"
+          }
+        }
+      }
+    },
+    "coaches.page.sportOne %@ %lld": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: ниво %2$lld"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: level %2$lld"
+          }
+        }
+      }
+    },
+    "coaches.page.sportRange %@ %lld %lld": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: нива %2$lld–%3$lld"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: levels %2$lld–%3$lld"
+          }
+        }
+      }
+    },
+    "coaches.page.teaches": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Преподава"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Teaches"
+          }
+        }
+      }
+    },
+    "coaches.page.venues": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Къде преподава"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Where they teach"
+          }
+        }
+      }
+    },
+    "coaches.reviews.anonymous": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Играч"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A player"
+          }
+        }
+      }
+    },
+    "coaches.reviews.delete": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изтрий"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete"
+          }
+        }
+      }
+    },
+    "coaches.reviews.deleteDescription": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ще изчезне от страницата на треньора. След това можете да напишете нов."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "It disappears from the coach’s page. You can then write a new one."
+          }
+        }
+      }
+    },
+    "coaches.reviews.deleteFailed": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отзивът не беше изтрит. Опитайте отново."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The review was not deleted. Try again."
+          }
+        }
+      }
+    },
+    "coaches.reviews.deleteTitle": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Да изтрием ли отзива ви?"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete your review?"
+          }
+        }
+      }
+    },
+    "coaches.reviews.deleteYes": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изтрий отзива"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete the review"
+          }
+        }
+      }
+    },
+    "coaches.reviews.keep": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Остави го"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keep it"
+          }
+        }
+      }
+    },
+    "coaches.reviews.more": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Още отзиви"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "More reviews"
+          }
+        }
+      }
+    },
+    "coaches.reviews.moreError": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отзивите не се заредиха. Опитайте отново."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The reviews did not load. Try again."
+          }
+        }
+      }
+    },
+    "coaches.reviews.none": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Все още няма отзиви. Играч може да остави отзив след урок с този треньор."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No reviews yet. A player can leave one after a lesson with this coach."
+          }
+        }
+      }
+    },
+    "coaches.reviews.report": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Подай сигнал"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Report"
+          }
+        }
+      }
+    },
+    "coaches.reviews.stars %lld": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld от 5 звезди"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld of 5 stars"
+          }
+        }
+      }
+    },
+    "coaches.reviews.summary %@ %lld": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ ★ · %#@reviews@"
+          },
+          "substitutions": {
+            "reviews": {
+              "argNum": 2,
+              "formatSpecifier": "lld",
+              "variations": {
+                "plural": {
+                  "one": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg отзив"
+                    }
+                  },
+                  "other": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg отзива"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ ★ · %#@reviews@"
+          },
+          "substitutions": {
+            "reviews": {
+              "argNum": 2,
+              "formatSpecifier": "lld",
+              "variations": {
+                "plural": {
+                  "one": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg review"
+                    }
+                  },
+                  "other": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg reviews"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "coaches.reviews.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отзиви"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reviews"
+          }
+        }
+      }
+    },
+    "coaches.reviews.yours": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "вашият отзив"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "your review"
+          }
+        }
+      }
+    },
+    "coaches.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Треньори"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coaches"
+          }
+        }
+      }
+    },
+    "coaches.venue.all": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Всички треньори"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All coaches"
+          }
+        }
+      }
+    },
+    "coaches.venue.rate %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ на час"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ an hour"
+          }
+        }
+      }
+    },
+    "coaches.venue.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Треньори"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coaches"
+          }
+        }
+      }
+    },
     "common.close": {
       "localizations": {
         "bg": {
@@ -4477,6 +5681,22 @@
         }
       }
     },
+    "messages.reportReview": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сигнал за отзив"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Report a review"
+          }
+        }
+      }
+    },
     "messages.reportSend": {
       "localizations": {
         "bg": {
@@ -6105,6 +7325,54 @@
         }
       }
     },
+    "myBookings.review.coach.rate": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Оцени треньора"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rate the coach"
+          }
+        }
+      }
+    },
+    "myBookings.review.coach.ratingLabel": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вашата оценка на треньора"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your rating of the coach"
+          }
+        }
+      }
+    },
+    "myBookings.review.coach.yours %lld": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вашата оценка на треньора: %lld от 5"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your rating of the coach: %lld of 5"
+          }
+        }
+      }
+    },
     "myBookings.review.error.ALREADY_REVIEWED": {
       "localizations": {
         "bg": {
@@ -6117,6 +7385,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "You have already reviewed this venue."
+          }
+        }
+      }
+    },
+    "myBookings.review.error.COACH_ALREADY_REVIEWED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вече сте оценили този треньор."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You have already reviewed this coach."
           }
         }
       }
@@ -6149,6 +7433,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "You can no longer review bookings at this club."
+          }
+        }
+      }
+    },
+    "myBookings.review.error.NO_LESSON_TO_REVIEW": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Треньорът може да се оцени след приключил урок. Този може да е отбелязан като неявяване."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A coach can be reviewed after a completed lesson. This one may have been marked as a no-show."
           }
         }
       }

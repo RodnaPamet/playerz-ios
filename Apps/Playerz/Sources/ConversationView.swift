@@ -54,7 +54,11 @@ struct ConversationView: View {
             Text(String(localized: "messages.retractBody"))
         }
         .sheet(item: $reporting) { what in
-            ReportSheet(what: what, model: model, session: session) { reporting = nil }
+            ReportSheet(title: String(localized: "messages.report")) { reason, details in
+                await model.report(what, reason: reason, details: details, session)
+            } done: {
+                reporting = nil
+            }
         }
     }
 
@@ -218,64 +222,5 @@ private struct MessageBubble: View {
         if message.fromClub, let club = message.sender.clubName { return club }
         if message.sender.deleted { return String(localized: "messages.deletedUser") }
         return message.sender.name ?? String(localized: "messages.unnamed")
-    }
-}
-
-/// A report to playerz's moderators (#375): a reason, and optional words.
-private struct ReportSheet: View {
-    let what: ConversationModel.Reported
-    let model: ConversationModel
-    @Bindable var session: SessionModel
-    let done: () -> Void
-
-    @State private var reason: Components.Schemas.ReportRequest.reasonPayload = .spam
-    @State private var details = ""
-    @State private var busy = false
-    @State private var outcome: String?
-
-    var body: some View {
-        NavigationStack {
-            Form {
-                Section {
-                    Text(String(localized: "messages.reportBody"))
-                }
-                Picker(String(localized: "messages.reportReason"), selection: $reason) {
-                    ForEach(Components.Schemas.ReportRequest.reasonPayload.allCases, id: \.self) { r in
-                        Text(localized(key: "messages.reason.\(r.rawValue)")).tag(r)
-                    }
-                }
-                Section(String(localized: "messages.reportDetails")) {
-                    TextField("", text: $details, axis: .vertical).lineLimit(3...6)
-                }
-                if let outcome {
-                    Section { Text(outcome) }
-                }
-            }
-            .navigationTitle(String(localized: "messages.report"))
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(String(localized: "messages.cancel"), action: done)
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button(String(localized: "messages.reportSend")) {
-                        Task {
-                            busy = true
-                            let sent = await model.report(what, reason: reason, details: details, session)
-                            busy = false
-                            outcome = sent
-                                ? String(localized: "messages.reportSent")
-                                : String(localized: "messages.reportFailed")
-                            if sent {
-                                try? await Task.sleep(for: .seconds(1.2))
-                                done()
-                            }
-                        }
-                    }
-                    .disabled(busy || details.count > 1000)
-                }
-            }
-        }
-        .presentationDetents([.medium, .large])
     }
 }
