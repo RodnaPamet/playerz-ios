@@ -39,8 +39,9 @@ struct VenueDetailView: View {
                     }
                 }
             }
-            // «Пиши на клуба» (#484): the club's conversation, by the club's slug.
-            if let club = model.venue?.clubSlug {
+            // «Пиши на клуба» (#484): the club's conversation, by the club's slug;
+            // not while the server has messaging off (#16).
+            if session.modules.messaging, let club = model.venue?.clubSlug {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(String(localized: "messages.writeToClub"), systemImage: "bubble.left") {
                         Task { await writeToClub(club) }
