@@ -63,51 +63,70 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
 /// depth. Root swaps instead.
 struct RootView: View {
     @Bindable var session: SessionModel
+    @Environment(\.scenePhase) private var scenePhase
     /// Unread conversations and requests, for the Съобщения tab's badge.
     @State private var unread = 0
     @State private var tab: DebugLaunch.Tab = DebugLaunch.tab ?? .play
 
     var body: some View {
-        switch session.state {
-        case .unknown:
-            ProgressView().controlSize(.large)
-        case .signedOut:
-            SignInView(session: session)
-        case .signedIn:
-            // The player's tabs, as the web's bottom bar (#362): Играй, Игри (#510),
-            // Резервации; then Съобщения, which the web keeps in its header, and Профил.
-            // `.tabItem`, not `Tab`: the app supports iOS 17, and `Tab` is 18.
-            // Where this account lands first (#167): a club account and an
-            // undecided one do not get the player's tabs.
-            LandingGate(session: session) {
-                TabView(selection: $tab) {
-                    VenueListView(session: session)
-                        .tabItem { Label(String(localized: "tab.play"), systemImage: "figure.tennis") }
-                        .tag(DebugLaunch.Tab.play)
-                    GamesView(session: session)
-                        .tabItem { Label(String(localized: "tab.games"), systemImage: "person.3") }
-                        .tag(DebugLaunch.Tab.games)
-                    MyBookingsView(session: session)
-                        .tabItem { Label(String(localized: "tab.bookings"), systemImage: "calendar") }
-                        .tag(DebugLaunch.Tab.bookings)
-                    InboxView(session: session, unread: $unread)
-                        .tabItem { Label(String(localized: "tab.messages"), systemImage: "bubble.left.and.bubble.right") }
-                        .badge(unread)
-                        .tag(DebugLaunch.Tab.messages)
-                    ProfileView(session: session)
-                        .tabItem { Label(String(localized: "tab.profile"), systemImage: "person.crop.circle") }
-                        .tag(DebugLaunch.Tab.profile)
-                }
-                // The badge without opening the tab: read on launch, then each minute.
-                .task {
-                    while !Task.isCancelled {
-                        if let client = await session.client(),
-                           let counts = try? await client.getMyUnreadConversations().ok.body.json.data {
-                            unread = counts.conversations + counts.requests
+        Group {
+            switch session.state {
+            case .unknown:
+                ProgressView().controlSize(.large)
+            case .signedOut:
+                SignInView(session: session)
+            case .signedIn:
+                // The player's tabs, as the web's bottom bar (#362): Играй, Игри (#510),
+                // Резервации; then Съобщения, which the web keeps in its header, and Профил.
+                // `.tabItem`, not `Tab`: the app supports iOS 17, and `Tab` is 18.
+                // Where this account lands first (#167): a club account and an
+                // undecided one do not get the player's tabs.
+                LandingGate(session: session) {
+                    TabView(selection: $tab) {
+                        VenueListView(session: session)
+                            .tabItem { Label(String(localized: "tab.play"), systemImage: "figure.tennis") }
+                            .tag(DebugLaunch.Tab.play)
+                        // A module the server has off is not shown at all (#16).
+                        if session.modules.openPlay {
+                            GamesView(session: session)
+                                .tabItem { Label(String(localized: "tab.games"), systemImage: "person.3") }
+                                .tag(DebugLaunch.Tab.games)
                         }
-                        try? await Task.sleep(for: .seconds(60))
+                        MyBookingsView(session: session)
+                            .tabItem { Label(String(localized: "tab.bookings"), systemImage: "calendar") }
+                            .tag(DebugLaunch.Tab.bookings)
+                        if session.modules.messaging {
+                            InboxView(session: session, unread: $unread)
+                                .tabItem { Label(String(localized: "tab.messages"), systemImage: "bubble.left.and.bubble.right") }
+                                .badge(unread)
+                                .tag(DebugLaunch.Tab.messages)
+                        }
+                        ProfileView(session: session)
+                            .tabItem { Label(String(localized: "tab.profile"), systemImage: "person.crop.circle") }
+                            .tag(DebugLaunch.Tab.profile)
+                    }
+                    // The badge without opening the tab: read on launch, then each
+                    // minute, and only while messaging is on.
+                    .task(id: session.modules.messaging) {
+                        while !Task.isCancelled, session.modules.messaging {
+                            if let client = await session.client(),
+                               let counts = try? await client.getMyUnreadConversations().ok.body.json.data {
+                                unread = counts.conversations + counts.requests
+                            }
+                            try? await Task.sleep(for: .seconds(60))
+                        }
                     }
                 }
+            }
+        }
+        // The switches can change while the app is open: read them again
+        // whenever it comes back (#16).
+        .task(id: scenePhase) {
+            if scenePhase == .active { await session.refreshModules() }
+        }
+        .onChange(of: session.modules) { _, modules in
+            if (tab == .games && !modules.openPlay) || (tab == .messages && !modules.messaging) {
+                tab = .play
             }
         }
     }

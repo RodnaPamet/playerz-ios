@@ -96,7 +96,7 @@ struct BookingGameView: View {
                     }
                 }
                 // The game's chat (#376): the booker and everyone accepted.
-                if let chatId = g.chatId {
+                if session.modules.messaging, let chatId = g.chatId {
                     Section {
                         NavigationLink(String(localized: "bookingGame.chat")) {
                             ConversationView(conversationId: chatId, session: session)

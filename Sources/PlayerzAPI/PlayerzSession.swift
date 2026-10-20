@@ -230,6 +230,17 @@ public actor PlayerzSession {
         }
     }
 
+    /// The module switches (playerz-ios#16). Public, so asked without the
+    /// session; nil when the server could not be asked or answered something
+    /// else, and the caller keeps what it knew.
+    public func modules() async -> Modules? {
+        guard let response = try? await anonymous.getAppConfig(),
+            case let .ok(ok) = response,
+            let data = try? ok.body.json.data
+        else { return nil }
+        return Modules(data.modules)
+    }
+
     /// Exchange a refresh token for a new session.
     ///
     /// Isolated as a `@Sendable` closure because `BearerMiddleware` holds it

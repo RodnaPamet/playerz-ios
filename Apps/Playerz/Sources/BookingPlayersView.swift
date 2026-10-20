@@ -34,7 +34,7 @@ struct BookingPlayersView: View {
                         }
                     }
                     Spacer()
-                    if !player.isYou && player.registered && !player.deleted {
+                    if session.modules.messaging, !player.isYou, player.registered, !player.deleted {
                         Button(String(localized: "messages.write")) {
                             Task { await write(player) }
                         }

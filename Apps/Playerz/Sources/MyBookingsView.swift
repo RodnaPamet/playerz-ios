@@ -120,7 +120,7 @@ struct MyBookingsView: View {
                 BookingPlayersView(bookingId: booking.id, session: session)
             }
         }
-        if upcoming, booking.status == "CONFIRMED" {
+        if session.modules.openPlay, upcoming, booking.status == "CONFIRMED" {
             NavigationLink(String(localized: "bookingGame.link")) {
                 BookingGameView(bookingId: booking.id, session: session)
             }
