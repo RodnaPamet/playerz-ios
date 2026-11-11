@@ -41,7 +41,9 @@ struct MatchTimesDecodingTests {
         let ours = try #require(proposed.groups.flatMap(\.matches).first { $0.proposal != nil })
         let proposal = try #require(ours.proposal)
         #expect(proposal.side == ours.mySide)
-        #expect(proposal.until > .now && proposal.priceCents > 0)
+        // Not `> .now`: the captured JSON carries a fixed date, and the test
+        // began failing the day that date passed.
+        #expect(proposal.until > .distantPast && proposal.priceCents > 0)
         let own = try await client(["acceptMatchTime": (409, OWN)]).acceptMatchTime(path: .init(id: "m"))
         #expect(try own.conflict.body.json.error.code == "TOURNAMENT_NO_PROPOSAL")
         let theirs = try await client(["getTournamentDraw": (200, THEIRS)]).getTournamentDraw(path: .init(id: "t")).ok.body.json.data
