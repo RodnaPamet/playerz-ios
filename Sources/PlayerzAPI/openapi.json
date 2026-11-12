@@ -19234,7 +19234,9 @@
               "id",
               "name",
               "timezone",
-              "city"
+              "city",
+              "cityKey",
+              "cityNames"
             ],
             "properties": {
               "id": {
@@ -19252,6 +19254,16 @@
               "city": {
                 "type": "string",
                 "description": "As the club typed it (#668)."
+              },
+              "cityKey": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "The canonical city (#682)."
+              },
+              "cityNames": {
+                "$ref": "#/components/schemas/CityNames"
               }
             }
           }
@@ -20804,7 +20816,9 @@
               "id",
               "name",
               "timezone",
-              "city"
+              "city",
+              "cityKey",
+              "cityNames"
             ],
             "properties": {
               "id": {
@@ -20822,6 +20836,16 @@
               "city": {
                 "type": "string",
                 "description": "As the club typed it (#668)."
+              },
+              "cityKey": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "The canonical city (#682)."
+              },
+              "cityNames": {
+                "$ref": "#/components/schemas/CityNames"
               }
             }
           },
@@ -21305,6 +21329,8 @@
               "publicSlug",
               "addressLine",
               "city",
+              "cityKey",
+              "cityNames",
               "lat",
               "lng",
               "phone"
@@ -21336,6 +21362,16 @@
               "city": {
                 "type": "string",
                 "description": "City, as the club wrote it."
+              },
+              "cityKey": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "The canonical city (#682)."
+              },
+              "cityNames": {
+                "$ref": "#/components/schemas/CityNames"
               },
               "lat": {
                 "type": "number",
@@ -22512,7 +22548,8 @@
           "bookerFirstName",
           "capacity",
           "spotsLeft",
-          "lesson"
+          "lesson",
+          "viewer"
         ],
         "properties": {
           "venue": {
@@ -22592,6 +22629,25 @@
                   "null"
                 ],
                 "description": "The coach's name, as on their public page. Null when the account has none."
+              }
+            }
+          },
+          "viewer": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "The signed-in viewer's part in it (#681); null signed out. The booker, or a player already on it, is not offered to join.",
+            "required": [
+              "isBooker",
+              "isPlaying"
+            ],
+            "properties": {
+              "isBooker": {
+                "type": "boolean"
+              },
+              "isPlaying": {
+                "type": "boolean"
               }
             }
           }
@@ -26443,6 +26499,8 @@
                 "name",
                 "addressLine",
                 "city",
+                "cityKey",
+                "cityNames",
                 "country",
                 "timezone",
                 "phone",
@@ -26466,6 +26524,16 @@
                 },
                 "city": {
                   "type": "string"
+                },
+                "cityKey": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "The canonical city (#682)."
+                },
+                "cityNames": {
+                  "$ref": "#/components/schemas/CityNames"
                 },
                 "country": {
                   "type": "string"

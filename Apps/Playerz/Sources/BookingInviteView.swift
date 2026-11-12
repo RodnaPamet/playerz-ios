@@ -26,7 +26,11 @@ struct BookingInviteView: View {
                         preview: preview,
                         problem: problem,
                         joining: joining,
-                        join: join
+                        join: join,
+                        openBookings: {
+                            session.requestedTab = .bookings
+                            close()
+                        }
                     )
                 } else if invalid {
                     BrandEmptyState(

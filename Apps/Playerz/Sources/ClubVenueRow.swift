@@ -8,7 +8,7 @@ struct ClubVenueRow: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
             Text(venue.name).font(.headline)
-            Text("\(venue.addressLine), \(venue.city)")
+            Text("\(venue.addressLine), \(CityText.shown(venue.cityNames))")
                 .foregroundStyle(.secondary)
             if !venue.sports.isEmpty {
                 Text(venue.sports.map { localized(key: "sport.\($0)") }.formatted(.list(type: .and)))
