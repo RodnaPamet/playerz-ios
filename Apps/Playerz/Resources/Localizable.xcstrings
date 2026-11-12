@@ -12849,6 +12849,54 @@
         }
       }
     },
+    "signIn.google": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вход с Google"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign in with Google"
+          }
+        }
+      }
+    },
+    "signIn.googleNoEmail": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Google не сподели потвърден имейл адрес. Опитайте с друг профил."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Google didn't share a verified email address. Try another account."
+          }
+        }
+      }
+    },
+    "signIn.googleOff": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Входът с Google още не е включен на сървъра."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Google sign-in isn't switched on for this server yet."
+          }
+        }
+      }
+    },
     "signIn.invalid": {
       "localizations": {
         "bg": {

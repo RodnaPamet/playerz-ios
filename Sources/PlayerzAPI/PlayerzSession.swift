@@ -56,9 +56,22 @@ public actor PlayerzSession {
     public func signIn(email: String, password: String) async throws {
         // The password grant: test runs only on the server (#361). The app's
         // real ways in are the provider grants (projectZ #444, #442).
-        let response = try await anonymous.authSignIn(
-            .init(body: .json(.AuthTokenPasswordRequest(.init(email: email, password: password))))
+        try await grant(.AuthTokenPasswordRequest(.init(email: email, password: password)))
+    }
+
+    /// Google's ID token (`GoogleOAuth`), whose `aud` is the app's iOS client.
+    /// `language` is the one a NEW account starts in; an existing one keeps its own.
+    public func signIn(googleIDToken: String, language: AppLanguage.Code) async throws {
+        try await grant(
+            .AuthTokenGoogleRequest(
+                .init(grant: .google, idToken: googleIDToken, locale: .init(rawValue: language.rawValue))
+            )
         )
+    }
+
+    /// Any grant: the tokens it answers with are the session.
+    private func grant(_ body: Components.Schemas.AuthTokenRequest) async throws {
+        let response = try await anonymous.authSignIn(.init(body: .json(body)))
 
         switch response {
         case let .ok(ok):
@@ -80,6 +93,11 @@ public actor PlayerzSession {
             )
         case .unauthorized:
             throw SessionError.invalidCredentials
+        case let .forbidden(forbidden):
+            // A provider grant refused for a reason the screen can name:
+            // `SIGN_IN_METHOD_DISABLED`, `EMAIL_REQUIRED`, `EMAIL_UNVERIFIED`,
+            // `PASSWORD_SIGN_IN_DISABLED`.
+            throw SessionError.refused((try? forbidden.body.json.error.code) ?? "FORBIDDEN")
         case .tooManyRequests:
             throw SessionError.throttled
         default:
@@ -351,6 +369,8 @@ public actor PlayerzSession {
 public enum SessionError: Error, Equatable {
     case invalidCredentials
     case throttled
+    /// 403 with the server's code.
+    case refused(String)
     case noRefreshToken
     case refreshRejected
     case unexpected(String)
