@@ -24,15 +24,18 @@ struct ProfileIdentityCard: View {
                     Text(name)
                         .font(Theme.Typography.cardTitle)
                         .accessibilityAddTraits(.isHeader)
-                    Text(email)
+                    Text(Self.breakable(email))
                         .font(Theme.Typography.cardSubtitle)
                         .foregroundStyle(.secondary)
+                        .accessibilityLabel(email)
                     ForEach(levels, id: \.self) { level in
                         Text(level)
                             .font(.footnote.weight(.semibold))
                             .padding(.horizontal, Theme.Spacing.s)
                             .padding(.vertical, Theme.Spacing.xs)
                             .background(Theme.Palette.chipIdle, in: .rect(cornerRadius: Theme.Spacing.s))
+                            // Wraps whole at the large sizes rather than running off the card.
+                            .fixedSize(horizontal: false, vertical: true)
                             .padding(.top, 2)
                     }
                 }
@@ -40,6 +43,16 @@ struct ProfileIdentityCard: View {
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .accessibilityElement(children: .combine)
+    }
+
+    /// An address that may break only after «@» and before a dot: at the large
+    /// sizes «ivan-iosdemo@play/erz.test» broke inside a word. A zero-width
+    /// space marks each place; VoiceOver reads the plain address.
+    static func breakable(_ email: String) -> String {
+        let gap = String(Character(Unicode.Scalar(0x200B)!))
+        return email
+            .replacingOccurrences(of: "@", with: "@" + gap)
+            .replacingOccurrences(of: ".", with: gap + ".")
     }
 }
 
