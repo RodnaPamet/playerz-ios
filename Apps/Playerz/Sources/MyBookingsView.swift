@@ -17,10 +17,11 @@ struct MyBookingsView: View {
     @State private var confirmingCancel = false
     @State private var banner: (text: String, isError: Bool)?
     /// A DEBUG launch can open a booking's game straight away (DebugLaunch).
-    @State private var debugGame: String? = DebugLaunch.bookingGame
+    /// `first` or `last` stands for a booking listed, once the list is in.
+    @State private var debugGame: String? = DebugLaunch.listed(DebugLaunch.bookingGame)
     /// …or the booking itself, or its players.
-    @State private var debugBooking: String? = DebugLaunch.booking
-    @State private var debugPlayers: String? = DebugLaunch.bookingPlayers
+    @State private var debugBooking: String? = DebugLaunch.listed(DebugLaunch.booking)
+    @State private var debugPlayers: String? = DebugLaunch.listed(DebugLaunch.bookingPlayers)
 
     enum Phase { case loading, loaded, failed }
 
@@ -210,9 +211,18 @@ struct MyBookingsView: View {
             items = page.items
             nextCursor = page.nextCursor
             phase = .loaded
+            openListedForDebug()
         } catch {
             phase = items.isEmpty ? .failed : .loaded
         }
+    }
+
+    /// A DEBUG launch's `first` or `last` booking listed, once.
+    private func openListedForDebug() {
+        let ids = items.map(\.id)
+        if let id = DebugLaunch.pick("game", DebugLaunch.bookingGame, from: ids) { debugGame = id }
+        if let id = DebugLaunch.pick("booking", DebugLaunch.booking, from: ids) { debugBooking = id }
+        if let id = DebugLaunch.pick("players", DebugLaunch.bookingPlayers, from: ids) { debugPlayers = id }
     }
 
     private func loadMore() async {

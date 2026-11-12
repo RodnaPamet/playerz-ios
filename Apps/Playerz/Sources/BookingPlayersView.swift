@@ -25,71 +25,68 @@ struct BookingPlayersView: View {
     @State private var busy = false
 
     var body: some View {
-        List {
-            if let problem {
-                Section { Text(problem).foregroundStyle(.red) }
-            }
+        Group {
             if let standing {
-                Section {
-                    ForEach(Array(standing.players.enumerated()), id: \.offset) { _, player in
-                        BookingPlayerRow(
-                            player: player,
-                            name: name(player),
-                            messaging: session.modules.messaging,
-                            write: { write(player) }
-                        )
-                            .swipeActions {
-                                if canRemove(player, standing) {
-                                    Button(String(localized: "myBookings.players.remove"), role: .destructive) {
-                                        askToRemove(player)
+                List {
+                    Group {
+                        if let problem {
+                            Section { Text(problem).foregroundStyle(Theme.Palette.danger) }
+                        }
+                        players(standing)
+                        if standing.playersOpen, standing.viewerRole == .PARTICIPANT {
+                            Section {
+                                Button(String(localized: "myBookings.players.leave"), role: .destructive, action: askToLeave)
+                                    .foregroundStyle(Theme.Palette.danger)
+                                    .disabled(busy)
+                                    .confirmationDialog(
+                                        String(localized: "myBookings.players.leaveConfirm.title"),
+                                        isPresented: $confirmingLeave,
+                                        titleVisibility: .visible
+                                    ) {
+                                        Button(String(localized: "myBookings.players.leaveConfirm.yes"), role: .destructive, action: leave)
+                                    } message: {
+                                        Text(String(localized: "myBookings.players.leaveConfirm.description"))
                                     }
-                                }
                             }
-                            .accessibilityActions {
-                                if canRemove(player, standing) {
-                                    Button(String(localized: "myBookings.players.removeLabel \(name(player))")) {
-                                        askToRemove(player)
-                                    }
-                                }
-                            }
+                        }
                     }
-                } footer: {
-                    Text(footer(standing))
-                }
-                if standing.playersOpen, standing.viewerRole == .BOOKER, standing.spotsLeft > 0 {
-                    Section {
-                        Button(String(localized: "myBookings.players.invite"), systemImage: "person.badge.plus", action: invite)
-                    }
-                }
-                if standing.playersOpen, standing.viewerRole == .PARTICIPANT {
-                    Section {
-                        Button(String(localized: "myBookings.players.leave"), role: .destructive, action: askToLeave)
-                            .disabled(busy)
-                            .confirmationDialog(
-                                String(localized: "myBookings.players.leaveConfirm.title"),
-                                isPresented: $confirmingLeave,
-                                titleVisibility: .visible
-                            ) {
-                                Button(String(localized: "myBookings.players.leaveConfirm.yes"), role: .destructive, action: leave)
-                            } message: {
-                                Text(String(localized: "myBookings.players.leaveConfirm.description"))
+                    .brandListRow()
+                    // The booker's one action: the accent pill under the list, on the page.
+                    if standing.playersOpen, standing.viewerRole == .BOOKER, standing.spotsLeft > 0 {
+                        Section {
+                            Button(action: invite) {
+                                Label(String(localized: "myBookings.players.invite"), systemImage: "person.badge.plus")
+                                    .labelStyle(PillLabelStyle())
                             }
+                            .buttonStyle(.brandPrimary)
+                        }
+                        .listRowInsets(EdgeInsets())
+                        .listRowBackground(Color.clear)
                     }
                 }
+                .refreshable { await load() }
             } else if failed {
-                Text(String(localized: "bookingPlayers.failed")).foregroundStyle(.red)
+                BrandEmptyState(systemImage: "wifi.exclamationmark", title: String(localized: "bookingPlayers.failed")) {
+                    Button(String(localized: "venues.retry"), action: reload)
+                        .buttonStyle(.brandSecondary(fullWidth: false))
+                }
             } else {
                 ProgressView()
             }
         }
+        .brandPage()
+        // Hidden with the system bar; still what VoiceOver calls the screen.
         .navigationTitle(String(localized: "bookingPlayers.title"))
-        .navigationBarTitleDisplayMode(.inline)
-        .task { await load() }
-        .refreshable { await load() }
+        .brandHeader(.back(String(localized: "bookingPlayers.title")))
+        .task {
+            await load()
+            // A DEBUG launch can look at the invite sheet (`PLAYERZ_OPEN=invite`).
+            if DebugLaunch.open == "invite", standing?.viewerRole == .BOOKER { inviting = true }
+        }
         .sheet(item: $conversation) { opened in
             ConversationSheet(opened: opened, session: session)
         }
-        .sheet(isPresented: $inviting, onDismiss: reload) {
+        .brandSheet(isPresented: $inviting, detents: [.medium, .large], onDismiss: reload) {
             InvitePlayersView(
                 bookingId: bookingId,
                 spotsLeft: standing?.spotsLeft ?? 0,
@@ -108,6 +105,36 @@ struct BookingPlayersView: View {
             }
         } message: { _ in
             Text(String(localized: "myBookings.players.removeConfirm.description"))
+        }
+    }
+
+    private func players(_ standing: Components.Schemas.BookingParticipants) -> some View {
+        Section {
+            ForEach(Array(standing.players.enumerated()), id: \.offset) { _, player in
+                BookingPlayerRow(
+                    player: player,
+                    name: name(player),
+                    avatarURL: session.mediaURL(player.avatarUrl),
+                    messaging: session.modules.messaging,
+                    write: { write(player) }
+                )
+                    .swipeActions {
+                        if canRemove(player, standing) {
+                            Button(String(localized: "myBookings.players.remove"), role: .destructive) {
+                                askToRemove(player)
+                            }
+                        }
+                    }
+                    .accessibilityActions {
+                        if canRemove(player, standing) {
+                            Button(String(localized: "myBookings.players.removeLabel \(name(player))")) {
+                                askToRemove(player)
+                            }
+                        }
+                    }
+            }
+        } footer: {
+            Text(footer(standing))
         }
     }
 

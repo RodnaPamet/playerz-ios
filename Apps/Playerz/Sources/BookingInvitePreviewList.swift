@@ -11,37 +11,53 @@ struct BookingInvitePreviewList: View {
 
     var body: some View {
         List {
-            Section {
-                Text(title).font(.title3.bold())
-                if let lesson = preview.lesson {
-                    LabeledContent(
-                        String(localized: "bookingInvite.lesson.label"),
-                        value: lesson.coach ?? String(localized: "bookingInvite.lesson.noName")
-                    )
+            Group {
+                Section {
+                    Text(title)
+                        .font(Theme.Typography.cardTitle)
+                        .accessibilityAddTraits(.isHeader)
+                    if let lesson = preview.lesson {
+                        LabeledContent(
+                            String(localized: "bookingInvite.lesson.label"),
+                            value: lesson.coach ?? String(localized: "bookingInvite.lesson.noName")
+                        )
+                    }
+                    LabeledContent(String(localized: "bookingInvite.when")) {
+                        Text(GameText.when(preview.startTs, timezone: preview.venue.timezone))
+                    }
+                    LabeledContent(String(localized: "bookingInvite.where"), value: "\(preview.venue.name), \(preview.venue.city)")
+                    LabeledContent(courtLabel, value: preview.resource.name)
+                } footer: {
+                    Text(String(localized: "bookingInvite.spotsLeft \(preview.spotsLeft)"))
                 }
-                LabeledContent(String(localized: "bookingInvite.when")) {
-                    Text(GameText.when(preview.startTs, timezone: preview.venue.timezone))
+                if let problem {
+                    Section { Text(problem).foregroundStyle(Theme.Palette.danger) }
                 }
-                LabeledContent(String(localized: "bookingInvite.where"), value: "\(preview.venue.name), \(preview.venue.city)")
-                LabeledContent(courtLabel, value: preview.resource.name)
-            } footer: {
-                Text(String(localized: "bookingInvite.spotsLeft \(preview.spotsLeft)"))
             }
-            if let problem {
-                Section { Text(problem).foregroundStyle(.red) }
-            }
+            .brandListRow()
+            // The screen's one action: the accent pill, on the page.
             Section {
                 Button(action: join) {
-                    if joining { ProgressView() } else { Text(String(localized: "bookingInvite.join")) }
+                    if joining {
+                        ProgressView().tint(Theme.Palette.onAccent)
+                    } else {
+                        Text(String(localized: "bookingInvite.join"))
+                    }
                 }
+                .buttonStyle(.brandPrimary)
                 .disabled(joining || preview.spotsLeft == 0)
+                // The spinner has no name: the button keeps its own while it turns.
+                .accessibilityLabel(String(localized: "bookingInvite.join"))
             } footer: {
                 Text(
                     preview.lesson == nil
                         ? String(localized: "bookingInvite.payAtClub")
                         : String(localized: "bookingInvite.lesson.payAtClub")
                 )
+                .padding(.top, Theme.Spacing.s)
             }
+            .listRowInsets(EdgeInsets())
+            .listRowBackground(Color.clear)
         }
     }
 

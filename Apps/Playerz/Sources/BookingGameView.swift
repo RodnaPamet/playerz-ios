@@ -24,17 +24,18 @@ struct BookingGameView: View {
             if let game {
                 form(game)
             } else if failed {
-                ContentUnavailableView {
-                    Text(String(localized: "bookingGame.failed"))
-                } actions: {
+                BrandEmptyState(systemImage: "wifi.exclamationmark", title: String(localized: "bookingGame.failed")) {
                     Button(String(localized: "venues.retry")) { Task { await load() } }
+                        .buttonStyle(.brandSecondary(fullWidth: false))
                 }
             } else {
                 ProgressView(String(localized: "common.loading"))
             }
         }
+        .brandPage()
+        // Hidden with the system bar; still what VoiceOver calls the screen.
         .navigationTitle(String(localized: "bookingGame.title"))
-        .navigationBarTitleDisplayMode(.inline)
+        .brandHeader(.back(String(localized: "bookingGame.title")))
         .task { await load() }
         .onChange(of: problem) { _, text in
             if let text { AccessibilityNotification.Announcement(text).post() }
@@ -44,7 +45,8 @@ struct BookingGameView: View {
     @ViewBuilder private func form(_ g: Components.Schemas.BookingGame) -> some View {
         List {
             if let problem {
-                Section { Text(problem).foregroundStyle(.red) }
+                Section { Text(problem).foregroundStyle(Theme.Palette.danger) }
+                    .brandListRow()
             }
             if g.viewerRole == .PARTICIPANT {
                 Section {
@@ -54,68 +56,85 @@ struct BookingGameView: View {
                         Text(String(localized: "bookingGame.participant"))
                     }
                 }
+                .brandListRow()
             } else {
-                Section {
-                    if let open = g.game, open.open {
-                        Text(String(localized: "games.spotsLeft \(open.spotsLeft)"))
-                    } else {
-                        Text(String(localized: "bookingGame.intro"))
-                    }
-                } footer: {
-                    Text(String(localized: "bookingGame.until \(GameText.when(g.cutoffAt, timezone: "Europe/Sofia"))"))
-                }
-                if g.canOpen && g.maxSpots > 0 {
-                    Section {
-                        Stepper(value: $spots, in: 1...max(1, g.maxSpots)) {
-                            Text(String(localized: "bookingGame.spots \(spots)"))
-                        }
-                        Picker(String(localized: "bookingGame.levelMin"), selection: $levelMin) {
-                            Text(String(localized: "games.level.any")).tag(Int?.none)
-                            ForEach(1...7, id: \.self) { Text("\($0)").tag(Optional($0)) }
-                        }
-                        Picker(String(localized: "bookingGame.levelMax"), selection: $levelMax) {
-                            Text(String(localized: "games.level.any")).tag(Int?.none)
-                            ForEach(1...7, id: \.self) { Text("\($0)").tag(Optional($0)) }
-                        }
-                        TextField(String(localized: "bookingGame.note"), text: $note, axis: .vertical)
-                            .lineLimit(2...4)
-                        Button(g.game?.open == true
-                               ? String(localized: "bookingGame.save")
-                               : String(localized: "bookingGame.open")) {
-                            Task { await open() }
-                        }
-                        .disabled(busy || note.count > 280 || !levelsInOrder)
-                    }
-                }
-                if g.game?.open == true {
-                    Section {
-                        Button(String(localized: "bookingGame.stop"), role: .destructive) {
-                            Task { await close() }
-                        }
-                        .disabled(busy)
-                    }
-                }
-                // The game's chat (#376): the booker and everyone accepted.
-                if session.modules.messaging, let chatId = g.chatId {
-                    Section {
-                        NavigationLink(String(localized: "bookingGame.chat")) {
-                            ConversationView(conversationId: chatId, session: session)
-                        }
-                    }
-                }
-                Section(String(localized: "bookingGame.requests")) {
-                    if g.requests.isEmpty {
-                        Text(String(localized: "bookingGame.noRequests")).foregroundStyle(.secondary)
-                    }
-                    ForEach(g.requests, id: \.id) { request in
-                        RequestRow(request: request, busy: busy) { accept in
-                            Task { await answer(request.id, accept: accept) }
-                        }
-                    }
-                }
+                bookerSections(g)
             }
         }
         .refreshable { await load() }
+    }
+
+    @ViewBuilder private func bookerSections(_ g: Components.Schemas.BookingGame) -> some View {
+        Section {
+            if let open = g.game, open.open {
+                Text(String(localized: "games.spotsLeft \(open.spotsLeft)"))
+            } else {
+                Text(String(localized: "bookingGame.intro"))
+            }
+        } footer: {
+            Text(String(localized: "bookingGame.until \(GameText.when(g.cutoffAt, timezone: "Europe/Sofia"))"))
+        }
+        .brandListRow()
+        if g.canOpen && g.maxSpots > 0 {
+            Section {
+                Stepper(value: $spots, in: 1...max(1, g.maxSpots)) {
+                    Text(String(localized: "bookingGame.spots \(spots)"))
+                }
+                Picker(String(localized: "bookingGame.levelMin"), selection: $levelMin) {
+                    Text(String(localized: "games.level.any")).tag(Int?.none)
+                    ForEach(1...7, id: \.self) { Text("\($0)").tag(Optional($0)) }
+                }
+                Picker(String(localized: "bookingGame.levelMax"), selection: $levelMax) {
+                    Text(String(localized: "games.level.any")).tag(Int?.none)
+                    ForEach(1...7, id: \.self) { Text("\($0)").tag(Optional($0)) }
+                }
+                TextField(String(localized: "bookingGame.note"), text: $note, axis: .vertical)
+                    .lineLimit(2...4)
+            }
+            .brandListRow()
+            // The form's one action: the accent pill under its fields, on the page.
+            Section {
+                Button(g.game?.open == true
+                       ? String(localized: "bookingGame.save")
+                       : String(localized: "bookingGame.open")) {
+                    Task { await open() }
+                }
+                .buttonStyle(.brandPrimary)
+                .disabled(busy || note.count > 280 || !levelsInOrder)
+            }
+            .listRowInsets(EdgeInsets())
+            .listRowBackground(Color.clear)
+        }
+        if g.game?.open == true {
+            Section {
+                Button(String(localized: "bookingGame.stop"), role: .destructive) {
+                    Task { await close() }
+                }
+                .foregroundStyle(Theme.Palette.danger)
+                .disabled(busy)
+            }
+            .brandListRow()
+        }
+        // The game's chat (#376): the booker and everyone accepted.
+        if session.modules.messaging, let chatId = g.chatId {
+            Section {
+                NavigationLink(String(localized: "bookingGame.chat")) {
+                    ConversationView(conversationId: chatId, session: session)
+                }
+            }
+            .brandListRow()
+        }
+        Section(String(localized: "bookingGame.requests")) {
+            if g.requests.isEmpty {
+                Text(String(localized: "bookingGame.noRequests")).foregroundStyle(.secondary)
+            }
+            ForEach(g.requests, id: \.id) { request in
+                RequestRow(request: request, busy: busy) { accept in
+                    Task { await answer(request.id, accept: accept) }
+                }
+            }
+        }
+        .brandListRow()
     }
 
     private var levelsInOrder: Bool {
@@ -222,7 +241,7 @@ private struct RequestRow: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             VStack(alignment: .leading, spacing: 2) {
-                Text(request.player.name ?? String(localized: "games.organiserUnknown")).font(.headline)
+                Text(request.player.name ?? String(localized: "games.organiserUnknown")).font(Theme.Typography.rowTitle)
                 if !request.player.sports.isEmpty {
                     Text(request.player.sports
                         .map { "\(GameText.sport($0.sport)) \($0.level)" }

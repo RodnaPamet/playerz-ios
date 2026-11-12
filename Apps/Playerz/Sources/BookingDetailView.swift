@@ -12,6 +12,8 @@ struct BookingDetailView: View {
     @State private var booking: Components.Schemas.MyBookingDetail?
     @State private var result: Components.Schemas.BookingResultState?
     @State private var debugEditor = false
+    /// A DEBUG launch can open the venue's review form (`PLAYERZ_OPEN=review`).
+    @State private var debugReview = false
     @State private var failed = false
     @State private var confirmingCancel = false
     @State private var cancelling = false
@@ -22,57 +24,10 @@ struct BookingDetailView: View {
             if let booking {
                 ScrollViewReader { proxy in
                     List {
-                        BookingDetailSummary(booking: booking)
-                        BookingDetailPlace(booking: booking, session: session)
-                        if booking.status != "CANCELLED" {
-                            Section {
-                                NavigationLink {
-                                    BookingPlayersView(bookingId: booking.id, session: session)
-                                } label: {
-                                    LabeledContent(String(localized: "myBookings.detail.players"), value: "\(booking.players.count)")
-                                }
-                                if session.modules.openPlay, booking.status == "CONFIRMED", booking.endTs > .now {
-                                    NavigationLink(String(localized: "bookingGame.link")) {
-                                        BookingGameView(bookingId: booking.id, session: session)
-                                    }
-                                }
-                            }
+                        Group {
+                            sections(booking)
                         }
-                        BookingResultSection(
-                            bookingId: booking.id,
-                            timezone: booking.venue.timezone,
-                            standing: $result,
-                            session: session
-                        )
-                        .id(BookingResultSection.anchor)
-                        if session.modules.coaches, let lesson = booking.lesson {
-                            LessonCoachReview(bookingId: booking.id, lesson: lesson, session: session, reviewed: reload)
-                        }
-                        BookingDetailReview(booking: booking, session: session, reviewed: reload)
-                        if let cancelLine {
-                            Section {
-                                Text(cancelLine.text).foregroundStyle(cancelLine.isError ? .red : .secondary)
-                            }
-                        }
-                        if canCancel(booking) {
-                            Section {
-                                Button(String(localized: "myBookings.detail.cancel"), role: .destructive, action: askToCancel)
-                                    .disabled(cancelling)
-                                    .confirmationDialog(
-                                        String(localized: "myBookings.detail.confirm.title"),
-                                        isPresented: $confirmingCancel,
-                                        titleVisibility: .visible
-                                    ) {
-                                        Button(String(localized: "myBookings.detail.confirm.yes"), role: .destructive, action: cancel)
-                                    }
-                            } footer: {
-                                if let until = booking.cancellableUntil {
-                                    Text(String(localized: "myBookings.detail.cancelUntil \(GameText.when(until, timezone: booking.venue.timezone))"))
-                                }
-                            }
-                        } else if cutoffPassed(booking) {
-                            BookingCutoffPassed(booking: booking)
-                        }
+                        .brandListRow()
                     }
                     .refreshable { await load() }
                     .task(id: result?.canReport) {
@@ -83,24 +38,86 @@ struct BookingDetailView: View {
                         if DebugLaunch.result == "editor", result?.canReport == true { debugEditor = true }
                     }
                 }
+                .navigationDestination(isPresented: $debugReview) {
+                    if let clubSlug = booking.clubSlug {
+                        VenueReviewForm(clubSlug: clubSlug, bookingId: booking.id, session: session, done: reload)
+                    }
+                }
                 .navigationDestination(isPresented: $debugEditor) {
                     if let result {
                         ResultEditorView(bookingId: bookingId, standing: result, session: session) { self.result = $0 }
                     }
                 }
             } else if failed {
-                ContentUnavailableView {
-                    Text(String(localized: "bookings.failed"))
-                } actions: {
+                BrandEmptyState(systemImage: "wifi.exclamationmark", title: String(localized: "bookings.failed")) {
                     Button(String(localized: "venues.retry"), action: reload)
+                        .buttonStyle(.brandSecondary(fullWidth: false))
                 }
             } else {
                 ProgressView()
             }
         }
+        .brandPage()
+        // Hidden with the system bar; still what VoiceOver calls the screen.
         .navigationTitle(booking?.venue.name ?? "")
-        .navigationBarTitleDisplayMode(.inline)
+        .brandHeader(.back(booking?.venue.name ?? ""))
         .task { await load() }
+    }
+
+    @ViewBuilder private func sections(_ booking: Components.Schemas.MyBookingDetail) -> some View {
+        BookingDetailSummary(booking: booking)
+        BookingDetailPlace(booking: booking, session: session)
+        if booking.status != "CANCELLED" {
+            Section {
+                NavigationLink {
+                    BookingPlayersView(bookingId: booking.id, session: session)
+                } label: {
+                    LabeledContent(String(localized: "myBookings.detail.players"), value: "\(booking.players.count)")
+                }
+                if session.modules.openPlay, booking.status == "CONFIRMED", booking.endTs > .now {
+                    NavigationLink(String(localized: "bookingGame.link")) {
+                        BookingGameView(bookingId: booking.id, session: session)
+                    }
+                }
+            }
+        }
+        BookingResultSection(
+            bookingId: booking.id,
+            timezone: booking.venue.timezone,
+            standing: $result,
+            session: session
+        )
+        .id(BookingResultSection.anchor)
+        if session.modules.coaches, let lesson = booking.lesson {
+            LessonCoachReview(bookingId: booking.id, lesson: lesson, session: session, reviewed: reload)
+        }
+        BookingDetailReview(booking: booking, session: session, reviewed: reload)
+        if let cancelLine {
+            Section {
+                Text(cancelLine.text)
+                    .foregroundStyle(cancelLine.isError ? Theme.Palette.danger : Color.secondary)
+            }
+        }
+        if canCancel(booking) {
+            Section {
+                Button(String(localized: "myBookings.detail.cancel"), role: .destructive, action: askToCancel)
+                    .foregroundStyle(Theme.Palette.danger)
+                    .disabled(cancelling)
+                    .confirmationDialog(
+                        String(localized: "myBookings.detail.confirm.title"),
+                        isPresented: $confirmingCancel,
+                        titleVisibility: .visible
+                    ) {
+                        Button(String(localized: "myBookings.detail.confirm.yes"), role: .destructive, action: cancel)
+                    }
+            } footer: {
+                if let until = booking.cancellableUntil {
+                    Text(String(localized: "myBookings.detail.cancelUntil \(GameText.when(until, timezone: booking.venue.timezone))"))
+                }
+            }
+        } else if cutoffPassed(booking) {
+            BookingCutoffPassed(booking: booking)
+        }
     }
 
     /// Cancelled under the club's slug; without one there is nothing to cancel under.
@@ -129,6 +146,7 @@ struct BookingDetailView: View {
             if let found = try? ok.body.json.data {
                 booking = found
                 failed = false
+                if DebugLaunch.open == "review", found.canReview, found.clubSlug != nil { debugReview = true }
                 await loadResult(found)
             } else {
                 failed = booking == nil

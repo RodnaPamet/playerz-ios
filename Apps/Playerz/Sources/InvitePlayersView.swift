@@ -28,72 +28,117 @@ struct InvitePlayersView: View {
         _liveLinks = State(initialValue: liveLinks)
     }
 
+    @Environment(\.dynamicTypeSize) private var typeSize
+
     var body: some View {
-        NavigationStack {
-            Form {
-                Section {
-                    Text(String(localized: "myBookings.players.sheetDescription \(spotsLeft)"))
-                }
-                if let problem {
-                    Section { Text(problem).foregroundStyle(.red) }
-                }
-                Section(String(localized: "myBookings.players.recent")) {
-                    if loaded, coPlayers.isEmpty {
-                        Text(String(localized: "myBookings.players.recentEmpty")).foregroundStyle(.secondary)
-                    } else if !loaded {
-                        ProgressView()
-                    }
-                    ForEach(coPlayers, id: \.userId) { player in
-                        HStack {
-                            Text(player.name ?? String(localized: "messages.unnamed"))
-                            Spacer()
-                            if added.contains(player.userId) {
-                                Image(systemName: "checkmark")
-                                    .accessibilityLabel(String(localized: "myBookings.players.added"))
-                            } else {
-                                Button(String(localized: "myBookings.players.add")) { add(player) }
-                                    .buttonStyle(.bordered)
-                                    .disabled(adding != nil)
-                            }
-                        }
-                    }
-                }
-                Section {
-                    if let link {
-                        ShareLink(
-                            item: link,
-                            subject: Text(String(localized: "myBookings.players.shareTitle")),
-                            message: Text(String(localized: "myBookings.players.shareTitle"))
-                        ) {
-                            Label(String(localized: "myBookings.players.share"), systemImage: "square.and.arrow.up")
-                        }
-                    } else {
-                        Button(String(localized: "myBookings.players.share"), systemImage: "link", action: makeLink)
-                            .disabled(busy)
-                    }
-                    if liveLinks > 0 {
-                        Button(String(localized: "myBookings.players.stopLinks"), role: .destructive, action: stopLinks)
-                            .disabled(busy)
-                    }
-                } footer: {
-                    if linksStopped {
-                        Text(String(localized: "myBookings.players.linksStopped"))
-                    } else if link != nil {
-                        Text(String(localized: "myBookings.players.linkReady"))
-                    } else if liveLinks > 0 {
-                        Text(String(localized: "myBookings.players.liveLinks \(liveLinks)"))
-                    }
-                }
+        BrandDarkSheet(
+            title: String(localized: "myBookings.players.sheetTitle"),
+            subtitle: String(localized: "myBookings.players.sheetDescription \(spotsLeft)")
+        ) {
+            if let problem {
+                Label(problem, systemImage: "exclamationmark.triangle.fill")
+                    .font(.subheadline)
+                    .foregroundStyle(Theme.Palette.danger)
             }
-            .navigationTitle(String(localized: "myBookings.players.sheetTitle"))
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button(String(localized: "common.done"), action: close)
-                }
+            sectionTitle(String(localized: "myBookings.players.recent"))
+            if loaded, coPlayers.isEmpty {
+                Text(String(localized: "myBookings.players.recentEmpty"))
+                    .font(.subheadline)
+                    .foregroundStyle(.white.opacity(0.72))
+            } else if !loaded {
+                ProgressView().frame(maxWidth: .infinity)
             }
-            .task { await loadCoPlayers() }
+            ForEach(coPlayers, id: \.userId) { player in
+                row(player)
+            }
+            sectionTitle(String(localized: "myBookings.players.linkTitle"))
+            if let link {
+                ShareLink(
+                    item: link,
+                    subject: Text(String(localized: "myBookings.players.shareTitle")),
+                    message: Text(String(localized: "myBookings.players.shareTitle"))
+                ) {
+                    Label(String(localized: "myBookings.players.share"), systemImage: "square.and.arrow.up")
+                        .labelStyle(PillLabelStyle())
+                }
+                .buttonStyle(.brandPrimary)
+            } else {
+                Button(action: makeLink) {
+                    Label(String(localized: "myBookings.players.share"), systemImage: "link")
+                        .labelStyle(PillLabelStyle())
+                }
+                .buttonStyle(.brandPrimary)
+                .disabled(busy)
+            }
+            if let note = linkNote {
+                Text(note)
+                    .font(.footnote)
+                    .foregroundStyle(.white.opacity(0.72))
+            }
+            if liveLinks > 0 {
+                Button(String(localized: "myBookings.players.stopLinks"), role: .destructive, action: stopLinks)
+                    .font(Theme.Typography.button)
+                    .foregroundStyle(Theme.Palette.danger)
+                    .frame(maxWidth: .infinity, minHeight: Theme.minTarget)
+                    .disabled(busy)
+            }
+            Button(String(localized: "common.done"), action: close)
+                .buttonStyle(.brandSecondary)
+                .padding(.top, Theme.Spacing.s)
         }
+        .task { await loadCoPlayers() }
+    }
+
+    /// What the link section says under its button.
+    private var linkNote: String? {
+        if linksStopped { return String(localized: "myBookings.players.linksStopped") }
+        if link != nil { return String(localized: "myBookings.players.linkReady") }
+        if liveLinks > 0 { return String(localized: "myBookings.players.liveLinks \(liveLinks)") }
+        return nil
+    }
+
+    private func sectionTitle(_ title: String) -> some View {
+        Text(title)
+            .font(.footnote.weight(.semibold))
+            .textCase(.uppercase)
+            .foregroundStyle(.white.opacity(0.72))
+            .accessibilityAddTraits(.isHeader)
+            .padding(.top, Theme.Spacing.s)
+    }
+
+    /// Someone the booker has played with, and «Добави», or a tick once added.
+    private func row(_ player: Components.Schemas.CoPlayer) -> some View {
+        let name = player.name ?? String(localized: "messages.unnamed")
+        // At the accessibility sizes «Добави» goes under the name instead of cutting it.
+        let layout = typeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: Theme.Spacing.s))
+            : AnyLayout(HStackLayout(spacing: Theme.Spacing.m))
+        return layout {
+            HStack(spacing: Theme.Spacing.m) {
+                // Decoration: at the accessibility sizes the name needs the width.
+                if !typeSize.isAccessibilitySize {
+                    BrandAvatar(name: player.name, url: session.mediaURL(player.avatarUrl))
+                }
+                Text(name)
+                    .font(Theme.Typography.rowTitle)
+                    .foregroundStyle(.white)
+            }
+            if !typeSize.isAccessibilitySize { Spacer(minLength: 0) }
+            if added.contains(player.userId) {
+                Image(systemName: "checkmark.circle.fill")
+                    .font(.title2)
+                    .foregroundStyle(Theme.Palette.accentFill)
+                    .frame(minWidth: Theme.minTarget, minHeight: Theme.minTarget)
+                    .accessibilityLabel(String(localized: "myBookings.players.added"))
+            } else {
+                Button(String(localized: "myBookings.players.add")) { add(player) }
+                    .buttonStyle(.brandSecondary(fullWidth: false))
+                    .disabled(adding != nil)
+            }
+        }
+        .padding(Theme.Spacing.m)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Theme.Palette.sheetRow, in: .rect(cornerRadius: Theme.Radius.row))
     }
 
     private func close() {
@@ -155,6 +200,30 @@ struct InvitePlayersView: View {
                 linksStopped = true
             } else {
                 problem = BookingPlayerText.error(response.flatMap { apiErrorCode($0) })
+            }
+        }
+    }
+}
+
+/// A pill's icon and title, the title alone at the accessibility sizes: beside
+/// the icon «Покани играчи» broke mid-word and was cut off.
+struct PillLabelStyle: LabelStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        PillLabel(configuration: configuration)
+    }
+
+    private struct PillLabel: View {
+        let configuration: LabelStyleConfiguration
+        @Environment(\.dynamicTypeSize) private var typeSize
+
+        var body: some View {
+            if typeSize.isAccessibilitySize {
+                configuration.title
+            } else {
+                HStack(spacing: Theme.Spacing.s) {
+                    configuration.icon
+                    configuration.title
+                }
             }
         }
     }

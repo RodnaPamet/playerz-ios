@@ -29,22 +29,20 @@ struct BookingInviteView: View {
                         join: join
                     )
                 } else if invalid {
-                    ContentUnavailableView(
-                        String(localized: "bookingInvite.invalid.title"),
+                    BrandEmptyState(
                         systemImage: "link",
-                        description: Text(String(localized: "bookingInvite.invalid.description"))
+                        title: String(localized: "bookingInvite.invalid.title"),
+                        message: String(localized: "bookingInvite.invalid.description")
                     )
                 } else {
                     ProgressView()
                 }
             }
+            .brandPage()
+            // Hidden with the system bar; still what VoiceOver calls the screen.
             .navigationTitle(String(localized: "bookingInvite.titleNoName"))
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(String(localized: "common.close"), action: close)
-                }
-            }
+            // The sheet's first screen: the band's back button closes it.
+            .brandHeader(.back(String(localized: "bookingInvite.titleNoName"), action: close))
             .navigationDestination(item: $joined) { id in
                 BookingDetailView(bookingId: id, session: session)
             }
