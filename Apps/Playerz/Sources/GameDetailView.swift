@@ -1,8 +1,9 @@
 import PlayerzAPI
 import SwiftUI
 
-/// One game (#510): its facts, and what the caller can do about it: ask for a
-/// place, take the request back, or leave before the club's cutoff.
+/// One game (#510): its court and players, its facts, and what the caller can
+/// do about it: ask for a place, take the request back, or leave before the
+/// club's cutoff.
 struct GameDetailView: View {
     @State private var game: Components.Schemas.OpenGame
     @Bindable var session: SessionModel
@@ -20,58 +21,229 @@ struct GameDetailView: View {
     }
 
     @State private var asking = false
-    @State private var note = ""
     @State private var busy = false
     @State private var problem: String?
 
-    /// The server's limit, after it sanitises the note (#376).
-    private let noteMax = 280
+    @ScaledMetric(relativeTo: .body) private var faceSide: CGFloat = 44
+    @Environment(\.dynamicTypeSize) private var typeSize
+
+    /// At the accessibility sizes a pinned button would cover half the
+    /// screen, so there it follows the court in the scrolling content.
+    private var pinsAction: Bool { !typeSize.isAccessibilitySize }
 
     var body: some View {
-        List {
-            Section {
-                LabeledContent(String(localized: "games.detail.when"),
-                               value: GameText.when(game.startTs, timezone: game.timezone))
-                LabeledContent(String(localized: "games.detail.where"),
-                               value: "\(game.venue.name), \(game.venue.city)")
-                LabeledContent(String(localized: "games.detail.court"), value: game.courtName)
-                LabeledContent(String(localized: "games.detail.sport"), value: GameText.sport(game.sport))
-                LabeledContent(String(localized: "games.detail.players"),
-                               value: String(localized: "games.players \(game.playersCount) \(game.capacity)"))
-                LabeledContent(String(localized: "games.detail.level"),
-                               value: GameText.level(min: game.levelMin, max: game.levelMax))
-                LabeledContent(
-                    String(localized: "games.detail.organiser"),
-                    value: game.booker.firstName ?? String(localized: "games.organiserUnknown")
-                )
-            }
-            if let text = game.note, !text.isEmpty {
-                Section(String(localized: "games.detail.note")) { Text(text) }
-            }
-            Section {
-                if let problem {
-                    Text(problem).foregroundStyle(.red)
+        ScrollView {
+            VStack(alignment: .leading, spacing: Theme.Spacing.l) {
+                summary
+                if !pinsAction { actionBar }
+                players
+                facts
+                if let text = game.note, !text.isEmpty {
+                    BrandContentCard {
+                        VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
+                            Text(String(localized: "games.detail.note"))
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(.secondary)
+                            Text(text)
+                        }
+                        .accessibilityElement(children: .combine)
+                    }
                 }
-                action
-            } footer: {
-                Text(String(localized: "games.detail.payAtClub"))
+            }
+            .padding(.horizontal, Theme.Spacing.l)
+            .padding(.bottom, Theme.Spacing.l)
+        }
+        .brandPage()
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            if pinsAction {
+                actionBar
+                    .padding(.horizontal, Theme.Spacing.l)
+                    .padding(.vertical, Theme.Spacing.m)
+                    .background(Theme.Palette.page)
+                    .overlay(alignment: .top) { divider }
             }
         }
         .navigationTitle(GameText.sport(game.sport))
-        .navigationBarTitleDisplayMode(.inline)
+        .brandHeader(.back(GameText.sport(game.sport)))
+        // The bottom of this screen is its own button.
+        .floatingTabBarHidden()
         .onChange(of: problem) { _, text in
             if let text { AccessibilityNotification.Announcement(text).post() }
         }
-        .sheet(isPresented: $asking) { askSheet }
+        .brandSheet(isPresented: $asking, detents: [.medium, .large]) {
+            GameAskSheet(game: game, session: session) { outcome in
+                asking = false
+                switch outcome {
+                case .asked(let fresh):
+                    game = fresh
+                    problem = nil
+                    Task { await changed() }
+                case .refused(let text):
+                    problem = text
+                    Task { await changed() }
+                case .cancelled:
+                    break
+                }
+            }
+        }
     }
 
-    /// The caller's part: none yet, a request, a place, or the organiser's own game.
+    // ─── When, the court, where ───────────────────────────────────────
+
+    private var summary: some View {
+        BrandContentCard {
+            VStack(alignment: .leading, spacing: Theme.Spacing.m) {
+                VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
+                    if game.viewer?.levelFits == true {
+                        GameTag(text: String(localized: "games.levelFits"), systemImage: "checkmark.seal.fill")
+                    }
+                    Text(GameText.day(game.startTs, timezone: game.timezone))
+                        .font(Theme.Typography.cardTitle)
+                    Text("\(GameText.hours(game.startTs, game.endTs, timezone: game.timezone)) · \(GameText.duration(game.startTs, game.endTs))")
+                        .font(.body)
+                        .foregroundStyle(.secondary)
+                }
+                // One sentence for VoiceOver; the court's «+» is the button below.
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(GameText.spoken(game))
+                GameCourtView(
+                    seats: GameSeats(game: game),
+                    court: GameSport.court(game.sport),
+                    organiserName: game.booker.firstName,
+                    organiserAvatar: GameText.picture(game.booker.avatarUrl, server: session.serverURL),
+                    large: true,
+                    join: game.callerMayAsk && !busy ? { asking = true } : nil
+                )
+                .accessibilityHidden(true)
+            }
+        }
+    }
+
+    // ─── Играчи ───────────────────────────────────────────────────────
+
+    private var players: some View {
+        VStack(alignment: .leading, spacing: Theme.Spacing.s) {
+            HStack(alignment: .firstTextBaseline) {
+                Text(String(localized: "games.detail.players"))
+                    .font(Theme.Typography.sectionTitle)
+                    .accessibilityAddTraits(.isHeader)
+                Spacer()
+                Text(String(localized: "games.players \(game.playersCount) \(game.capacity)"))
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.secondary)
+            }
+            BrandContentCard {
+                VStack(alignment: .leading, spacing: Theme.Spacing.m) {
+                    playerRow(
+                        initial: game.booker.firstName?.first,
+                        symbol: "person.fill",
+                        title: game.booker.firstName ?? String(localized: "games.organiserUnknown"),
+                        subtitle: game.viewer?.isBooker == true
+                            ? String(localized: "games.yours")
+                            : String(localized: "games.detail.organiser")
+                    )
+                    let others = max(game.playersCount - 1, 0)
+                    let callerPlays = game.viewer?.isPlaying == true && game.viewer?.isBooker != true && others > 0
+                    if callerPlays {
+                        divider
+                        playerRow(symbol: "checkmark", title: String(localized: "games.seat.you"),
+                                  subtitle: GameText.status(.ACCEPTED))
+                    }
+                    // The server counts the other players; it does not name them.
+                    if others - (callerPlays ? 1 : 0) > 0 {
+                        divider
+                        playerRow(symbol: "person.2.fill",
+                                  title: String(localized: "games.detail.others \(others - (callerPlays ? 1 : 0))"))
+                    }
+                    if game.spotsLeft > 0 {
+                        divider
+                        playerRow(symbol: "plus", title: String(localized: "games.card.free \(game.spotsLeft)"), wanted: true)
+                    }
+                }
+            }
+        }
+    }
+
+    private var divider: some View { Divider().overlay(Theme.Palette.hairline) }
+
+    private func playerRow(
+        initial: Character? = nil,
+        symbol: String,
+        title: String,
+        subtitle: String? = nil,
+        wanted: Bool = false
+    ) -> some View {
+        HStack(spacing: Theme.Spacing.m) {
+            Group {
+                if let initial {
+                    Text(String(initial).uppercased()).font(.headline)
+                } else {
+                    Image(systemName: symbol).font(.subheadline.weight(.bold))
+                }
+            }
+            .foregroundStyle(wanted ? Theme.Palette.accentText : Color.primary)
+            .frame(width: faceSide, height: faceSide)
+            .background {
+                if wanted {
+                    Circle().strokeBorder(Theme.Palette.accentText, style: StrokeStyle(lineWidth: 1.5, dash: [5, 4]))
+                } else {
+                    Circle().fill(Theme.Palette.chipIdle)
+                }
+            }
+            .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title).font(Theme.Typography.rowTitle)
+                if let subtitle {
+                    Text(subtitle).font(.subheadline).foregroundStyle(.secondary)
+                }
+            }
+        }
+        .accessibilityElement(children: .combine)
+    }
+
+    // ─── Къде, корт, ниво, срок ───────────────────────────────────────
+
+    private var facts: some View {
+        BrandContentCard {
+            VStack(spacing: Theme.Spacing.m) {
+                LabeledContent(String(localized: "games.detail.where"), value: "\(game.venue.name), \(game.venue.city)")
+                divider
+                LabeledContent(String(localized: "games.detail.court"), value: game.courtName)
+                divider
+                LabeledContent(String(localized: "games.detail.level"),
+                               value: GameText.level(min: game.levelMin, max: game.levelMax))
+                divider
+                LabeledContent(String(localized: "games.detail.cutoff"),
+                               value: GameText.when(game.cutoffAt, timezone: game.timezone))
+            }
+        }
+    }
+
+    // ─── The caller's part ────────────────────────────────────────────
+
+    private var actionBar: some View {
+        VStack(spacing: Theme.Spacing.s) {
+            if let problem {
+                Label(problem, systemImage: "exclamationmark.triangle.fill")
+                    .font(.footnote.weight(.semibold))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            action
+            Text(String(localized: "games.detail.payAtClub"))
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    /// None yet, a request, a place, or the organiser's own game.
     @ViewBuilder private var action: some View {
         let viewer = game.viewer
         if viewer?.isBooker == true {
-            Text(String(localized: "games.yours"))
+            Label(String(localized: "games.yours"), systemImage: "star.fill")
+                .font(Theme.Typography.rowTitle)
         } else if let request = viewer?.request, request.status == .PENDING || request.status == .ACCEPTED {
-            LabeledContent(String(localized: "games.detail.request"), value: GameText.status(request.status))
+            requestLine(request.status)
             // Leaving is possible until the club's cutoff; waiting can be withdrawn any time.
             if request.status == .PENDING || game.cutoffAt > .now {
                 Button(role: .destructive) {
@@ -81,80 +253,34 @@ struct GameDetailView: View {
                          ? String(localized: "games.withdraw")
                          : String(localized: "games.leave"))
                 }
+                .buttonStyle(.brandSecondary)
                 .disabled(busy)
             }
         } else if game.open {
-            if let request = viewer?.request {
-                LabeledContent(String(localized: "games.detail.request"), value: GameText.status(request.status))
-            }
+            if let request = viewer?.request { requestLine(request.status) }
             Button(String(localized: "games.ask")) { asking = true }
-                .disabled(busy || viewer?.request?.status == .DECLINED || viewer?.request?.status == .REMOVED)
+                .buttonStyle(.brandPrimary)
+                .disabled(busy || !game.callerMayAsk)
         } else {
-            Text(String(localized: "games.error.GAME_CLOSED")).foregroundStyle(.secondary)
+            Text(String(localized: "games.error.GAME_CLOSED"))
+                .foregroundStyle(.secondary)
         }
     }
 
-    private var askSheet: some View {
-        NavigationStack {
-            Form {
-                Section {
-                    Text(String(localized: "games.askWhere \(game.venue.name) \(GameText.when(game.startTs, timezone: game.timezone))"))
-                }
-                Section {
-                    TextField(String(localized: "games.notePlaceholder"), text: $note, axis: .vertical)
-                        .lineLimit(3...6)
-                } header: {
-                    Text(String(localized: "games.noteLabel"))
-                } footer: {
-                    Text(String(localized: "games.noteHint \(noteMax - note.count)"))
-                        .foregroundStyle(note.count > noteMax ? .red : .secondary)
-                }
+    private func requestLine(_ status: Components.Schemas.OpenGameRequestStatus) -> some View {
+        ViewThatFits(in: .horizontal) {
+            HStack {
+                Text(String(localized: "games.detail.request")).font(.subheadline)
+                Spacer()
+                GameStatusBadge(status: status)
             }
-            .navigationTitle(String(localized: "games.askTitle"))
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(String(localized: "games.back")) { asking = false }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button(String(localized: "games.send")) {
-                        Task { await ask() }
-                    }
-                    .disabled(busy || note.count > noteMax)
-                }
+            VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
+                Text(String(localized: "games.detail.request")).font(.subheadline)
+                GameStatusBadge(status: status)
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .presentationDetents([.medium, .large])
-    }
-
-    private func ask() async {
-        guard let client = await session.client() else { return }
-        busy = true
-        problem = nil
-        defer { busy = false }
-        let trimmed = note.trimmingCharacters(in: .whitespacesAndNewlines)
-        do {
-            let response = try await client.askToJoinGame(
-                path: .init(id: game.id),
-                body: .json(.init(note: trimmed.isEmpty ? nil : trimmed))
-            )
-            switch response {
-            case .ok(let ok):
-                game = try ok.body.json.data
-            case .created(let created):
-                game = try created.body.json.data
-            default:
-                let code = apiErrorCode(response)
-                session.notice(refusal: code)
-                problem = GameText.error(code)
-            }
-            asking = false
-            note = ""
-            await changed()
-        } catch {
-            problem = GameText.error(nil)
-            asking = false
-        }
+        .accessibilityElement(children: .combine)
     }
 
     private func withdraw(_ requestId: String) async {

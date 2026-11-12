@@ -31,6 +31,10 @@ enum DebugLaunch {
     /// (`PLAYERZ_TOURNAMENT=<id>`), and its draw (also `PLAYERZ_TOURNAMENT_DRAW=1`), #22.
     static var gamesTournaments: Bool { env["PLAYERZ_GAMES"] == "tournaments" }
     static var tournament: String? { env["PLAYERZ_TOURNAMENT"] }
+    /// «Открий» on a listed game's screen (`PLAYERZ_GAME=<id>`), or with one of its
+    /// sheets open (`PLAYERZ_GAMES_SHEET=sport|filters|ask`). Nothing is sent.
+    static var game: String? { env["PLAYERZ_GAME"] }
+    static var gamesSheet: String? { env["PLAYERZ_GAMES_SHEET"] }
     static var tournamentDraw: Bool { env["PLAYERZ_TOURNAMENT_DRAW"] == "1" }
     static var bookingGame: String? { env["PLAYERZ_BOOKING_GAME"] }
     /// Играй opened on a club's page (`PLAYERZ_CLUB=<slug>`) or a venue (`PLAYERZ_VENUE=<id>`), #17.
@@ -68,6 +72,8 @@ enum DebugLaunch {
     static let gamesMine = false
     static let gamesTournaments = false
     static let tournament: String? = nil
+    static let game: String? = nil
+    static let gamesSheet: String? = nil
     static let tournamentDraw = false
     static let bookingGame: String? = nil
     static let club: String? = nil

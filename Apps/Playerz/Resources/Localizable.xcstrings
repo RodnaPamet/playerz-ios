@@ -5553,6 +5553,110 @@
         }
       }
     },
+    "games.card.free %lld": {
+      "localizations": {
+        "bg": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld свободно място"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld свободни места"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld free spot"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld free spots"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "games.card.full": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Няма свободни места"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No free spots"
+          }
+        }
+      }
+    },
+    "games.card.organisedBy %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "организира %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "organised by %@"
+          }
+        }
+      }
+    },
+    "games.card.playersSpoken %lld %lld": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld от %2$lld играчи"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld of %2$lld players"
+          }
+        }
+      }
+    },
+    "games.court.more %lld": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Още места извън чертежа: %lld"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "More places not drawn: %lld"
+          }
+        }
+      }
+    },
     "games.detail.court": {
       "localizations": {
         "bg": {
@@ -5565,6 +5669,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Court"
+          }
+        }
+      }
+    },
+    "games.detail.cutoff": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Заявки и отказ до"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ask or pull out until"
           }
         }
       }
@@ -5617,6 +5737,46 @@
         }
       }
     },
+    "games.detail.others %lld": {
+      "localizations": {
+        "bg": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Още %lld играч"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Още %lld играчи"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld more player"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld more players"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "games.detail.payAtClub": {
       "localizations": {
         "bg": {
@@ -5661,38 +5821,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Your request"
-          }
-        }
-      }
-    },
-    "games.detail.sport": {
-      "localizations": {
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Спорт"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sport"
-          }
-        }
-      }
-    },
-    "games.detail.when": {
-      "localizations": {
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Кога"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "When"
           }
         }
       }
@@ -6001,6 +6129,22 @@
         }
       }
     },
+    "games.filter.anyCity": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Всички градове"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All cities"
+          }
+        }
+      }
+    },
     "games.filter.anyDay": {
       "localizations": {
         "bg": {
@@ -6013,6 +6157,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Any day"
+          }
+        }
+      }
+    },
+    "games.filter.city": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Град"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "City"
           }
         }
       }
@@ -6077,6 +6237,70 @@
           "stringUnit": {
             "state": "translated",
             "value": "Game filters"
+          }
+        }
+      }
+    },
+    "games.filters.clear": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изчисти"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear"
+          }
+        }
+      }
+    },
+    "games.filters.clearAll": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изчисти филтрите"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear filters"
+          }
+        }
+      }
+    },
+    "games.filters.show": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Покажи игрите"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show games"
+          }
+        }
+      }
+    },
+    "games.filters.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Филтри"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filters"
           }
         }
       }
@@ -6241,6 +6465,22 @@
         }
       }
     },
+    "games.minutes %lld": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld мин"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld min"
+          }
+        }
+      }
+    },
     "games.noteHint %lld": {
       "localizations": {
         "bg": {
@@ -6317,6 +6557,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$lld of %2$lld"
+          }
+        }
+      }
+    },
+    "games.seat.you": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вие"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You"
           }
         }
       }

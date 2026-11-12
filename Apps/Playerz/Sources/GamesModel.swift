@@ -8,7 +8,6 @@ import PlayerzAPI
 @Observable
 final class GamesModel {
     enum Phase { case loading, loaded, failed }
-    enum Day: Hashable { case any, today, tomorrow }
 
     private(set) var phase: Phase = .loading
     private(set) var games: [Components.Schemas.OpenGame] = []
@@ -19,19 +18,25 @@ final class GamesModel {
     private(set) var mine: [Components.Schemas.MyGameRequest] = []
 
     var sport: String?
-    var day: Day = .any
+    /// The day at the venue, or any day.
+    var day: VenueDay?
+    var city: String?
+
+    /// What the filters can offer, read from the clubs the server lists: there
+    /// is no endpoint that names the cities or the sports with games in them.
+    private(set) var cities: [String] = []
+    private(set) var offeredSports: [String] = Sports.known
 
     /// `date` is a day AT THE VENUE; a Sofia club's "today" is Sofia's. The
     /// pilot's clubs are all in one zone, so the strip is computed there.
-    private static let zone = "Europe/Sofia"
+    static let zone = "Europe/Sofia"
 
-    private var dateParam: String? {
-        switch day {
-        case .any: nil
-        case .today: VenueDay.upcoming(inTimeZone: Self.zone).first?.apiDate
-        case .tomorrow: VenueDay.upcoming(inTimeZone: Self.zone).dropFirst().first?.apiDate
-        }
-    }
+    /// Games are listed 14 days ahead, so those are the days worth offering.
+    var days: [VenueDay] { VenueDay.upcoming(inTimeZone: Self.zone) }
+
+    var activeFilters: Int { (day == nil ? 0 : 1) + (city == nil ? 0 : 1) }
+
+    private var dateParam: String? { day?.apiDate }
 
     func load(_ session: SessionModel) async {
         phase = games.isEmpty ? .loading : phase
@@ -41,7 +46,7 @@ final class GamesModel {
         }
         do {
             let page = try await client
-                .listOpenGames(.init(query: .init(sport: sport, date: dateParam)))
+                .listOpenGames(.init(query: .init(sport: sport, date: dateParam, city: city)))
                 .ok.body.json.data
             games = page.items
             nextCursor = page.nextCursor
@@ -58,7 +63,7 @@ final class GamesModel {
         defer { loadingMore = false }
         do {
             let page = try await client
-                .listOpenGames(.init(query: .init(sport: sport, date: dateParam, cursor: cursor)))
+                .listOpenGames(.init(query: .init(sport: sport, date: dateParam, city: city, cursor: cursor)))
                 .ok.body.json.data
             // A game can move between pages while they are read; keep the first copy.
             let seen = Set(games.map(\.id))
@@ -81,5 +86,25 @@ final class GamesModel {
         } catch {
             minePhase = .failed
         }
+    }
+
+    /// The cities and sports of the listed clubs, once: what the sport sheet
+    /// and the city filter offer. A failure leaves the known sports and no cities.
+    func loadChoices(_ session: SessionModel) async {
+        guard cities.isEmpty, let client = await session.client() else { return }
+        guard let venues = try? await client.listVenues(.init(query: .init(limit: 50))).ok.body.json.data.items else { return }
+        var seen = Set<String>()
+        cities = venues.map(\.city).filter { !$0.isEmpty && seen.insert($0).inserted }
+        let played = Set(venues.flatMap(\.sports))
+        if !played.isEmpty {
+            // The spec's order first, then whatever the server added since this build.
+            offeredSports = Sports.known.filter(played.contains) + played.subtracting(Sports.known).sorted()
+        }
+    }
+
+    /// A game the server just answered with (a request sent): shown at once,
+    /// before the lists are read again.
+    func replace(_ game: Components.Schemas.OpenGame) {
+        if let index = games.firstIndex(where: { $0.id == game.id }) { games[index] = game }
     }
 }
