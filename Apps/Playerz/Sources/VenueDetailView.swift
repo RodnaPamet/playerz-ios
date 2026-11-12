@@ -242,7 +242,7 @@ private struct VenueHero: View {
                     .foregroundStyle(.secondary)
                 ChipFlow {
                     if let cents = venue.fromPriceCents {
-                        VenueFactChip(text: VenueFacts.price(fromCents: cents), prominent: true)
+                        VenueFactChip(text: VenueFacts.price(fromCents: cents, currency: venue.currency), prominent: true)
                     }
                     if let rating {
                         VenueFactChip(text: rating.shown, systemImage: "star.fill")
@@ -269,7 +269,7 @@ private struct VenueHero: View {
     }
 
     private var place: String {
-        [venue.addressLine, venue.city].filter { !$0.isEmpty }.joined(separator: ", ")
+        [venue.addressLine, CityText.shown(venue.cityNames)].filter { !$0.isEmpty }.joined(separator: ", ")
     }
 }
 

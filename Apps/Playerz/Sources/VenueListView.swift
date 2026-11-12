@@ -189,13 +189,13 @@ struct VenueListView: View {
             Task { await model.setMode(.near, session: session) }
         }
         // What is on, by name; the sheet changes it.
-        if model.mode == .all, let city = model.filters.city {
+        if let city = model.cityName {
             BrandChip(city, systemImage: "mappin", isSelected: true) { filtering = true }
         }
         if let sport = model.filters.sport {
             BrandChip(GameText.sport(sport), isSelected: true) { filtering = true }
         }
-        if model.mode == .all, let indoor = model.filters.indoor {
+        if let indoor = model.filters.indoor {
             BrandChip(
                 String(localized: indoor ? "venues.filter.indoor" : "venues.filter.outdoor"),
                 isSelected: true

@@ -5,14 +5,14 @@ import SwiftUI
 /// the sport that the server filters by. Nothing changes until «Покажи игрите».
 struct GamesFilterSheet: View {
     let days: [VenueDay]
-    /// The cities the listed clubs are in; empty hides the section.
-    let cities: [String]
+    /// The cities with a club; empty hides the section.
+    let cities: [CityChoice]
     let apply: (VenueDay?, String?) -> Void
 
     @State private var day: VenueDay?
     @State private var city: String?
 
-    init(days: [VenueDay], cities: [String], day: VenueDay?, city: String?, apply: @escaping (VenueDay?, String?) -> Void) {
+    init(days: [VenueDay], cities: [CityChoice], day: VenueDay?, city: String?, apply: @escaping (VenueDay?, String?) -> Void) {
         self.days = days
         self.cities = cities
         self.apply = apply
@@ -31,8 +31,8 @@ struct GamesFilterSheet: View {
             if !cities.isEmpty {
                 section(String(localized: "games.filter.city")) {
                     BrandChip(String(localized: "games.filter.anyCity"), isSelected: city == nil) { city = nil }
-                    ForEach(cities, id: \.self) { item in
-                        BrandChip(item, isSelected: city == item) { city = item }
+                    ForEach(cities) { item in
+                        BrandChip(item.name, isSelected: city == item.value) { city = item.value }
                     }
                 }
             }
@@ -66,6 +66,7 @@ struct GamesFilterSheet: View {
 #Preview {
     GamesFilterSheet(
         days: VenueDay.upcoming(inTimeZone: "Europe/Sofia"),
-        cities: ["София", "Пловдив"], day: nil, city: nil
+        cities: [CityChoice(value: "sofia", name: "София"), CityChoice(value: "plovdiv", name: "Пловдив")],
+        day: nil, city: nil
     ) { _, _ in }
 }
