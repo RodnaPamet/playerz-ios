@@ -8,7 +8,7 @@ import SwiftUI
 struct CoachLessonsView: View {
     @Bindable var session: SessionModel
 
-    @State private var when: Operations.listMyCoachLessons.Input.Query.whenPayload = .upcoming
+    @State private var when: When = .upcoming
     @State private var items: [Components.Schemas.MyCoachLesson] = []
     @State private var nextCursor: String?
     @State private var phase: Phase = .loading
@@ -26,61 +26,119 @@ struct CoachLessonsView: View {
         var id: String { lesson.id }
     }
 
+    private typealias When = Operations.listMyCoachLessons.Input.Query.whenPayload
+
     var body: some View {
-        List {
-            Picker(String(localized: "coachLessons.tabsLabel"), selection: $when) {
-                Text(String(localized: "coachLessons.tabs.upcoming")).tag(Operations.listMyCoachLessons.Input.Query.whenPayload.upcoming)
-                Text(String(localized: "coachLessons.tabs.past")).tag(Operations.listMyCoachLessons.Input.Query.whenPayload.past)
+        content
+            .brandPage()
+            // Hidden with the system bar; still what VoiceOver calls the screen.
+            .navigationTitle(String(localized: "coachLessons.title"))
+            // «Предстоящи» / «Минали» as the player's bookings have them.
+            .brandChipBar {
+                BrandChipRow {
+                    BrandChip(String(localized: "coachLessons.tabs.upcoming"), isSelected: when == .upcoming) { when = .upcoming }
+                    BrandChip(String(localized: "coachLessons.tabs.past"), isSelected: when == .past) { when = .past }
+                }
+                .accessibilityElement(children: .contain)
+                .accessibilityLabel(String(localized: "coachLessons.tabsLabel"))
             }
-            .pickerStyle(.segmented)
-            if let problem {
-                Text(problem).foregroundStyle(.red)
+            .brandHeader(.back(String(localized: "coachLessons.title")))
+            .task(id: when) { await load() }
+            .onChange(of: problem) { _, text in
+                // Said at once: the card that says it may be above the one tapped.
+                if let text { AccessibilityNotification.Announcement(text).post() }
             }
-            switch phase {
-            case .loading:
-                ProgressView()
-            case .failed:
+            .confirmationDialog(
+                asking.map(title) ?? "",
+                isPresented: $confirming,
+                titleVisibility: .visible,
+                presenting: asking
+            ) { asked in
+                Button(asked.act == .cancel ? String(localized: "coachLessons.cancel.yes") : String(localized: "coachLessons.noShow.yes"),
+                       role: .destructive) { act(asked) }
+                Button(String(localized: "coachLessons.keep"), role: .cancel) {}
+            } message: { asked in
+                Text(message(asked))
+            }
+    }
+
+    @ViewBuilder private var content: some View {
+        switch phase {
+        case .loading:
+            ProgressView(String(localized: "common.loading"))
+        case .failed:
+            BrandEmptyState(systemImage: "wifi.exclamationmark", title: String(localized: "coachLessons.failed")) {
                 Button(String(localized: "coachLessons.retry"), action: retry)
-            case .loaded where items.isEmpty:
-                Text(when == .upcoming ? String(localized: "coachLessons.noneUpcoming") : String(localized: "coachLessons.nonePast"))
-                    .foregroundStyle(.secondary)
-            case .loaded:
-                ForEach(items, id: \.id) { lesson in
-                    Section {
-                        CoachLessonRow(lesson: lesson)
-                        if canCancel(lesson) {
-                            Button(String(localized: "coachLessons.cancel.button"), role: .destructive) {
-                                ask(Asked(lesson: lesson, act: .cancel))
-                            }
-                        }
-                        if canMarkNoShow(lesson) {
-                            Button(String(localized: "coachLessons.noShow.button")) {
-                                ask(Asked(lesson: lesson, act: .noShow))
-                            }
+                    .buttonStyle(.brandSecondary(fullWidth: false))
+            }
+        case .loaded where items.isEmpty:
+            BrandEmptyState(
+                systemImage: "calendar",
+                title: when == .upcoming ? String(localized: "coachLessons.noneUpcoming") : String(localized: "coachLessons.nonePast")
+            )
+            .refreshable { await load() }
+        case .loaded:
+            // Cards on the page: each lesson is its own, with its own actions.
+            ScrollView {
+                LazyVStack(spacing: Theme.Spacing.l) {
+                    if let problem {
+                        BrandContentCard {
+                            Label(problem, systemImage: "exclamationmark.triangle")
+                                .foregroundStyle(Theme.Palette.danger)
                         }
                     }
-                    .onAppear {
-                        if lesson.id == items.last?.id { Task { await loadMore() } }
+                    ForEach(items, id: \.id) { lesson in
+                        card(lesson)
+                            .onAppear {
+                                if lesson.id == items.last?.id { Task { await loadMore() } }
+                            }
                     }
                 }
+                .padding(.horizontal, Theme.Spacing.l)
+                .padding(.bottom, Theme.Spacing.l)
+            }
+            .refreshable { await load() }
+        }
+    }
+
+    /// One lesson, and under a hairline what can be done about it.
+    private func card(_ lesson: Components.Schemas.MyCoachLesson) -> some View {
+        let cancels = canCancel(lesson)
+        let marks = canMarkNoShow(lesson)
+        return VStack(alignment: .leading, spacing: 0) {
+            CoachLessonRow(lesson: lesson)
+                .padding(Theme.Spacing.l)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            if cancels || marks {
+                Rectangle().fill(Theme.Palette.hairline).frame(height: 1)
+                VStack(alignment: .leading, spacing: 0) {
+                    if marks {
+                        cardAction(String(localized: "coachLessons.noShow.button"), color: Theme.Palette.accentText) {
+                            ask(Asked(lesson: lesson, act: .noShow))
+                        }
+                    }
+                    if cancels {
+                        cardAction(String(localized: "coachLessons.cancel.button"), color: Theme.Palette.danger) {
+                            ask(Asked(lesson: lesson, act: .cancel))
+                        }
+                    }
+                }
+                .padding(.horizontal, Theme.Spacing.l)
+                .padding(.vertical, Theme.Spacing.xs)
             }
         }
-        .navigationTitle(String(localized: "coachLessons.title"))
-        .navigationBarTitleDisplayMode(.inline)
-        .task(id: when) { await load() }
-        .refreshable { await load() }
-        .confirmationDialog(
-            asking.map(title) ?? "",
-            isPresented: $confirming,
-            titleVisibility: .visible,
-            presenting: asking
-        ) { asked in
-            Button(asked.act == .cancel ? String(localized: "coachLessons.cancel.yes") : String(localized: "coachLessons.noShow.yes"),
-                   role: .destructive) { act(asked) }
-            Button(String(localized: "coachLessons.keep"), role: .cancel) {}
-        } message: { asked in
-            Text(message(asked))
+        .brandCardSurface()
+    }
+
+    private func cardAction(_ title: String, color: Color, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Text(title)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(color)
+                .frame(maxWidth: .infinity, minHeight: Theme.minTarget, alignment: .leading)
+                .contentShape(.rect)
         }
+        .buttonStyle(.plain)
     }
 
     private func ask(_ asked: Asked) {

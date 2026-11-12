@@ -43,6 +43,7 @@ struct CoachCertificateSection: View {
                 }
                 if profile.certificate != nil {
                     Button(String(localized: "coachProfile.certificate.remove"), role: .destructive, action: remove)
+                        .foregroundStyle(Theme.Palette.danger)
                         .disabled(model.busy)
                 }
             }

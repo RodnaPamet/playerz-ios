@@ -28,50 +28,64 @@ struct LessonConfirmSheet: View {
     private static let maxNotes = 500
 
     var body: some View {
-        NavigationStack {
-            Form {
-                Section {
-                    LabeledContent(String(localized: "coaches.lesson.sheet.coach"), value: coachName)
-                    LabeledContent(String(localized: "coaches.lesson.sheet.venue"), value: venue.name)
-                    LabeledContent(
-                        String(localized: "coaches.lesson.sheet.court"),
-                        value: String(localized: "coaches.lesson.sheet.courtOf \(time.court.name) \(GameText.sport(time.sport))")
-                    )
-                    LabeledContent(String(localized: "coaches.lesson.sheet.when")) {
-                        Text(GameText.when(time.startTs, timezone: times.venue.timezone))
-                    }
-                }
-                Section {
-                    LabeledContent(String(localized: "coaches.lesson.sheet.coachFee"), value: CoachText.money(times.coachFeeCents, times.currency))
-                    LabeledContent(String(localized: "coaches.lesson.sheet.courtPrice"), value: CoachText.money(time.courtPriceCents, times.currency))
-                    LabeledContent(String(localized: "coaches.lesson.sheet.total")) {
-                        Text(CoachText.money(time.totalCents, times.currency)).bold()
-                    }
-                } footer: {
-                    Text(footer)
-                }
-                Section {
-                    TextField(String(localized: "coaches.lesson.sheet.notes"), text: $notes, axis: .vertical)
-                        .lineLimit(2...)
-                }
-                if let problem {
-                    Section { Text(problem).foregroundStyle(.red) }
-                }
-                Section {
-                    Button(action: book) {
-                        if sending { ProgressView() } else { Text(String(localized: "coaches.lesson.book")) }
-                    }
-                    .disabled(sending || notes.count > Self.maxNotes)
+        BrandDarkSheet(title: String(localized: "coaches.lesson.sheet.title")) {
+            facts {
+                LabeledContent(String(localized: "coaches.lesson.sheet.coach"), value: coachName)
+                LabeledContent(String(localized: "coaches.lesson.sheet.venue"), value: venue.name)
+                LabeledContent(
+                    String(localized: "coaches.lesson.sheet.court"),
+                    value: String(localized: "coaches.lesson.sheet.courtOf \(time.court.name) \(GameText.sport(time.sport))")
+                )
+                LabeledContent(String(localized: "coaches.lesson.sheet.when")) {
+                    Text(GameText.when(time.startTs, timezone: times.venue.timezone))
                 }
             }
-            .navigationTitle(String(localized: "coaches.lesson.sheet.title"))
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(String(localized: "common.close"), action: close)
+            facts {
+                LabeledContent(String(localized: "coaches.lesson.sheet.coachFee"), value: CoachText.money(times.coachFeeCents, times.currency))
+                LabeledContent(String(localized: "coaches.lesson.sheet.courtPrice"), value: CoachText.money(time.courtPriceCents, times.currency))
+                LabeledContent(String(localized: "coaches.lesson.sheet.total")) {
+                    Text(CoachText.money(time.totalCents, times.currency)).bold()
                 }
             }
+            Text(footer)
+                .font(.footnote)
+                .foregroundStyle(.white.opacity(0.72))
+            TextField(String(localized: "coaches.lesson.sheet.notes"), text: $notes, axis: .vertical)
+                .lineLimit(2...)
+                .foregroundStyle(Theme.Palette.onHeader)
+                .padding(Theme.Spacing.m)
+                .background(Theme.Palette.sheetRow, in: .rect(cornerRadius: Theme.Radius.row))
+            if let problem {
+                Label(problem, systemImage: "exclamationmark.triangle.fill")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(Theme.Palette.danger)
+            }
+            Button(action: book) {
+                if sending {
+                    ProgressView().accessibilityLabel(String(localized: "coaches.lesson.book"))
+                } else {
+                    Text(String(localized: "coaches.lesson.book"))
+                }
+            }
+            .buttonStyle(.brandPrimary)
+            .disabled(sending || notes.count > Self.maxNotes)
+            .padding(.top, Theme.Spacing.s)
+            Button(String(localized: "common.close"), action: close)
+                .buttonStyle(.brandSecondary)
         }
+        .onChange(of: problem) { _, text in
+            // Said where the button was: VoiceOver's focus does not move to it.
+            if let text { AccessibilityNotification.Announcement(text).post() }
+        }
+    }
+
+    /// A group of facts on a row of the sheet, one under the other.
+    private func facts<Content: View>(@ViewBuilder _ content: () -> Content) -> some View {
+        VStack(spacing: Theme.Spacing.s) { content() }
+            .foregroundStyle(Theme.Palette.onHeader)
+            .padding(Theme.Spacing.m)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Theme.Palette.sheetRow, in: .rect(cornerRadius: Theme.Radius.row))
     }
 
     /// Paid at the club; and when the club's cutoff has already passed for

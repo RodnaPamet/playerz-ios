@@ -11,8 +11,8 @@ struct CoachProfileSubmitSection: View {
     var body: some View {
         switch profile.state {
         case .NONE, .DRAFT, .DECLINED:
-            Section {
-                if !profile.missing.isEmpty {
+            if !profile.missing.isEmpty {
+                Section {
                     VStack(alignment: .leading, spacing: 4) {
                         Text(String(localized: "coachProfile.missing.title")).font(.subheadline)
                         ForEach(profile.missing, id: \.self) { missing in
@@ -21,14 +21,22 @@ struct CoachProfileSubmitSection: View {
                     }
                     .accessibilityElement(children: .combine)
                 }
+                .brandListRow()
+            }
+            Section {
                 Button(String(localized: "coachProfile.submit"), action: submit)
+                    .buttonStyle(.brandPrimary)
                     .disabled(model.busy || !profile.missing.isEmpty)
             }
+            .bareListRow()
         case .SUBMITTED:
             Section {
+                // Taking it back is not a loss: the profile returns to a draft.
                 Button(String(localized: "coachProfile.withdraw"), action: withdraw)
+                    .buttonStyle(.brandSecondary)
                     .disabled(model.busy)
             }
+            .bareListRow()
         default:
             EmptyView()
         }

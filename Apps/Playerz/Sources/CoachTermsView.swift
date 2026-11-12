@@ -38,55 +38,62 @@ struct CoachTermsView: View {
 
     var body: some View {
         Form {
-            Section {
-                Text(String(localized: "coachVenues.terms.description")).foregroundStyle(.secondary)
-            }
-            if let problem {
-                Section { Text(problem).foregroundStyle(.red) }
-            }
-            if let saved {
-                Section { Text(saved).foregroundStyle(.green) }
-            }
-            Section {
-                // Labelled rows: a placeholder alone is gone once a price is typed.
-                LabeledContent(String(localized: "coachVenues.terms.hourly \(link.currency)")) {
-                    TextField(text: $hourly, prompt: Text(verbatim: "0")) {
-                        Text(String(localized: "coachVenues.terms.hourly \(link.currency)"))
+            Group {
+                Section {
+                    Text(String(localized: "coachVenues.terms.description")).foregroundStyle(.secondary)
+                }
+                if let problem {
+                    Section { Text(problem).foregroundStyle(Theme.Palette.danger) }
+                }
+                if let saved {
+                    Section { Text(saved).foregroundStyle(Theme.Palette.success) }
+                }
+                Section {
+                    // Labelled rows: a placeholder alone is gone once a price is typed.
+                    LabeledContent(String(localized: "coachVenues.terms.hourly \(link.currency)")) {
+                        TextField(text: $hourly, prompt: Text(verbatim: "0")) {
+                            Text(String(localized: "coachVenues.terms.hourly \(link.currency)"))
+                        }
+                            .keyboardType(.decimalPad)
+                            .multilineTextAlignment(.trailing)
                     }
-                        .keyboardType(.decimalPad)
-                        .multilineTextAlignment(.trailing)
-                }
-                LabeledContent(String(localized: "coachVenues.terms.group \(link.currency)")) {
-                    TextField(text: $group, prompt: Text(verbatim: "—")) {
-                        Text(String(localized: "coachVenues.terms.group \(link.currency)"))
+                    LabeledContent(String(localized: "coachVenues.terms.group \(link.currency)")) {
+                        TextField(text: $group, prompt: Text(verbatim: "—")) {
+                            Text(String(localized: "coachVenues.terms.group \(link.currency)"))
+                        }
+                            .keyboardType(.decimalPad)
+                            .multilineTextAlignment(.trailing)
                     }
-                        .keyboardType(.decimalPad)
-                        .multilineTextAlignment(.trailing)
+                } footer: {
+                    Text(String(localized: "coachVenues.terms.groupHint"))
                 }
-            } footer: {
-                Text(String(localized: "coachVenues.terms.groupHint"))
-            }
-            Section {
-                ForEach(link.lengthOptions, id: \.self) { minutes in
-                    Toggle(String(localized: "coachVenues.terms.minutes \(minutes)"), isOn: length(minutes))
-                        .tint(Theme.Palette.controlOn)
+                Section {
+                    ForEach(link.lengthOptions, id: \.self) { minutes in
+                        Toggle(String(localized: "coachVenues.terms.minutes \(minutes)"), isOn: length(minutes))
+                            .tint(Theme.Palette.controlOn)
+                    }
+                } header: {
+                    Text(String(localized: "coachVenues.terms.lengths"))
+                } footer: {
+                    Text(String(localized: "coachVenues.terms.lengthsHint"))
                 }
-            } header: {
-                Text(String(localized: "coachVenues.terms.lengths"))
-            } footer: {
-                Text(String(localized: "coachVenues.terms.lengthsHint"))
-            }
-            Section {
-                Stepper(value: $cutoff, in: 0...168) {
-                    LabeledContent(String(localized: "coachVenues.terms.cutoff"), value: cutoff.formatted())
+                Section {
+                    Stepper(value: $cutoff, in: 0...168) {
+                        LabeledContent(String(localized: "coachVenues.terms.cutoff"), value: cutoff.formatted())
+                    }
+                } footer: {
+                    Text(String(localized: "coachVenues.terms.cutoffHint"))
                 }
-            } footer: {
-                Text(String(localized: "coachVenues.terms.cutoffHint"))
             }
+            .brandListRow()
+            // Terms and hours are saved apart, as on the web: each part ends
+            // in its own button.
             Section {
                 Button(String(localized: "coachVenues.terms.save"), action: saveTerms)
+                    .buttonStyle(.brandPrimary)
                     .disabled(model.busy)
             }
+            .bareListRow()
             Section {
                 ForEach(Self.days, id: \.self) { day in
                     CoachDayHours(day: day, stretches: stretches(day))
@@ -96,13 +103,25 @@ struct CoachTermsView: View {
             } footer: {
                 Text(String(localized: "coachVenues.terms.hoursHint"))
             }
+            .brandListRow()
             Section {
                 Button(String(localized: "coachVenues.terms.saveHours"), action: saveHours)
+                    .buttonStyle(.brandPrimary)
                     .disabled(model.busy)
             }
+            .bareListRow()
         }
+        .brandPage()
+        // Hidden with the system bar; still what VoiceOver calls the screen.
         .navigationTitle(String(localized: "coachVenues.terms.title \(link.venue.name)"))
-        .navigationBarTitleDisplayMode(.inline)
+        .brandHeader(.back(String(localized: "coachVenues.terms.title \(link.venue.name)")))
+        .onChange(of: problem) { _, text in
+            // At the top of a long form, maybe scrolled away: said as well.
+            if let text { AccessibilityNotification.Announcement(text).post() }
+        }
+        .onChange(of: saved) { _, text in
+            if let text { AccessibilityNotification.Announcement(text).post() }
+        }
     }
 
     private static func major(_ cents: Int) -> String {

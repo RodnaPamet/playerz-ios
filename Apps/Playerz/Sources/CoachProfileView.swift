@@ -17,63 +17,83 @@ struct CoachProfileView: View {
         Group {
             if let profile = model.profile {
                 Form {
-                    CoachProfileStateSection(profile: profile)
-                    if let line = model.line {
-                        Section { Text(line.text).foregroundStyle(line.isError ? .red : .green) }
+                    Group {
+                        CoachProfileStateSection(profile: profile)
+                        if let line = model.line {
+                            Section {
+                                Text(line.text)
+                                    .foregroundStyle(line.isError ? Theme.Palette.danger : Theme.Palette.success)
+                            }
+                        }
+                        Section {
+                            TextField(String(localized: "coachProfile.about.bio"), text: $model.bio, axis: .vertical)
+                                .lineLimit(4...)
+                                .disabled(!profile.canEdit.text)
+                        } header: {
+                            Text(String(localized: "coachProfile.about.title"))
+                        } footer: {
+                            Text(String(localized: "coachProfile.about.bioHint \(model.bio.count) \(CoachProfileModel.textMax)"))
+                        }
+                        Section {
+                            TextField(String(localized: "coachProfile.about.qualifications"), text: $model.qualifications, axis: .vertical)
+                                .lineLimit(2...)
+                                .disabled(!profile.canEdit.text)
+                        } footer: {
+                            Text(String(localized: "coachProfile.about.qualificationsHint"))
+                        }
+                        CoachSportsSection(sports: $model.sports, editable: profile.canEdit.text)
                     }
-                    Section {
-                        TextField(String(localized: "coachProfile.about.bio"), text: $model.bio, axis: .vertical)
-                            .lineLimit(4...)
-                            .disabled(!profile.canEdit.text)
-                    } header: {
-                        Text(String(localized: "coachProfile.about.title"))
-                    } footer: {
-                        Text(String(localized: "coachProfile.about.bioHint \(model.bio.count) \(CoachProfileModel.textMax)"))
-                    }
-                    Section {
-                        TextField(String(localized: "coachProfile.about.qualifications"), text: $model.qualifications, axis: .vertical)
-                            .lineLimit(2...)
-                            .disabled(!profile.canEdit.text)
-                    } footer: {
-                        Text(String(localized: "coachProfile.about.qualificationsHint"))
-                    }
-                    CoachSportsSection(sports: $model.sports, editable: profile.canEdit.text)
+                    .brandListRow()
                     if profile.canEdit.text {
                         Section {
                             Button(String(localized: "coachProfile.save"), action: save)
+                                .buttonStyle(.brandPrimary)
                                 .disabled(model.busy || !model.edited || tooLong)
                         }
+                        .bareListRow()
                     }
                     CoachCertificateSection(profile: profile, model: model, session: session)
+                        .brandListRow()
+                    // Its own rows: a card for what is missing, the button on the page.
                     CoachProfileSubmitSection(profile: profile, model: model, session: session)
-                    // Where they teach, their days off and their lessons (#21).
-                    Section {
-                        NavigationLink(String(localized: "coachVenues.title")) {
-                            CoachVenuesView(session: session)
-                        }
-                        if profile.state == .APPROVED {
-                            NavigationLink(String(localized: "coachVenues.timeOff.title")) {
-                                CoachTimeOffView(session: session)
+                    Group {
+                        // Where they teach, their days off and their lessons (#21).
+                        Section {
+                            NavigationLink {
+                                CoachVenuesView(session: session)
+                            } label: {
+                                Label(String(localized: "coachVenues.title"), systemImage: "sportscourt")
                             }
-                            NavigationLink(String(localized: "coachLessons.title")) {
-                                CoachLessonsView(session: session)
+                            if profile.state == .APPROVED {
+                                NavigationLink {
+                                    CoachTimeOffView(session: session)
+                                } label: {
+                                    Label(String(localized: "coachVenues.timeOff.title"), systemImage: "sun.max")
+                                }
+                                NavigationLink {
+                                    CoachLessonsView(session: session)
+                                } label: {
+                                    Label(String(localized: "coachLessons.title"), systemImage: "figure.tennis")
+                                }
                             }
                         }
                     }
+                    .brandListRow()
                 }
                 .refreshable { await model.load(session) }
             } else if model.failed {
-                ContentUnavailableView {
-                    Text(String(localized: "profile.failed"))
-                } actions: {
+                BrandEmptyState(systemImage: "wifi.exclamationmark", title: String(localized: "profile.failed")) {
                     Button(String(localized: "venues.retry"), action: retry)
+                        .buttonStyle(.brandSecondary(fullWidth: false))
                 }
             } else {
-                ProgressView()
+                ProgressView(String(localized: "common.loading"))
             }
         }
+        .brandPage()
+        // Hidden with the system bar; still what VoiceOver calls the screen.
         .navigationTitle(String(localized: "coachProfile.title"))
-        .navigationBarTitleDisplayMode(.inline)
+        .brandHeader(.back(String(localized: "coachProfile.title")))
         .task {
             await model.load(session)
             if let area = DebugLaunch.coachArea {

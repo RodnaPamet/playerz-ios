@@ -11,8 +11,10 @@ struct CoachView: View {
     @State private var coach: Components.Schemas.PublicCoach?
     @State private var failed = false
     @State private var reviews: CoachReviewsModel
-    /// A DEBUG launch can open the lesson booking at once (DebugLaunch).
-    @State private var debugBook = false
+    /// «Запишете урок»; a DEBUG launch can open it at once (DebugLaunch).
+    @State private var booking = false
+    /// The name is on the top card; the header carries it only once the card is scrolled away (#55).
+    @State private var heroShown = true
 
     init(slug: String, session: SessionModel) {
         self.slug = slug
@@ -20,46 +22,30 @@ struct CoachView: View {
         _reviews = State(initialValue: CoachReviewsModel(slug: slug))
     }
 
+    private var name: String { coach.map { CoachText.name($0.name) } ?? "" }
+
     var body: some View {
         Group {
             if let coach {
                 List {
                     Section {
-                        if let rating = CoachText.rating(coach.rating) {
-                            Text(rating).foregroundStyle(.secondary)
-                        }
-                        ForEach(coach.sports, id: \.sport) { sport in
-                            Text(CoachText.levels(sport))
-                        }
-                    } header: {
-                        Text(String(localized: "coaches.page.teaches"))
+                        CoachHero(coach: coach, serverURL: session.serverURL)
+                            .onAppear { heroShown = true }
+                            .onDisappear { heroShown = false }
                     }
-                    if let bio = coach.bio, !bio.isEmpty {
-                        Section(String(localized: "coaches.page.about")) { Text(bio) }
-                    }
-                    if let qualifications = coach.qualifications, !qualifications.isEmpty {
-                        Section(String(localized: "coaches.page.qualifications")) { Text(qualifications) }
-                    }
-                    Section {
-                        if coach.venues.isEmpty {
-                            Text(String(localized: "coaches.page.nowhere")).foregroundStyle(.secondary)
-                        }
-                        ForEach(coach.venues, id: \.linkId) { venue in
-                            CoachVenueRow(venue: venue)
-                        }
-                    } header: {
-                        Text(String(localized: "coaches.page.venues"))
-                    } footer: {
-                        Text(String(localized: "coaches.page.courtNote"))
-                    }
+                    // The card is its own surface: no row box around it.
+                    .bareListRow()
                     if !coach.venues.isEmpty {
                         Section {
-                            NavigationLink(String(localized: "coaches.lesson.title")) {
-                                LessonBookingView(coach: coach, session: session)
-                            }
+                            Button(String(localized: "coaches.lesson.title")) { booking = true }
+                                .buttonStyle(.brandPrimary)
                         }
+                        .bareListRow()
                     }
-                    CoachReviewsSection(model: reviews, session: session)
+                    Group {
+                        sections(coach)
+                    }
+                    .brandListRow()
                 }
                 .refreshable { await load() }
                 .confirmationDialog(
@@ -83,26 +69,49 @@ struct CoachView: View {
                     }
                 }
             } else if failed {
-                ContentUnavailableView {
-                    Text(String(localized: "venues.failed"))
-                } actions: {
+                BrandEmptyState(systemImage: "wifi.exclamationmark", title: String(localized: "coaches.page.failed")) {
                     Button(String(localized: "venues.retry"), action: retry)
+                        .buttonStyle(.brandSecondary(fullWidth: false))
                 }
             } else {
-                ProgressView()
+                ProgressView(String(localized: "common.loading"))
             }
         }
-        .navigationTitle(coach.map { CoachText.name($0.name) } ?? "")
-        .navigationBarTitleDisplayMode(.inline)
+        .brandPage()
+        // Hidden with the system bar; still what VoiceOver calls the screen.
+        .navigationTitle(name)
+        .brandHeader(.back(heroShown && coach != nil ? "" : name))
         .task {
             await load()
-            if DebugLaunch.coachBook != nil, coach?.venues.isEmpty == false { debugBook = true }
+            if DebugLaunch.coachBook != nil, coach?.venues.isEmpty == false { booking = true }
         }
-        .navigationDestination(isPresented: $debugBook) {
+        .navigationDestination(isPresented: $booking) {
             if let coach {
                 LessonBookingView(coach: coach, session: session)
             }
         }
+    }
+
+    @ViewBuilder private func sections(_ coach: Components.Schemas.PublicCoach) -> some View {
+        if let bio = coach.bio, !bio.isEmpty {
+            Section(String(localized: "coaches.page.about")) { Text(bio) }
+        }
+        if let qualifications = coach.qualifications, !qualifications.isEmpty {
+            Section(String(localized: "coaches.page.qualifications")) { Text(qualifications) }
+        }
+        Section {
+            if coach.venues.isEmpty {
+                Text(String(localized: "coaches.page.nowhere")).foregroundStyle(.secondary)
+            }
+            ForEach(coach.venues, id: \.linkId) { venue in
+                CoachVenueRow(venue: venue)
+            }
+        } header: {
+            Text(String(localized: "coaches.page.venues"))
+        } footer: {
+            Text(String(localized: "coaches.page.courtNote"))
+        }
+        CoachReviewsSection(model: reviews, session: session)
     }
 
     private func retry() {
@@ -121,6 +130,47 @@ struct CoachView: View {
             failed = false
         } catch {
             failed = coach == nil
+        }
+    }
+}
+
+/// The top of a coach's page: their picture or initials, name and rating,
+/// then what they teach and to which levels.
+private struct CoachHero: View {
+    let coach: Components.Schemas.PublicCoach
+    let serverURL: String
+
+    var body: some View {
+        BrandContentCard {
+            VStack(alignment: .leading, spacing: Theme.Spacing.m) {
+                HStack(spacing: Theme.Spacing.m) {
+                    BrandAvatar(name: coach.name, url: GameText.picture(coach.avatarUrl, server: serverURL), side: 64)
+                    VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
+                        Text(CoachText.name(coach.name))
+                            .font(Theme.Typography.cardTitle)
+                            .accessibilityAddTraits(.isHeader)
+                        if let rating = CoachText.rating(coach.rating) {
+                            Text(rating)
+                                .font(Theme.Typography.cardSubtitle)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+                if !coach.sports.isEmpty {
+                    VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
+                        Text(String(localized: "coaches.page.teaches"))
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(.secondary)
+                        ChipFlow {
+                            ForEach(coach.sports, id: \.sport) { sport in
+                                VenueFactChip(text: CoachText.levels(sport))
+                            }
+                        }
+                    }
+                    // «Преподава: Падел: нива 2–5, …» as one sentence.
+                    .accessibilityElement(children: .combine)
+                }
+            }
         }
     }
 }
