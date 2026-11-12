@@ -107,7 +107,7 @@ struct GameDetailView: View {
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel(GameText.spoken(game))
                 GameCourtView(
-                    seats: GameSeats(game: game),
+                    seats: GameSeats(game: game, server: session.serverURL),
                     court: GameSport.court(game.sport),
                     organiserName: game.booker.firstName,
                     organiserAvatar: GameText.picture(game.booker.avatarUrl, server: session.serverURL),
@@ -143,17 +143,31 @@ struct GameDetailView: View {
                             : String(localized: "games.detail.organiser")
                     )
                     let others = max(game.playersCount - 1, 0)
-                    let callerPlays = game.viewer?.isPlaying == true && game.viewer?.isBooker != true && others > 0
+                    let named = Array((game.players ?? []).dropFirst())
+                    let callerPlays = named.isEmpty && game.viewer?.isPlaying == true && game.viewer?.isBooker != true && others > 0
+                    // Named to the booker, the players and whoever asked (projectZ#676).
+                    ForEach(named.indices, id: \.self) { i in
+                        divider
+                        playerRow(
+                            initial: named[i].firstName?.first,
+                            symbol: "person.fill",
+                            title: named[i].firstName ?? String(localized: "games.organiserUnknown"),
+                            subtitle: named[i].level.map {
+                                String(localized: "games.detail.level \($0.formatted(.number.precision(.fractionLength(1))))")
+                            }
+                        )
+                    }
                     if callerPlays {
                         divider
                         playerRow(symbol: "checkmark", title: String(localized: "games.seat.you"),
                                   subtitle: GameText.status(.ACCEPTED))
                     }
-                    // The server counts the other players; it does not name them.
-                    if others - (callerPlays ? 1 : 0) > 0 {
+                    // Those the server counts and does not name to this viewer.
+                    let unnamed = others - named.count - (callerPlays ? 1 : 0)
+                    if unnamed > 0 {
                         divider
                         playerRow(symbol: "person.2.fill",
-                                  title: String(localized: "games.detail.others \(others - (callerPlays ? 1 : 0))"))
+                                  title: String(localized: "games.detail.others \(unnamed)"))
                     }
                     if game.spotsLeft > 0 {
                         divider
@@ -209,6 +223,7 @@ struct GameDetailView: View {
                 LabeledContent(String(localized: "games.detail.where"), value: "\(game.venue.name), \(game.venue.city)")
                 divider
                 LabeledContent(String(localized: "games.detail.court"), value: game.courtName)
+                LabeledContent(String(localized: "games.detail.price"), value: GameText.money(game))
                 divider
                 LabeledContent(String(localized: "games.detail.level"),
                                value: GameText.level(min: game.levelMin, max: game.levelMax))

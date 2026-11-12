@@ -70,10 +70,15 @@ struct GamesView: View {
             }
             .brandSheet(isPresented: $pickingSport) { sportSheet }
             .brandSheet(isPresented: $filtering) {
-                GamesFilterSheet(days: model.days, cities: model.cities, day: model.day, city: model.city) { day, city in
+                GamesFilterSheet(
+                    days: model.days, cities: model.cities,
+                    current: GamesFilterChoice(day: model.day, city: model.city, part: model.part, indoor: model.indoor)
+                ) { choice in
                     filtering = false
-                    model.day = day
-                    model.city = city
+                    model.day = choice.day
+                    model.city = choice.city
+                    model.part = choice.part
+                    model.indoor = choice.indoor
                 }
             }
             // The keyboard needs room under the note, so this one does not hug its content.
@@ -111,7 +116,7 @@ struct GamesView: View {
             if showing == .mine { await model.loadMine(session) }
         }
         // A filter changed: the list is read again for it, once for all of them.
-        .onChange(of: [model.sport, model.day?.apiDate, model.city]) { Task { await model.load(session) } }
+        .onChange(of: [model.sport, model.day?.apiDate, model.city, model.part.map { "\($0.hours)" }, model.indoor.map { "\($0)" }]) { Task { await model.load(session) } }
     }
 
     // ─── Търсят играчи ────────────────────────────────────────────────
@@ -137,6 +142,8 @@ struct GamesView: View {
                         model.sport = nil
                         model.day = nil
                         model.city = nil
+                        model.part = nil
+                        model.indoor = nil
                     }
                     .buttonStyle(.brandPrimary(fullWidth: false))
                 }

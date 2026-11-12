@@ -62,15 +62,40 @@ enum GameText {
     }
 
     /// The game as one sentence, for VoiceOver.
+    /// «Корт 1 · София · Закрит»: the court, the city, and indoor when it is.
+    static func courtLine(_ game: Components.Schemas.OpenGame) -> String {
+        var parts = [game.courtName, game.venue.city]
+        if game.isIndoor { parts.append(String(localized: "games.indoor")) }
+        return parts.joined(separator: " · ")
+    }
+
+    /// «Корт: 36,00 €»: the booking's total, not a share (owner 2026-11-12).
+    static func courtPrice(_ game: Components.Schemas.OpenGame) -> String {
+        String(localized: "games.courtPrice \(money(game))")
+    }
+
+    /// «36,00 €», the booking's total.
+    static func money(_ game: Components.Schemas.OpenGame) -> String {
+        (Decimal(game.courtPrice.totalCents) / 100).formatted(
+            .currency(code: game.courtPrice.currency).locale(Locale(identifier: "bg_BG"))
+        )
+    }
+
     static func spoken(_ game: Components.Schemas.OpenGame, status: Components.Schemas.OpenGameRequestStatus? = nil) -> String {
         var parts = [
             sport(game.sport),
             when(game.startTs, timezone: game.timezone),
             duration(game.startTs, game.endTs),
-            "\(game.venue.name), \(game.venue.city), \(game.courtName)",
+            "\(game.venue.name), \(courtLine(game))",
+            courtPrice(game),
         ]
         if let name = game.booker.firstName, !name.isEmpty {
             parts.append(String(localized: "games.card.organisedBy \(name)"))
+        }
+        // The others by name, when the server names them to this viewer.
+        let others = (game.players ?? []).dropFirst().compactMap(\.firstName).filter { !$0.isEmpty }
+        if !others.isEmpty {
+            parts.append(String(localized: "games.card.with \(others.formatted(.list(type: .and)))"))
         }
         parts.append(String(localized: "games.card.playersSpoken \(game.playersCount) \(game.capacity)"))
         if game.spotsLeft > 0 { parts.append(String(localized: "games.card.free \(game.spotsLeft)")) }

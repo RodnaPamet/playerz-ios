@@ -1,50 +1,57 @@
 import PlayerzAPI
 import SwiftUI
 
-/// «Филтри» for the open games: the day and the city, the two things besides
-/// the sport that the server filters by. Nothing changes until «Покажи игрите».
+/// «Филтри» for the open games: the day, the part of the day, the city and
+/// the kind of court, what the server filters by besides the sport. Nothing
+/// changes until «Покажи игрите».
 struct GamesFilterSheet: View {
     let days: [VenueDay]
     /// The cities with a club; empty hides the section.
     let cities: [CityChoice]
-    let apply: (VenueDay?, String?) -> Void
+    let apply: (GamesFilterChoice) -> Void
 
-    @State private var day: VenueDay?
-    @State private var city: String?
+    @State private var draft: GamesFilterChoice
 
-    init(days: [VenueDay], cities: [CityChoice], day: VenueDay?, city: String?, apply: @escaping (VenueDay?, String?) -> Void) {
+    init(days: [VenueDay], cities: [CityChoice], current: GamesFilterChoice, apply: @escaping (GamesFilterChoice) -> Void) {
         self.days = days
         self.cities = cities
         self.apply = apply
-        _day = State(initialValue: day)
-        _city = State(initialValue: city)
+        _draft = State(initialValue: current)
     }
 
     var body: some View {
         BrandDarkSheet(title: String(localized: "games.filters.title")) {
             section(String(localized: "games.filter.day")) {
-                BrandChip(String(localized: "games.filter.anyDay"), isSelected: day == nil) { day = nil }
+                BrandChip(String(localized: "games.filter.anyDay"), isSelected: draft.day == nil) { draft.day = nil }
                 ForEach(days) { item in
-                    BrandChip(GameText.filterDay(item), isSelected: day == item) { day = item }
+                    BrandChip(GameText.filterDay(item), isSelected: draft.day == item) { draft.day = item }
+                }
+            }
+            section(String(localized: "games.filter.time")) {
+                BrandChip(String(localized: "games.filter.anyTime"), isSelected: draft.part == nil) { draft.part = nil }
+                ForEach(DayPart.allCases, id: \.self) { part in
+                    BrandChip(part.label, isSelected: draft.part == part) { draft.part = part }
                 }
             }
             if !cities.isEmpty {
                 section(String(localized: "games.filter.city")) {
-                    BrandChip(String(localized: "games.filter.anyCity"), isSelected: city == nil) { city = nil }
+                    BrandChip(String(localized: "games.filter.anyCity"), isSelected: draft.city == nil) { draft.city = nil }
                     ForEach(cities) { item in
-                        BrandChip(item.name, isSelected: city == item.value) { city = item.value }
+                        BrandChip(item.name, isSelected: draft.city == item.value) { draft.city = item.value }
                     }
                 }
             }
-            Button(String(localized: "games.filters.show")) { apply(day, city) }
+            section(String(localized: "venues.filter.court")) {
+                BrandChip(String(localized: "venues.filter.anyCourt"), isSelected: draft.indoor == nil) { draft.indoor = nil }
+                BrandChip(String(localized: "venues.filter.indoor"), isSelected: draft.indoor == true) { draft.indoor = true }
+                BrandChip(String(localized: "venues.filter.outdoor"), isSelected: draft.indoor == false) { draft.indoor = false }
+            }
+            Button(String(localized: "games.filters.show")) { apply(draft) }
                 .buttonStyle(.brandPrimary)
                 .padding(.top, Theme.Spacing.s)
-            Button(String(localized: "games.filters.clear")) {
-                day = nil
-                city = nil
-            }
-            .buttonStyle(.brandSecondary)
-            .disabled(day == nil && city == nil)
+            Button(String(localized: "games.filters.clear")) { draft = GamesFilterChoice() }
+                .buttonStyle(.brandSecondary)
+                .disabled(draft == GamesFilterChoice())
         }
     }
 
@@ -67,6 +74,6 @@ struct GamesFilterSheet: View {
     GamesFilterSheet(
         days: VenueDay.upcoming(inTimeZone: "Europe/Sofia"),
         cities: [CityChoice(value: "sofia", name: "София"), CityChoice(value: "plovdiv", name: "Пловдив")],
-        day: nil, city: nil
-    ) { _, _ in }
+        current: GamesFilterChoice()
+    ) { _ in }
 }
