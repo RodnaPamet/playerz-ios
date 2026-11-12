@@ -61,7 +61,7 @@ struct CoachView: View {
                 } message: { _ in
                     Text(String(localized: "coaches.reviews.deleteDescription"))
                 }
-                .sheet(item: $reviews.reporting) { reported in
+                .brandSheet(item: $reviews.reporting, detents: [.medium, .large]) { reported in
                     ReportSheet(title: String(localized: "messages.reportReview")) { reason, details in
                         await reviews.send(report: reported.id, reason: reason, details: details, session)
                     } done: {

@@ -55,12 +55,12 @@ struct LegalStepView: View {
                 } footer: {
                     Text(String(localized: "onboarding.terms.decline"))
                 }
-                .listPillRow()
+                .bareListRow()
                 Section {
                     Button(String(localized: "profile.title"), action: openProfile)
                         .buttonStyle(.brandSecondary)
                 }
-                .listPillRow()
+                .bareListRow()
             }
             .brandPage()
             // Hidden with the system bar; still what VoiceOver calls the screen.

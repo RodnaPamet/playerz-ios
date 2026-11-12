@@ -41,6 +41,15 @@ final class SessionModel {
     var notificationsOpen = DebugLaunch.notifications
     /// A screen to open over the tabs: a tapped push (#15).
     var pendingLink: AppLink? = DebugLaunch.link.flatMap(AppLink.init(path:))
+    /// A link that came while «Известия» was open (#56): the list is a
+    /// full-screen cover on the view that presents `pendingLink`, and a sheet
+    /// cannot rise from under it, so the list closes and this follows.
+    var linkAfterNotifications: AppLink?
+    /// The same for an invite link opened while the list was up.
+    var inviteAfterNotifications: PendingInvite?
+    /// The conversation on screen, if one is: a push for it needs no second
+    /// copy over it (#56), its screen polls for the new message itself.
+    var conversationOnScreen: String?
     /// A tab a link asked for; RootView switches to it. `.messages` is the
     /// inbox, which PlayerShell lays over the tabs.
     var requestedTab: DebugLaunch.Tab?
@@ -82,8 +91,19 @@ final class SessionModel {
         case .bookings: requestedTab = .bookings
         case .messages: if modules.messaging { requestedTab = .messages }
         case .games: if modules.openPlay { requestedTab = .games }
-        case .conversation: if modules.messaging { pendingLink = link }
-        case .booking: pendingLink = link
+        case let .conversation(id):
+            guard modules.messaging, id != conversationOnScreen else { return }
+            present(link)
+        case .booking: present(link)
+        }
+    }
+
+    private func present(_ link: AppLink) {
+        if notificationsOpen {
+            linkAfterNotifications = link
+            notificationsOpen = false
+        } else {
+            pendingLink = link
         }
     }
 
@@ -100,7 +120,13 @@ final class SessionModel {
     @discardableResult
     func open(_ url: URL) -> Bool {
         guard let token = BookingInviteLink.token(in: url) else { return false }
-        pendingInvite = PendingInvite(token: token)
+        // Presented from the view «Известия» covers, as a push's screen is (#56).
+        if notificationsOpen {
+            inviteAfterNotifications = PendingInvite(token: token)
+            notificationsOpen = false
+        } else {
+            pendingInvite = PendingInvite(token: token)
+        }
         return true
     }
 

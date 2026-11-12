@@ -52,13 +52,6 @@ struct ReportSheet: View {
             Button(String(localized: "messages.cancel"), action: done)
                 .buttonStyle(.brandSecondary)
         }
-        // The dark sheet's chrome (`brandSheet`'s), here: it is presented
-        // with a plain `sheet` from a conversation and from a coach's screen.
-        .presentationDetents([.medium, .large])
-        .presentationDragIndicator(.visible)
-        .presentationBackground(Theme.Palette.sheetSurface)
-        .presentationCornerRadius(Theme.Radius.sheet)
-        .environment(\.colorScheme, .dark)
         .onChange(of: outcome?.text) { _, text in
             if let text { AccessibilityNotification.Announcement(text).post() }
         }
