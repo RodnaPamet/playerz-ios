@@ -7,7 +7,7 @@ import SwiftUI
 struct MyBookingsView: View {
     @Bindable var session: SessionModel
 
-    @State private var when: Operations.listMyBookings.Input.Query.whenPayload = .upcoming
+    @State private var when: Operations.listMyBookings.Input.Query.whenPayload = DebugLaunch.bookingsPast ? .past : .upcoming
     @State private var items: [Components.Schemas.MyBooking] = []
     @State private var nextCursor: String?
     @State private var phase: Phase = .loading
@@ -26,22 +26,19 @@ struct MyBookingsView: View {
     var body: some View {
         NavigationStack {
             content
+                .brandPage()
+                // Hidden with the system bar, but still what a pushed screen's back button says.
                 .navigationTitle(String(localized: "myBookings.title"))
-                .toolbar { ToolbarItem(placement: .topBarTrailing) { NotificationBell(session: session) } }
-                // Inline: with a segmented control inset below the bar, iOS 26 hid the large
-                // title under the bar's material.
-                .navigationBarTitleDisplayMode(.inline)
-                .safeAreaInset(edge: .top) {
-                    Picker(String(localized: "myBookings.when"), selection: $when) {
-                        Text(String(localized: "myBookings.upcoming"))
-                            .tag(Operations.listMyBookings.Input.Query.whenPayload.upcoming)
-                        Text(String(localized: "myBookings.past"))
-                            .tag(Operations.listMyBookings.Input.Query.whenPayload.past)
+                .brandChipBar {
+                    BrandChipRow {
+                        BrandChip(String(localized: "myBookings.upcoming"), isSelected: when == .upcoming) { when = .upcoming }
+                        BrandChip(String(localized: "myBookings.past"), isSelected: when == .past) { when = .past }
                     }
-                    .pickerStyle(.segmented)
-                    .padding(.horizontal)
-                    .padding(.bottom, 4)
-                    .background(.bar)
+                    .accessibilityElement(children: .contain)
+                    .accessibilityLabel(String(localized: "myBookings.when"))
+                }
+                .brandHeader(.title(String(localized: "myBookings.title"))) {
+                    BrandHeaderActions(session: session)
                 }
                 .navigationDestination(item: $debugGame) { id in
                     BookingGameView(bookingId: id, session: session)
@@ -54,6 +51,8 @@ struct MyBookingsView: View {
                 }
         }
         .task(id: when) { await load() }
+        // Back on this tab: a court booked on another one is in the list.
+        .onShellTabReturn { await load() }
         .onChange(of: banner?.text) { _, text in
             if let text { AccessibilityNotification.Announcement(text).post() }
         }
@@ -75,62 +74,112 @@ struct MyBookingsView: View {
         case .loading:
             ProgressView(String(localized: "common.loading"))
         case .failed:
-            ContentUnavailableView {
-                Text(String(localized: "bookings.failed"))
-            } actions: {
+            BrandEmptyState(systemImage: "wifi.exclamationmark", title: String(localized: "bookings.failed")) {
                 Button(String(localized: "venues.retry")) { Task { await load() } }
+                    .buttonStyle(.brandSecondary(fullWidth: false))
             }
         case .loaded where items.isEmpty:
-            ContentUnavailableView(
-                when == .upcoming
+            BrandEmptyState(
+                systemImage: "calendar",
+                title: when == .upcoming
                     ? String(localized: "myBookings.emptyUpcoming")
-                    : String(localized: "myBookings.emptyPast"),
-                systemImage: "calendar"
+                    : String(localized: "myBookings.emptyPast")
             )
         case .loaded:
-            List {
-                if let banner {
-                    Section { Text(banner.text).foregroundStyle(banner.isError ? .red : .primary) }
-                }
-                // A section per booking, one action per row: several links in
-                // one cell share its tap.
-                ForEach(items, id: \.id) { booking in
-                    Section { row(booking) }
-                        .onAppear {
-                            if booking.id == items.last?.id { Task { await loadMore() } }
+            // Cards on the page: each booking is its own, with its own actions.
+            ScrollView {
+                LazyVStack(spacing: Theme.Spacing.l) {
+                    if let banner {
+                        BrandContentCard {
+                            Label(banner.text, systemImage: banner.isError ? "exclamationmark.triangle" : "checkmark.circle")
+                                .foregroundStyle(banner.isError ? Theme.Palette.danger : Color.primary)
                         }
+                    }
+                    ForEach(items, id: \.id) { booking in
+                        card(booking)
+                            .onAppear {
+                                if booking.id == items.last?.id { Task { await loadMore() } }
+                            }
+                    }
                 }
+                .padding(.horizontal, Theme.Spacing.l)
+                .padding(.bottom, Theme.Spacing.l)
             }
             .refreshable { await load() }
         }
     }
 
-    @ViewBuilder private func row(_ booking: Components.Schemas.MyBooking) -> some View {
-        let upcoming = when == .upcoming
+    /// One booking: the summary opens it in full (#14: where, the players,
+    /// the review); under a hairline, what can be done with it from here.
+    private func card(_ booking: Components.Schemas.MyBooking) -> some View {
         // Cancelled under the club's slug; without one there is nothing to cancel under.
-        let canCancel = booking.clubSlug != nil && (booking.cancellableUntil.map { $0 > .now } ?? false)
-        // The booking in full (#14): where, the players, the review.
-        NavigationLink {
-            BookingDetailView(bookingId: booking.id, session: session)
-        } label: {
-            MyBookingSummary(booking: booking)
-        }
-
-        if session.modules.openPlay, upcoming, booking.status == "CONFIRMED" {
-            NavigationLink(String(localized: "bookingGame.link")) {
-                BookingGameView(bookingId: booking.id, session: session)
-            }
-        }
-        if canCancel && booking.viewerRole == .BOOKER {
-            Button(role: .destructive) {
-                pendingCancel = booking
-                confirmingCancel = true
+        let canCancel = booking.clubSlug != nil
+            && (booking.cancellableUntil.map { $0 > .now } ?? false)
+            && booking.viewerRole == .BOOKER
+        let canSeekPlayers = session.modules.openPlay && when == .upcoming && booking.status == "CONFIRMED"
+        return VStack(alignment: .leading, spacing: 0) {
+            NavigationLink {
+                BookingDetailView(bookingId: booking.id, session: session)
             } label: {
-                if cancelling == booking.id { ProgressView() } else { Text(String(localized: "bookings.cancel")) }
+                MyBookingSummary(booking: booking)
+                    .padding(Theme.Spacing.l)
+                    .contentShape(.rect)
             }
-            .buttonStyle(.borderless)
-            .disabled(cancelling != nil)
+            .buttonStyle(.plain)
+
+            if canSeekPlayers || canCancel {
+                Rectangle().fill(Theme.Palette.hairline).frame(height: 1)
+                // Side by side, or one under the other when the words are large.
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: Theme.Spacing.s) {
+                        if canSeekPlayers { seekPlayers(booking) }
+                        Spacer(minLength: Theme.Spacing.s)
+                        if canCancel { cancelButton(booking) }
+                    }
+                    VStack(alignment: .leading, spacing: 0) {
+                        if canSeekPlayers { seekPlayers(booking) }
+                        if canCancel { cancelButton(booking) }
+                    }
+                }
+                .padding(.horizontal, Theme.Spacing.l)
+                .padding(.vertical, Theme.Spacing.xs)
+            }
         }
+        .brandCardSurface()
+    }
+
+    private func seekPlayers(_ booking: Components.Schemas.MyBooking) -> some View {
+        NavigationLink {
+            BookingGameView(bookingId: booking.id, session: session)
+        } label: {
+            Label(String(localized: "bookingGame.link"), systemImage: "person.badge.plus")
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(Theme.Palette.accentText)
+                .frame(minHeight: Theme.minTarget)
+                .contentShape(.rect)
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func cancelButton(_ booking: Components.Schemas.MyBooking) -> some View {
+        Button {
+            pendingCancel = booking
+            confirmingCancel = true
+        } label: {
+            Group {
+                if cancelling == booking.id {
+                    ProgressView().accessibilityLabel(String(localized: "bookings.cancelling"))
+                } else {
+                    Text(String(localized: "bookings.cancel"))
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(Theme.Palette.danger)
+                }
+            }
+            .frame(minWidth: Theme.minTarget, minHeight: Theme.minTarget)
+            .contentShape(.rect)
+        }
+        .buttonStyle(.plain)
+        .disabled(cancelling != nil)
     }
 
     private func load() async {

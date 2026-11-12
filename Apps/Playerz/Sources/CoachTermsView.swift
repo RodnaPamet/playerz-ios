@@ -69,6 +69,7 @@ struct CoachTermsView: View {
             Section {
                 ForEach(link.lengthOptions, id: \.self) { minutes in
                     Toggle(String(localized: "coachVenues.terms.minutes \(minutes)"), isOn: length(minutes))
+                        .tint(Theme.Palette.controlOn)
                 }
             } header: {
                 Text(String(localized: "coachVenues.terms.lengths"))

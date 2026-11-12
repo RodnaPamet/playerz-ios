@@ -41,8 +41,25 @@ final class SessionModel {
     var notificationsOpen = DebugLaunch.notifications
     /// A screen to open over the tabs: a tapped push (#15).
     var pendingLink: AppLink? = DebugLaunch.link.flatMap(AppLink.init(path:))
-    /// A tab a link asked for; RootView switches to it.
+    /// A tab a link asked for; RootView switches to it. `.messages` is the
+    /// inbox, which PlayerShell lays over the tabs.
     var requestedTab: DebugLaunch.Tab?
+    /// The inbox, a layer over the tabs (PlayerShell) from a header's messages
+    /// button. A layer, not a cover: every sheet still presents over it.
+    var messagesOpen = DebugLaunch.tab == .messages
+    /// Unread conversations and requests, for that button's dot: read every
+    /// minute by RootView, and by the inbox whenever it loads.
+    var messagesUnread = 0
+    /// A screen of «Начало» asked for from elsewhere («Създай»).
+    var homeRequest: HomeScreen?
+
+    enum HomeScreen { case clubs, coaches }
+
+    /// «Начало» on its club list, or on «Треньори».
+    func showHome(_ screen: HomeScreen) {
+        homeRequest = screen
+        requestedTab = .play
+    }
 
     /// Raised when an action was refused for want of a confirmed phone
     /// (`PHONE_REQUIRED`, #11): RootView opens the phone step over the screen.

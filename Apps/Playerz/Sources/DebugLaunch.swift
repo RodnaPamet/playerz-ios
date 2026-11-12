@@ -11,6 +11,8 @@ import Foundation
 /// Compiled out of release builds: nothing here can sign anyone in, or move
 /// anyone, in a shipped app.
 enum DebugLaunch {
+    /// The shell's tabs by their first names: `play` is «Начало», `games` is
+    /// «Открий». `messages` is no longer a tab: it opens the inbox over «Начало».
     enum Tab: String { case play, games, bookings, messages, profile }
     /// Профил's deletion section (#9): `delete` scrolls to it, `confirm` also
     /// opens the confirmation. Nothing here deletes: the word is still typed.
@@ -29,6 +31,10 @@ enum DebugLaunch {
     /// (`PLAYERZ_TOURNAMENT=<id>`), and its draw (also `PLAYERZ_TOURNAMENT_DRAW=1`), #22.
     static var gamesTournaments: Bool { env["PLAYERZ_GAMES"] == "tournaments" }
     static var tournament: String? { env["PLAYERZ_TOURNAMENT"] }
+    /// «Открий» on a listed game's screen (`PLAYERZ_GAME=<id>`), or with one of its
+    /// sheets open (`PLAYERZ_GAMES_SHEET=sport|filters|ask`). Nothing is sent.
+    static var game: String? { env["PLAYERZ_GAME"] }
+    static var gamesSheet: String? { env["PLAYERZ_GAMES_SHEET"] }
     static var tournamentDraw: Bool { env["PLAYERZ_TOURNAMENT_DRAW"] == "1" }
     static var bookingGame: String? { env["PLAYERZ_BOOKING_GAME"] }
     /// Играй opened on a club's page (`PLAYERZ_CLUB=<slug>`) or a venue (`PLAYERZ_VENUE=<id>`), #17.
@@ -47,9 +53,18 @@ enum DebugLaunch {
     /// Играй opened on «Треньори» (`PLAYERZ_COACHES=1`), a coach (`PLAYERZ_COACH=<slug>`),
     /// or that coach's lesson booking that many days ahead (also `PLAYERZ_COACH_BOOK=<days>`), #19.
     static var coaches: Bool { env["PLAYERZ_COACHES"] == "1" }
+    /// `PLAYERZ_CREATE=1`: the «Създай» sheet on show, for a screenshot.
+    static var create: Bool { env["PLAYERZ_CREATE"] == "1" }
     static var coach: String? { env["PLAYERZ_COACH"] }
+    /// «Начало» scrolled to its clubs (`PLAYERZ_HOME=clubs`) or with «Филтри» open (`=filters`).
+    static var home: String? { env["PLAYERZ_HOME"] }
     static var coachBook: Int? { env["PLAYERZ_COACH_BOOK"].flatMap(Int.init) }
     static var profile: Profile? { env["PLAYERZ_PROFILE"].flatMap(Profile.init(rawValue:)) }
+    /// `PLAYERZ_EMPTY_END=1`: a scrolling empty state opens at its end, to
+    /// photograph the last line above the tab bar at the largest text size.
+    static var emptyStateEnd: Bool { env["PLAYERZ_EMPTY_END"] == "1" }
+    /// `PLAYERZ_BOOKINGS=past`: Резервации opened on «Минали».
+    static var bookingsPast: Bool { env["PLAYERZ_BOOKINGS"] == "past" }
     #else
     static let credentials: (email: String, password: String)? = nil
     static let tab: Tab? = nil
@@ -57,6 +72,8 @@ enum DebugLaunch {
     static let gamesMine = false
     static let gamesTournaments = false
     static let tournament: String? = nil
+    static let game: String? = nil
+    static let gamesSheet: String? = nil
     static let tournamentDraw = false
     static let bookingGame: String? = nil
     static let club: String? = nil
@@ -69,8 +86,12 @@ enum DebugLaunch {
     static let link: String? = nil
     static let result: String? = nil
     static let coaches = false
+    static let create = false
     static let coach: String? = nil
+    static let home: String? = nil
     static let coachBook: Int? = nil
     static let profile: Profile? = nil
+    static let emptyStateEnd = false
+    static let bookingsPast = false
     #endif
 }

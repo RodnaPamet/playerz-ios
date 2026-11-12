@@ -239,9 +239,9 @@ private struct RequestRow: View {
             if request.status == .PENDING {
                 HStack {
                     Button(String(localized: "bookingGame.accept")) { answer(true) }
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(.brandPrimary(fullWidth: false))
                     Button(String(localized: "bookingGame.decline")) { answer(false) }
-                        .buttonStyle(.bordered)
+                        .buttonStyle(.brandSecondary(fullWidth: false))
                 }
                 .disabled(busy)
             }

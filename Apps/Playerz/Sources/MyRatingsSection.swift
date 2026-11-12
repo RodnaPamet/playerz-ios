@@ -7,6 +7,8 @@ import SwiftUI
 /// ranking module is on.
 struct MyRatingsSection: View {
     @Bindable var session: SessionModel
+    /// Changed by the screen to have the levels read again.
+    var reload = 0
 
     @State private var ratings: Components.Schemas.MyRatings?
 
@@ -34,7 +36,7 @@ struct MyRatingsSection: View {
                 Text(ratings._public ? String(localized: "profile.ratings.hint") : String(localized: "profile.ratings.hintHidden"))
             }
         }
-        .task { await load() }
+        .task(id: reload) { await load() }
     }
 
     private func points(_ rating: Components.Schemas.MyRatings.itemsPayloadPayload) -> String {

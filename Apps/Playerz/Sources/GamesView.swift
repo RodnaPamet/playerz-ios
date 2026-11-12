@@ -1,15 +1,28 @@
 import PlayerzAPI
 import SwiftUI
 
-/// The Игри tab (#510): games looking for players, and «Моите заявки».
+/// «Открий» (#510): games looking for players as court cards, the caller's
+/// own requests, and tournaments.
 struct GamesView: View {
     @Bindable var session: SessionModel
     @State private var model = GamesModel()
     @State private var showing: Showing = DebugLaunch.gamesTournaments ? .tournaments : DebugLaunch.gamesMine ? .mine : .open
     /// A DEBUG launch can open a tournament straight away (DebugLaunch).
     @State private var path = NavigationPath(DebugLaunch.tournament.map { [TournamentRoute(id: $0)] } ?? [])
+    @State private var pickingSport = DebugLaunch.gamesSheet == "sport"
+    @State private var filtering = DebugLaunch.gamesSheet == "filters"
+    @State private var asking: AskTarget?
+    /// A refused request, said in an alert: a card has no line for it.
+    @State private var problem: String?
+    @State private var problemShown = false
 
     enum Showing: Hashable { case open, mine, tournaments }
+
+    /// The game a «+» was tapped on.
+    private struct AskTarget: Identifiable {
+        let game: Components.Schemas.OpenGame
+        var id: String { game.id }
+    }
 
     var body: some View {
         NavigationStack(path: $path) {
@@ -20,29 +33,58 @@ struct GamesView: View {
                 case .tournaments: TournamentsList(session: session)
                 }
             }
+            .brandPage()
+            // Hidden with the system bar, but still what a pushed screen's back button says.
             .navigationTitle(String(localized: "games.title"))
-            // Inline: with a segmented control inset below the bar, iOS 26 hid the large
-            // title under the bar's material.
-            .navigationBarTitleDisplayMode(.inline)
-            .safeAreaInset(edge: .top) {
-                Picker(String(localized: "games.tabs"), selection: $showing) {
-                    Text(String(localized: "games.tab.open")).tag(Showing.open)
-                    Text(String(localized: "games.tab.mine")).tag(Showing.mine)
+            .brandChipBar {
+                BrandChipRow {
+                    BrandChip(String(localized: "games.tab.open"), isSelected: showing == .open) { showing = .open }
+                    BrandChip(String(localized: "games.tab.mine"), isSelected: showing == .mine) { showing = .mine }
                     // «Турнири» (#22), while the ranking module is on.
                     if session.modules.ranking {
-                        Text(String(localized: "games.tab.tournaments")).tag(Showing.tournaments)
+                        BrandChip(String(localized: "games.tab.tournaments"), isSelected: showing == .tournaments) {
+                            showing = .tournaments
+                        }
+                    }
+                } trailing: {
+                    if showing == .open {
+                        BrandFilterButton(label: String(localized: "games.filters"), count: model.activeFilters) {
+                            filtering = true
+                        }
                     }
                 }
-                .pickerStyle(.segmented)
-                .padding(.horizontal)
-                .padding(.bottom, 4)
-                .background(.bar)
+                .accessibilityElement(children: .contain)
+                .accessibilityLabel(String(localized: "games.tabs"))
             }
-            .toolbar {
+            .brandHeader(.title(String(localized: "tab.explore"))) {
+                // The sport the open games are for, as the web's filter (#376).
                 if showing == .open {
-                    ToolbarItem(placement: .topBarTrailing) { filters }
+                    BrandHeaderPill(
+                        title: model.sport.map(GameText.sport) ?? String(localized: "games.filter.sport"),
+                        systemImage: model.sport.map(GameSport.symbol) ?? "sportscourt",
+                        showsChevron: true
+                    ) { pickingSport = true }
                 }
-                ToolbarItem(placement: .topBarTrailing) { NotificationBell(session: session) }
+            } actions: {
+                BrandHeaderActions(session: session)
+            }
+            .brandSheet(isPresented: $pickingSport) { sportSheet }
+            .brandSheet(isPresented: $filtering) {
+                GamesFilterSheet(days: model.days, cities: model.cities, day: model.day, city: model.city) { day, city in
+                    filtering = false
+                    model.day = day
+                    model.city = city
+                }
+            }
+            // The keyboard needs room under the note, so this one does not hug its content.
+            .brandSheet(item: $asking, detents: [.medium, .large]) { target in
+                GameAskSheet(game: target.game, session: session) { outcome in
+                    asking = nil
+                    asked(outcome)
+                }
+            }
+            .alert(problem ?? "", isPresented: $problemShown) {
+                Button(String(localized: "common.close"), role: .cancel) {}
             }
             .navigationDestination(for: TournamentRoute.self) { route in
                 TournamentDetailView(id: route.id, session: session)
@@ -57,13 +99,19 @@ struct GamesView: View {
         .task {
             await model.load(session)
             if showing == .mine { await model.loadMine(session) }
+            await model.loadChoices(session)
+            debugOpen()
         }
         .onChange(of: showing) { _, now in
             if now == .mine { Task { await model.loadMine(session) } }
         }
-        // A filter changed: the list is read again for it.
-        .onChange(of: model.day) { Task { await model.load(session) } }
-        .onChange(of: model.sport) { Task { await model.load(session) } }
+        // Back on this tab: a game opened or joined elsewhere is in the lists.
+        .onShellTabReturn {
+            await model.load(session)
+            if showing == .mine { await model.loadMine(session) }
+        }
+        // A filter changed: the list is read again for it, once for all of them.
+        .onChange(of: [model.sport, model.day?.apiDate, model.city]) { Task { await model.load(session) } }
     }
 
     // ─── Търсят играчи ────────────────────────────────────────────────
@@ -72,53 +120,109 @@ struct GamesView: View {
         switch model.phase {
         case .loading:
             ProgressView(String(localized: "common.loading"))
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
         case .failed:
-            ContentUnavailableView {
-                Text(String(localized: "games.failed"))
-            } actions: {
+            BrandEmptyState(systemImage: "wifi.exclamationmark", title: String(localized: "games.failed")) {
                 Button(String(localized: "venues.retry")) { Task { await model.load(session) } }
+                    .buttonStyle(.brandSecondary(fullWidth: false))
             }
         case .loaded where model.games.isEmpty:
-            ContentUnavailableView(
-                String(localized: "games.empty"),
+            BrandEmptyState(
                 systemImage: "person.3",
-                description: Text(String(localized: "games.emptyHint"))
-            )
+                title: String(localized: "games.empty"),
+                message: String(localized: "games.emptyHint")
+            ) {
+                if model.activeFilters > 0 || model.sport != nil {
+                    Button(String(localized: "games.filters.clearAll")) {
+                        model.sport = nil
+                        model.day = nil
+                        model.city = nil
+                    }
+                    .buttonStyle(.brandPrimary(fullWidth: false))
+                }
+                // A game is opened from a booking, as «Създай» does it.
+                Button(String(localized: "create.game.title")) { session.requestedTab = .bookings }
+                    .buttonStyle(.brandSecondary(fullWidth: false))
+            }
         case .loaded:
-            List {
-                ForEach(model.games, id: \.id) { game in
-                    NavigationLink(value: game) { GameRow(game: game) }
+            ScrollView {
+                LazyVStack(spacing: Theme.Spacing.l) {
+                    ForEach(model.games, id: \.id) { game in
+                        GameCard(
+                            game: game,
+                            server: session.serverURL,
+                            open: { path.append(game) },
+                            join: game.callerMayAsk ? { asking = AskTarget(game: game) } : nil
+                        )
                         .onAppear {
                             if game.id == model.games.last?.id {
                                 Task { await model.loadMore(session) }
                             }
                         }
+                    }
+                    if model.loadingMore {
+                        ProgressView().frame(maxWidth: .infinity)
+                    }
                 }
-                if model.loadingMore {
-                    ProgressView().frame(maxWidth: .infinity)
-                }
+                .padding(.horizontal, Theme.Spacing.l)
+                .padding(.bottom, Theme.Spacing.l)
             }
             .refreshable { await model.load(session) }
         }
     }
 
-    /// Sport and day, as the web's filters (#376); a change reloads the list.
-    private var filters: some View {
-        Menu {
-            Picker(String(localized: "games.filter.day"), selection: $model.day) {
-                Text(String(localized: "games.filter.anyDay")).tag(GamesModel.Day.any)
-                Text(String(localized: "venue.today")).tag(GamesModel.Day.today)
-                Text(String(localized: "games.filter.tomorrow")).tag(GamesModel.Day.tomorrow)
+    /// The sports the listed clubs have courts for; the one chosen stays on
+    /// the list even if no club offers it any more.
+    private var sportSheet: some View {
+        let sports = model.offeredSports + (model.sport.map { model.offeredSports.contains($0) ? [] : [$0] } ?? [])
+        return BrandDarkSheet(
+            title: String(localized: "games.sport.title"),
+            subtitle: String(localized: "games.sport.subtitle")
+        ) {
+            BrandSheetRow(
+                title: String(localized: "games.filter.allSports"),
+                systemImage: "square.grid.2x2",
+                isSelected: model.sport == nil
+            ) { pick(nil) }
+            ForEach(sports, id: \.self) { sport in
+                BrandSheetRow(
+                    title: GameText.sport(sport),
+                    systemImage: GameSport.symbol(sport),
+                    isSelected: model.sport == sport
+                ) { pick(sport) }
             }
-            Picker(String(localized: "games.filter.sport"), selection: $model.sport) {
-                Text(String(localized: "games.filter.allSports"))
-                    .tag(String?.none)
-                ForEach(Sports.known, id: \.self) { sport in
-                    Text(GameText.sport(sport)).tag(Optional(sport))
-                }
+        }
+    }
+
+    private func pick(_ sport: String?) {
+        pickingSport = false
+        model.sport = sport
+    }
+
+    private func asked(_ outcome: GameAskSheet.Outcome) {
+        switch outcome {
+        case .asked(let game):
+            model.replace(game)
+            AccessibilityNotification.Announcement(GameText.status(game.viewer?.request?.status ?? .PENDING)).post()
+            Task {
+                await model.load(session)
+                await model.loadMine(session)
             }
-        } label: {
-            Label(String(localized: "games.filters"), systemImage: "line.3.horizontal.decrease.circle")
+        case .refused(let text):
+            problem = text
+            problemShown = true
+        case .cancelled:
+            break
+        }
+    }
+
+    /// A DEBUG launch on a game's screen, or with «Искам да играя» open (DebugLaunch).
+    private func debugOpen() {
+        if let id = DebugLaunch.game, path.isEmpty, let game = model.games.first(where: { $0.id == id }) {
+            path.append(game)
+        }
+        if DebugLaunch.gamesSheet == "ask", asking == nil, let game = model.games.first(where: \.callerMayAsk) {
+            asking = AskTarget(game: game)
         }
     }
 
@@ -128,55 +232,37 @@ struct GamesView: View {
         switch model.minePhase {
         case .loading:
             ProgressView(String(localized: "common.loading"))
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
         case .failed:
-            ContentUnavailableView {
-                Text(String(localized: "games.mine.failed"))
-            } actions: {
+            BrandEmptyState(systemImage: "wifi.exclamationmark", title: String(localized: "games.mine.failed")) {
                 Button(String(localized: "venues.retry")) { Task { await model.loadMine(session) } }
+                    .buttonStyle(.brandSecondary(fullWidth: false))
             }
         case .loaded where model.mine.isEmpty:
-            ContentUnavailableView(
-                String(localized: "games.mine.empty"),
+            BrandEmptyState(
                 systemImage: "hand.raised",
-                description: Text(String(localized: "games.mine.emptyHint"))
-            )
+                title: String(localized: "games.mine.empty"),
+                message: String(localized: "games.mine.emptyHint")
+            ) {
+                Button(String(localized: "games.tab.open")) { showing = .open }
+                    .buttonStyle(.brandSecondary(fullWidth: false))
+            }
         case .loaded:
-            List(model.mine, id: \.id) { request in
-                NavigationLink(value: request.game) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        GameRow(game: request.game)
-                        Text(GameText.status(request.status))
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(request.status == .ACCEPTED ? .green : .secondary)
+            ScrollView {
+                LazyVStack(spacing: Theme.Spacing.l) {
+                    ForEach(model.mine, id: \.id) { request in
+                        GameCard(
+                            game: request.game,
+                            status: request.status,
+                            server: session.serverURL,
+                            open: { path.append(request.game) }
+                        )
                     }
                 }
+                .padding(.horizontal, Theme.Spacing.l)
+                .padding(.bottom, Theme.Spacing.l)
             }
             .refreshable { await model.loadMine(session) }
         }
-    }
-}
-
-/// One game: where and when, the sport, how many are wanted, the level wish.
-struct GameRow: View {
-    let game: Components.Schemas.OpenGame
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(GameText.when(game.startTs, timezone: game.timezone)).font(.headline)
-            Text("\(GameText.sport(game.sport)) · \(game.venue.name), \(game.venue.city)")
-                .font(.subheadline)
-            HStack(spacing: 8) {
-                Text(String(localized: "games.spotsLeft \(game.spotsLeft)"))
-                Text(GameText.level(min: game.levelMin, max: game.levelMax))
-                    .foregroundStyle(.secondary)
-            }
-            .font(.caption)
-            if game.viewer?.levelFits == true {
-                Text(String(localized: "games.levelFits"))
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(.green)
-            }
-        }
-        .accessibilityElement(children: .combine)
     }
 }

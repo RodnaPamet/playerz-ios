@@ -40,6 +40,7 @@ struct TournamentsList: View {
                                 }
                             }
                         }
+                        .brandListRow()
                     }
                     if !open.isEmpty {
                         Section(String(localized: "tournaments.open")) {
@@ -49,6 +50,7 @@ struct TournamentsList: View {
                                 }
                             }
                         }
+                        .brandListRow()
                     }
                 }
                 .refreshable { await load() }
