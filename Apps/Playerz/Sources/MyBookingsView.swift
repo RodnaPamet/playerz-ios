@@ -152,7 +152,14 @@ struct MyBookingsView: View {
         NavigationLink {
             BookingGameView(bookingId: booking.id, session: session)
         } label: {
-            Label(String(localized: "bookingGame.link"), systemImage: "person.badge.plus")
+            // A participant opens the same screen to see their own request, not to look for players.
+            Group {
+                if booking.viewerRole == .BOOKER {
+                    Label(String(localized: "bookingGame.link"), systemImage: "person.badge.plus")
+                } else {
+                    Label(String(localized: "bookingGame.linkParticipant"), systemImage: "person.2")
+                }
+            }
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(Theme.Palette.accentText)
                 .frame(minHeight: Theme.minTarget)
