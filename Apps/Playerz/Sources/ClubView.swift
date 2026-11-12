@@ -14,6 +14,8 @@ struct ClubView: View {
     @State private var heroShown = true
     /// The club's tournaments (#22), while the ranking module is on.
     @State private var tournaments: [Components.Schemas.Tournament] = []
+    /// A DEBUG launch can open the club's «Класиране» at once (DebugLaunch).
+    @State private var debugLeaderboard = DebugLaunch.clubLeaderboard
 
     var body: some View {
         Group {
@@ -88,6 +90,9 @@ struct ClubView: View {
         // Hidden with the system bar; still what VoiceOver calls the screen.
         .navigationTitle(club?.name ?? "")
         .brandHeader(.back(heroShown ? "" : club?.name ?? ""))
+        .navigationDestination(isPresented: $debugLeaderboard) {
+            ClubLeaderboardView(slug: slug, session: session)
+        }
         .task { await load() }
     }
 

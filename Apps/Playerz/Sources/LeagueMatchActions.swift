@@ -22,22 +22,30 @@ struct LeagueMatchActions: View {
                     ? String(localized: "tournaments.propose.theirs \(when) \(proposal.courtName) \(until)")
                     : String(localized: "tournaments.propose.ours \(when) \(proposal.courtName) \(until)"))
                     .font(.footnote)
-                HStack {
-                    if theirs {
-                        Button(String(localized: "tournaments.propose.accept"), action: accept)
-                            .buttonStyle(.brandPrimary(fullWidth: false))
-                    }
-                    Button(
-                        theirs ? String(localized: "tournaments.propose.decline") : String(localized: "tournaments.propose.withdraw"),
-                        action: letGo
-                    )
-                    .buttonStyle(.brandSecondary(fullWidth: false))
+                // Side by side, or one under the other when the words are large.
+                ViewThatFits(in: .horizontal) {
+                    HStack { buttons(theirs: theirs) }
+                    VStack(alignment: .leading) { buttons(theirs: theirs) }
                 }
                 .disabled(busy)
             }
         } else {
-            Button(String(localized: "tournaments.propose.open"), action: propose)
+            Button(String(localized: "tournaments.propose.open"), systemImage: "calendar.badge.plus", action: propose)
+                .buttonStyle(.brandSecondary(fullWidth: false))
                 .disabled(busy)
         }
+    }
+
+    @ViewBuilder
+    private func buttons(theirs: Bool) -> some View {
+        if theirs {
+            Button(String(localized: "tournaments.propose.accept"), action: accept)
+                .buttonStyle(.brandPrimary(fullWidth: false))
+        }
+        Button(
+            theirs ? String(localized: "tournaments.propose.decline") : String(localized: "tournaments.propose.withdraw"),
+            action: letGo
+        )
+        .buttonStyle(.brandSecondary(fullWidth: false))
     }
 }

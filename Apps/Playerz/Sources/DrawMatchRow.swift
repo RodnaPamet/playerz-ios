@@ -11,7 +11,8 @@ struct DrawMatchRow: View {
         VStack(alignment: .leading, spacing: 4) {
             side(0, DrawText.side(match.sideA, match.sideA2))
             side(1, DrawText.side(match.sideB, match.sideB2))
-            Text(note).font(.footnote).foregroundStyle(match.overdue ? .orange : .secondary)
+            // Overdue is said in the words too; the colour is the danger token, not a raw orange.
+            Text(note).font(.footnote).foregroundStyle(match.overdue ? Theme.Palette.danger : .secondary)
         }
         .accessibilityElement(children: .combine)
     }
@@ -19,7 +20,7 @@ struct DrawMatchRow: View {
     private func side(_ index: Int, _ name: String) -> some View {
         HStack {
             Text(name).bold(match.winnerSide == index)
-            Spacer()
+            Spacer(minLength: Theme.Spacing.s)
             if let score = match.score {
                 Text(score.compactMap { $0.indices.contains(index) ? String($0[index]) : nil }.joined(separator: " "))
                     .monospacedDigit()

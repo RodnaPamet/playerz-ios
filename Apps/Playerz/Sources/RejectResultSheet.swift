@@ -1,6 +1,7 @@
 import SwiftUI
 
-/// «Оспори»: why, for the club, if they want to say.
+/// «Оспори»: why, for the club, if they want to say. A dark sheet, as the
+/// other notes' sheets («Да поискаме ли място?»).
 struct RejectResultSheet: View {
     let send: (String) -> Void
 
@@ -10,26 +11,39 @@ struct RejectResultSheet: View {
     private static let maxLength = 500
 
     var body: some View {
-        NavigationStack {
-            Form {
-                Section {
-                    TextField(String(localized: "myBookings.result.rejectNote"), text: $note, axis: .vertical)
-                        .lineLimit(3...)
+        BrandDarkSheet(title: String(localized: "myBookings.result.reject")) {
+            VStack(alignment: .leading, spacing: Theme.Spacing.s) {
+                TextField(String(localized: "myBookings.result.rejectNote"), text: $note, axis: .vertical)
+                    .lineLimit(3...)
+                    .foregroundStyle(Theme.Palette.onHeader)
+                    .padding(Theme.Spacing.m)
+                    .background(Theme.Palette.sheetRow, in: .rect(cornerRadius: Theme.Radius.row))
+                // Over the limit: a warning sign as well as brighter text,
+                // so the greyed button says why.
+                HStack(spacing: Theme.Spacing.xs) {
+                    if note.count > Self.maxLength {
+                        Image(systemName: "exclamationmark.triangle.fill").accessibilityHidden(true)
+                    }
+                    Text(String(localized: "games.noteHint \(Self.maxLength - note.count)"))
                 }
-                Section {
-                    Button(String(localized: "myBookings.result.rejectSend"), role: .destructive, action: submit)
-                        .disabled(note.count > Self.maxLength)
-                }
+                .font(.footnote)
+                .foregroundStyle(.white.opacity(note.count > Self.maxLength ? 1 : 0.72))
             }
-            .navigationTitle(String(localized: "myBookings.result.reject"))
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(String(localized: "myBookings.result.back"), action: close)
-                }
-            }
+            Button(String(localized: "myBookings.result.rejectSend"), role: .destructive, action: submit)
+                .buttonStyle(.brandPrimary)
+                .disabled(note.count > Self.maxLength)
+                .padding(.top, Theme.Spacing.s)
+            Button(String(localized: "myBookings.result.back"), action: close)
+                .buttonStyle(.brandSecondary)
         }
-        .presentationDetents([.medium])
+        // The presenter (BookingResultSection) opens this with a plain
+        // `sheet`, so the dark chrome `brandSheet` gives is set here; the
+        // keyboard needs more than the note's height.
+        .presentationDetents([.medium, .large])
+        .presentationDragIndicator(.visible)
+        .presentationBackground(Theme.Palette.sheetSurface)
+        .presentationCornerRadius(Theme.Radius.sheet)
+        .environment(\.colorScheme, .dark)
     }
 
     private func submit() {

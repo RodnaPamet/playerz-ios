@@ -1237,6 +1237,22 @@
         }
       }
     },
+    "club.leaderboard.emptyTitle": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Още няма класиране"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No leaderboard yet"
+          }
+        }
+      }
+    },
     "club.leaderboard.hint": {
       "localizations": {
         "bg": {

@@ -28,7 +28,12 @@ struct TournamentDrawView: View {
             if let draw {
                 List {
                     if let problem {
-                        Section { Text(problem).foregroundStyle(.red) }
+                        Section {
+                            // The words say it went wrong; the colour and the sign only back them up.
+                            Label(problem, systemImage: "exclamationmark.triangle")
+                                .foregroundStyle(Theme.Palette.danger)
+                        }
+                        .brandListRow()
                     }
                     ForEach(draw.groups, id: \.groupNo) { group in
                         Section(groupTitle(group.groupNo, of: draw.groups.count)) {
@@ -47,6 +52,7 @@ struct TournamentDrawView: View {
                                 }
                             }
                         }
+                        .brandListRow()
                     }
                     ForEach(Array(draw.knockout.enumerated()), id: \.offset) { index, round in
                         Section(roundTitle(index, of: draw.knockout.count)) {
@@ -54,28 +60,32 @@ struct TournamentDrawView: View {
                                 DrawMatchRow(match: match, timezone: timezone)
                             }
                         }
+                        .brandListRow()
                     }
                     if let third = draw.thirdPlace {
                         Section(String(localized: "tournaments.draw.thirdPlace")) {
                             DrawMatchRow(match: third, timezone: timezone)
                         }
+                        .brandListRow()
                     }
                 }
                 .refreshable { await load() }
             } else if failed {
-                ContentUnavailableView {
-                    Text(String(localized: "tournaments.error.FAILED"))
-                } actions: {
+                BrandEmptyState(systemImage: "wifi.exclamationmark", title: String(localized: "tournaments.error.FAILED")) {
                     Button(String(localized: "venues.retry"), action: retry)
+                        .buttonStyle(.brandSecondary(fullWidth: false))
                 }
             } else {
                 ProgressView()
             }
         }
+        .brandPage()
+        // Hidden with the system bar; still what VoiceOver calls the screen.
         .navigationTitle(String(localized: "tournaments.draw.heading"))
-        .navigationBarTitleDisplayMode(.inline)
+        .brandHeader(.back(String(localized: "tournaments.draw.heading")))
         .task { await load() }
-        .sheet(item: $proposing) { proposed in
+        // A day's times can run long: room to scroll them, not a hugged height.
+        .brandSheet(item: $proposing, detents: [.medium, .large]) { proposed in
             if let venueId {
                 ProposeMatchSheet(
                     venueId: venueId,

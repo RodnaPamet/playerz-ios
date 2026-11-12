@@ -20,6 +20,8 @@ struct TournamentDetailView: View {
     @State private var problem: String?
     @State private var confirmingWithdraw = false
     @Environment(\.openURL) private var openURL
+    /// The name is on the card at the top; the header carries it only once the card is scrolled away.
+    @State private var heroShown = true
     /// A DEBUG launch can open the draw at once (DebugLaunch).
     @State private var debugDraw = DebugLaunch.tournamentDraw
 
@@ -29,29 +31,40 @@ struct TournamentDetailView: View {
                 let tournament = view.value1
                 List {
                     Section {
-                        Text(TournamentText.kind(tournament))
-                        LabeledContent(String(localized: "tournaments.when"), value: TournamentText.dates(tournament))
-                        if let close = tournament.entriesCloseAt {
-                            LabeledContent(String(localized: "tournaments.entriesClose")) {
-                                Text(GameText.when(close, timezone: tournament.venue?.timezone ?? "Europe/Sofia"))
+                        TournamentHero(tournament: tournament)
+                            .onAppear { heroShown = true }
+                            .onDisappear { heroShown = false }
+                    }
+                    // The card is its own surface: no row box around it.
+                    .listRowInsets(EdgeInsets())
+                    .listRowBackground(Color.clear)
+                    Group {
+                        Section {
+                            if let close = tournament.entriesCloseAt {
+                                LabeledContent(String(localized: "tournaments.entriesClose")) {
+                                    Text(GameText.when(close, timezone: tournament.venue?.timezone ?? "Europe/Sofia"))
+                                }
+                            }
+                            if let venue = tournament.venue {
+                                LabeledContent(String(localized: "tournaments.where"), value: "\(venue.name), \(venue.city)")
+                            }
+                            LabeledContent(String(localized: "tournaments.club"), value: tournament.club.name)
+                            LabeledContent(String(localized: "tournaments.fee"), value: TournamentText.fee(tournament))
+                            LabeledContent(TournamentText.places(tournament), value: tournament.pending > 0
+                                ? String(localized: "tournaments.waitingCount \(tournament.pending)") : "")
+                        }
+                        if let description = tournament.description, !description.isEmpty {
+                            Section { Text(description) }
+                        }
+                        if let problem {
+                            Section {
+                                // The words say it went wrong; the colour and the sign only back them up.
+                                Label(problem, systemImage: "exclamationmark.triangle")
+                                    .foregroundStyle(Theme.Palette.danger)
                             }
                         }
-                        if let venue = tournament.venue {
-                            LabeledContent(String(localized: "tournaments.where"), value: "\(venue.name), \(venue.city)")
-                        }
-                        LabeledContent(String(localized: "tournaments.club"), value: tournament.club.name)
-                        LabeledContent(String(localized: "tournaments.fee"), value: TournamentText.fee(tournament))
-                        LabeledContent(TournamentText.places(tournament), value: tournament.pending > 0
-                            ? String(localized: "tournaments.waitingCount \(tournament.pending)") : "")
-                    } footer: {
-                        Text(TournamentText.status(tournament))
                     }
-                    if let description = tournament.description, !description.isEmpty {
-                        Section { Text(description) }
-                    }
-                    if let problem {
-                        Section { Text(problem).foregroundStyle(.red) }
-                    }
+                    .brandListRow()
                     TournamentEntrySection(
                         tournament: tournament,
                         entry: view.value2.myEntry,
@@ -64,30 +77,36 @@ struct TournamentDetailView: View {
                     )
                     if tournament.status == .IN_PROGRESS || tournament.status == .COMPLETE {
                         Section {
-                            NavigationLink(String(localized: "tournaments.draw.heading")) {
+                            NavigationLink {
                                 TournamentDrawView(id: id, timezone: tournament.venue?.timezone ?? "Europe/Sofia", venueId: tournament.venue?.id, session: session)
+                            } label: {
+                                Label(String(localized: "tournaments.draw.heading"), systemImage: "list.bullet.indent")
                             }
                         }
+                        .brandListRow()
                     }
                 }
                 .refreshable { await load() }
             } else if failed {
-                ContentUnavailableView {
-                    Text(String(localized: "tournaments.error.TOURNAMENT_NOT_FOUND"))
-                } actions: {
+                BrandEmptyState(systemImage: "trophy", title: String(localized: "tournaments.error.TOURNAMENT_NOT_FOUND")) {
                     Button(String(localized: "venues.retry"), action: retry)
+                        .buttonStyle(.brandSecondary(fullWidth: false))
                 }
             } else {
                 ProgressView()
             }
         }
+        .brandPage()
+        // Hidden with the system bar; still what VoiceOver calls the screen.
         .navigationTitle(view?.value1.name ?? "")
-        .navigationBarTitleDisplayMode(.inline)
+        // The name is on the card at the top; the band carries it once the card is scrolled away (#55).
+        .brandHeader(.back(heroShown && view != nil ? "" : view?.value1.name ?? ""))
         .task { await load() }
         .navigationDestination(isPresented: $debugDraw) {
             TournamentDrawView(id: id, timezone: view?.value1.venue?.timezone ?? "Europe/Sofia", venueId: view?.value1.venue?.id, session: session)
         }
-        .sheet(isPresented: $choosingPartner) {
+        // The keyboard and the results need the room: the whole height, not hugged.
+        .brandSheet(isPresented: $choosingPartner, detents: [.large]) {
             PartnerPickerSheet(session: session) { chosen in
                 partner = chosen
                 choosingPartner = false
@@ -184,6 +203,30 @@ struct TournamentDetailView: View {
                 view = fresh
             } else {
                 problem = TournamentText.error(response.flatMap { apiErrorCode($0) })
+            }
+        }
+    }
+}
+
+/// The top of a tournament's screen: where it stands, its name, what kind it
+/// is and when.
+private struct TournamentHero: View {
+    let tournament: Components.Schemas.Tournament
+
+    var body: some View {
+        BrandContentCard {
+            VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
+                BrandBadge(TournamentText.status(tournament), style: TournamentRow.badgeStyle(tournament))
+                Text(tournament.name)
+                    .font(Theme.Typography.cardTitle)
+                    .accessibilityAddTraits(.isHeader)
+                Text(TournamentText.kind(tournament))
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(Theme.Palette.accentText)
+                Label(TournamentText.dates(tournament), systemImage: "calendar")
+                    .font(Theme.Typography.cardSubtitle)
+                    .foregroundStyle(.secondary)
+                    .padding(.top, Theme.Spacing.xs)
             }
         }
     }

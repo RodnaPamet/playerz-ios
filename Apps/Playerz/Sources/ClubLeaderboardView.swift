@@ -15,39 +15,55 @@ struct ClubLeaderboardView: View {
     var body: some View {
         Group {
             if let board {
-                List {
-                    if board.sports.count > 1 {
-                        Picker(String(localized: "club.leaderboard.sport"), selection: $sport) {
-                            ForEach(board.sports, id: \.self) { sport in
-                                Text(GameText.sport(sport)).tag(Optional(sport))
+                if board.sport == nil || board.rows.isEmpty {
+                    // A short title over the sentence that says why.
+                    BrandEmptyState(
+                        systemImage: "chart.bar",
+                        title: String(localized: "club.leaderboard.emptyTitle"),
+                        message: board.sport == nil
+                            ? String(localized: "club.leaderboard.noResults")
+                            : String(localized: "club.leaderboard.empty")
+                    )
+                } else {
+                    List {
+                        Section {
+                            ForEach(board.rows, id: \.userId) { row in
+                                ClubLeaderboardRow(row: row)
                             }
+                        } footer: {
+                            Text(String(localized: "club.leaderboard.hint"))
                         }
-                    }
-                    if board.sport == nil {
-                        Text(String(localized: "club.leaderboard.noResults")).foregroundStyle(.secondary)
-                    } else if board.rows.isEmpty {
-                        Text(String(localized: "club.leaderboard.empty")).foregroundStyle(.secondary)
-                    }
-                    Section {
-                        ForEach(board.rows, id: \.userId) { row in
-                            ClubLeaderboardRow(row: row)
-                        }
-                    } footer: {
-                        Text(String(localized: "club.leaderboard.hint"))
+                        .brandListRow()
                     }
                 }
             } else if failed {
-                ContentUnavailableView {
-                    Text(String(localized: "club.failed"))
-                } actions: {
+                BrandEmptyState(systemImage: "wifi.exclamationmark", title: String(localized: "club.failed")) {
                     Button(String(localized: "venues.retry"), action: retry)
+                        .buttonStyle(.brandSecondary(fullWidth: false))
                 }
             } else {
                 ProgressView()
             }
         }
+        .brandPage()
+        // Hidden with the system bar; still what VoiceOver calls the screen.
         .navigationTitle(String(localized: "club.leaderboard.title"))
-        .navigationBarTitleDisplayMode(.inline)
+        // The sports as chips under the band, as a venue's days: they stay
+        // while another sport's board loads.
+        .brandChipBar {
+            if let sports = board?.sports, sports.count > 1 {
+                BrandChipRow {
+                    ForEach(sports, id: \.self) { item in
+                        BrandChip(GameText.sport(item), systemImage: GameSport.symbol(item), isSelected: sport == item) {
+                            sport = item
+                        }
+                    }
+                }
+                .accessibilityElement(children: .contain)
+                .accessibilityLabel(String(localized: "club.leaderboard.sport"))
+            }
+        }
+        .brandHeader(.back(String(localized: "club.leaderboard.title")))
         .task(id: sport) { await load() }
     }
 
