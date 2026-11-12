@@ -75,7 +75,7 @@ enum DebugLaunch {
     /// screenshot. `invite` (a booking's players), `report` (a conversation),
     /// `review` (a played booking), `search` (the inbox, with `PLAYERZ_SEARCH`
     /// typed in), `card` (that search's first player), `bookings` (a venue's
-    /// club bookings). Nothing is sent.
+    /// club bookings), `requests` (the inbox on «Заявки»). Nothing is sent.
     static var open: String? { env["PLAYERZ_OPEN"] }
     static var search: String? { env["PLAYERZ_SEARCH"] }
     #else

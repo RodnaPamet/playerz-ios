@@ -10,7 +10,8 @@ struct InboxView: View {
     @Binding var unread: Int
     @State private var requestsWaiting = 0
 
-    @State private var tab: Operations.listMyConversations.Input.Query.tabPayload = .conversations
+    @State private var tab: Operations.listMyConversations.Input.Query.tabPayload =
+        DebugLaunch.open == "requests" ? .requests : .conversations
     @State private var items: [Components.Schemas.ConversationSummary] = []
     @State private var nextCursor: String?
     @State private var phase: Phase = .loading
