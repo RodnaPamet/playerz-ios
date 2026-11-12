@@ -74,7 +74,7 @@ private let MY_BOOKINGS = """
        "totalCents": 4500, "currency": "EUR", "expiresAt": null, "cancelledAt": null,
        "createdAt": "2026-10-20T08:00:00.000Z", "cancellableUntil": "2026-10-21T13:00:00.000Z",
        "resource": {"id": "c1", "name": "Корт 1", "sport": "TENNIS", "resourceType": "COURT"},
-       "venue": {"id": "v1", "name": "ТК Левски – Борисова градина", "timezone": "Europe/Sofia"},
+       "venue": {"id": "v1", "name": "ТК Левски – Борисова градина", "city": "София", "timezone": "Europe/Sofia"},
        "clubSlug": "tennis-club-levski", "venueReview": null, "canReview": false, "viewerRole": "BOOKER",
        "lesson": {"id": "l1", "coach": {"slug": "maria", "name": "Мария"}, "coachFeeCents": 3000,
                   "groupFeeCents": null, "courtPriceCents": 1500, "totalCents": 4500, "myReview": null,
@@ -83,7 +83,7 @@ private let MY_BOOKINGS = """
        "totalCents": 2000, "currency": "EUR", "expiresAt": null, "cancelledAt": null,
        "createdAt": "2026-10-20T08:05:00.000Z", "cancellableUntil": null,
        "resource": {"id": "c9", "name": "Корт за скуош", "sport": "SQUASH", "resourceType": "COURT"},
-       "venue": {"id": "v4", "name": "Тенис клуб Малееви", "timezone": "Europe/Sofia"},
+       "venue": {"id": "v4", "name": "Тенис клуб Малееви", "city": "София", "timezone": "Europe/Sofia"},
        "clubSlug": "maleeva-club",
        "venueReview": {"id": "r1", "bookingId": "b2", "rating": 5, "status": "PUBLISHED"},
        "canReview": false, "viewerRole": "BOOKER", "lesson": null}

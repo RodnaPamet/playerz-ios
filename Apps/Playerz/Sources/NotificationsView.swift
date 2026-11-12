@@ -14,9 +14,12 @@ struct NotificationsView: View {
     @State private var wasUnread: Set<String> = []
     @State private var phase: Phase = .loading
     @State private var destination: AppLink?
-    /// The chip: one kind of notification, or nil for «Всички».
+    /// The chip: one group of notifications, or nil for «Всички». The server
+    /// filters by it (projectZ#677), so a chosen group pages on its own.
     @State private var filter: NotificationCategory?
-    @State private var filling = false
+    /// Unread per group as the list opened, before opening marked them read:
+    /// what the chips show.
+    @State private var unreadAtOpen: [NotificationCategory: Int] = [:]
 
     enum Phase { case loading, loaded, failed }
 
@@ -32,7 +35,7 @@ struct NotificationsView: View {
                             filter = nil
                         }
                         ForEach(NotificationCategory.chips(session.modules), id: \.self) { category in
-                            BrandChip(category.label, isSelected: filter == category) { filter = category }
+                            BrandChip(chipLabel(category), isSelected: filter == category) { filter = category }
                         }
                     }
                     .accessibilityElement(children: .contain)
@@ -44,16 +47,15 @@ struct NotificationsView: View {
                     LinkedScreen(link: link, session: session)
                 }
         }
-        .task { await load() }
-        // The server pages by time, not by kind: read on until the chosen
-        // kind has a screenful, or there is nothing older.
-        .task(id: filter) { await fill() }
+        // The first read, and a new one for each chip.
+        .task(id: filter) { await load() }
     }
 
-    /// What the chosen chip leaves of the pages read so far.
-    private var shown: [Components.Schemas.Notification] {
-        guard let filter else { return items }
-        return items.filter { NotificationCategory(kind: $0.kind) == filter }
+    private var shown: [Components.Schemas.Notification] { items }
+
+    private func chipLabel(_ category: NotificationCategory) -> String {
+        let unread = unreadAtOpen[category] ?? 0
+        return unread > 0 ? "\(category.label) · \(unread)" : category.label
     }
 
     @ViewBuilder private var content: some View {
@@ -65,22 +67,18 @@ struct NotificationsView: View {
                 Button(String(localized: "notifications.retry"), action: retry)
                     .buttonStyle(.brandSecondary(fullWidth: false))
             }
-        case .loaded where items.isEmpty:
+        case .loaded where items.isEmpty && filter == nil:
             BrandEmptyState(
                 systemImage: "bell",
                 title: String(localized: "notifications.empty"),
                 message: String(localized: "notifications.emptyBody")
             )
-        case .loaded where shown.isEmpty:
-            if nextCursor != nil || filling {
-                ProgressView(String(localized: "common.loading"))
-            } else {
-                BrandEmptyState(
-                    systemImage: filter?.systemImage ?? "bell",
-                    title: String(localized: "notifications.emptyFiltered"),
-                    message: String(localized: "notifications.emptyFilteredBody")
-                )
-            }
+        case .loaded where items.isEmpty:
+            BrandEmptyState(
+                systemImage: filter?.systemImage ?? "bell",
+                title: String(localized: "notifications.emptyFiltered"),
+                message: String(localized: "notifications.emptyFilteredBody")
+            )
         case .loaded:
             ScrollView {
                 LazyVStack(spacing: Theme.Spacing.m) {
@@ -129,10 +127,21 @@ struct NotificationsView: View {
             return
         }
         do {
-            let page = try await client.listMyNotifications().ok.body.json.data
+            let asked = filter
+            let page = try await client
+                .listMyNotifications(query: .init(category: asked.flatMap(Self.serverCategory)))
+                .ok.body.json.data
+            guard asked == filter else { return }
             items = page.items
             nextCursor = page.nextCursor
             wasUnread.formUnion(page.items.filter { !$0.read }.map(\.id))
+            if unreadAtOpen.isEmpty {
+                let u = page.unreadByCategory
+                unreadAtOpen = [
+                    .bookings: u.bookings, .games: u.games, .messages: u.messages,
+                    .lessons: u.lessons, .tournaments: u.tournaments, .other: u.other,
+                ]
+            }
             phase = .loaded
             if page.unreadCount > 0 { await markAllRead(client) }
         } catch {
@@ -143,22 +152,18 @@ struct NotificationsView: View {
     private func loadMore() async {
         guard let cursor = nextCursor, let client = await session.client() else { return }
         nextCursor = nil
-        if let page = try? await client.listMyNotifications(query: .init(cursor: cursor)).ok.body.json.data {
+        let query = Operations.listMyNotifications.Input.Query(
+            cursor: cursor, category: filter.flatMap(Self.serverCategory)
+        )
+        if let page = try? await client.listMyNotifications(query: query).ok.body.json.data {
             items += page.items
             nextCursor = page.nextCursor
             wasUnread.formUnion(page.items.filter { !$0.read }.map(\.id))
         }
     }
 
-    /// Older pages, while the chosen kind shows less than a screenful: the
-    /// list would otherwise look empty, or end early, with more on the server.
-    private func fill() async {
-        guard filter != nil else { return }
-        filling = true
-        defer { filling = false }
-        while !Task.isCancelled, phase == .loaded, shown.count < 8, nextCursor != nil {
-            await loadMore()
-        }
+    private static func serverCategory(_ category: NotificationCategory) -> Components.Schemas.NotificationCategory? {
+        Components.Schemas.NotificationCategory(rawValue: category.rawValue)
     }
 
     /// As the web: opening the list reads everything in it. A failure leaves

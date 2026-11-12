@@ -6760,6 +6760,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "description": "One group only (#668); the cursor pages within it. Any other value is 400 with `details.field: \"category\"`.",
+            "schema": {
+              "$ref": "#/components/schemas/NotificationCategory"
+            }
           }
         ],
         "responses": {
@@ -10848,6 +10857,68 @@
             "schema": {
               "type": "string",
               "format": "date"
+            }
+          },
+          {
+            "name": "dateFrom",
+            "in": "query",
+            "required": false,
+            "description": "First day, `YYYY-MM-DD` at the venue, included (#668).",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "dateTo",
+            "in": "query",
+            "required": false,
+            "description": "Last day, `YYYY-MM-DD` at the venue, included (#668).",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "fromHour",
+            "in": "query",
+            "required": false,
+            "description": "Games starting at or after this hour at the venue (#668).",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 23
+            }
+          },
+          {
+            "name": "toHour",
+            "in": "query",
+            "required": false,
+            "description": "Games starting before this hour at the venue (#668).",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 24
+            }
+          },
+          {
+            "name": "indoor",
+            "in": "query",
+            "required": false,
+            "description": "Indoor (`true`) or outdoor (`false`) courts only (#668).",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "level",
+            "in": "query",
+            "required": false,
+            "description": "Games whose level wish includes this whole level, or that wish none (#668).",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 7
             }
           },
           {
@@ -18059,6 +18130,85 @@
           }
         }
       }
+    },
+    "/me/summary": {
+      "get": {
+        "operationId": "getMySummary",
+        "summary": "Counts for the profile tiles and the next booking",
+        "description": "One call for the phone's «Профил» tiles and «Начало»'s next booking (#668).",
+        "tags": [
+          "Me"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The counts and the next booking.",
+            "headers": {
+              "X-API-Version": {
+                "description": "Contract version marker. Stamped on every v1 response, success included.",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "x-request-id": {
+                "description": "Correlation id; matches `error.requestId` on failures and the id in the server logs.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/MySummary"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHORIZED` — no token, or a revoked or superseded session. The edge lets this path through, because it names no club, and the handler refuses it.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "`VIEWER_CHANGED` — web only: the `x-playerz-viewer` header names a different user from the live session's. Nothing was read or written. A native client never sends the header and never sees this; see openapi/NOTES.md.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "`INTERNAL`. The message is generic; the detail is in the server log under `x-request-id`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -18870,7 +19020,8 @@
             "required": [
               "id",
               "name",
-              "timezone"
+              "timezone",
+              "city"
             ],
             "properties": {
               "id": {
@@ -18884,6 +19035,10 @@
               "timezone": {
                 "type": "string",
                 "description": "IANA zone, e.g. `Europe/Sofia`. The client needs it to render `startTs` as local wall-clock time rather than doing UTC arithmetic."
+              },
+              "city": {
+                "type": "string",
+                "description": "As the club typed it (#668)."
               }
             }
           }
@@ -20339,6 +20494,7 @@
           "resource",
           "venue",
           "clubSlug",
+          "clubLogoUrl",
           "venueReview",
           "canReview",
           "viewerRole",
@@ -20434,7 +20590,8 @@
             "required": [
               "id",
               "name",
-              "timezone"
+              "timezone",
+              "city"
             ],
             "properties": {
               "id": {
@@ -20448,6 +20605,10 @@
               "timezone": {
                 "type": "string",
                 "description": "IANA zone, e.g. `Europe/Sofia`. The client needs it to render `startTs` as local wall-clock time rather than doing UTC arithmetic."
+              },
+              "city": {
+                "type": "string",
+                "description": "As the club typed it (#668)."
               }
             }
           },
@@ -20457,6 +20618,13 @@
               "null"
             ],
             "description": "The club's slug — what `POST /t/{slug}/bookings/{id}/cancel`, `/checkout` and `/review` take for this booking. Null only if the club row is gone; such a booking can be shown and not acted on."
+          },
+          "clubLogoUrl": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The club's logo (#668); null when it has none or the club is gone."
           },
           "venueReview": {
             "description": "The caller's own review of this booking's VENUE, or null if they have not written one.",
@@ -22283,6 +22451,7 @@
         "required": [
           "id",
           "kind",
+          "category",
           "title",
           "body",
           "href",
@@ -22340,6 +22509,9 @@
             "description": "Treat an unknown value as a generic notification: kinds are added over time.",
             "x-open-enum": true
           },
+          "category": {
+            "$ref": "#/components/schemas/NotificationCategory"
+          },
           "title": {
             "type": "string",
             "maxLength": 80
@@ -22390,7 +22562,8 @@
         "required": [
           "items",
           "nextCursor",
-          "unreadCount"
+          "unreadCount",
+          "unreadByCategory"
         ],
         "properties": {
           "items": {
@@ -22409,6 +22582,44 @@
           "unreadCount": {
             "type": "integer",
             "minimum": 0
+          },
+          "unreadByCategory": {
+            "type": "object",
+            "description": "Unread per group (#668), every group present; they add up to `unreadCount`.",
+            "required": [
+              "bookings",
+              "games",
+              "messages",
+              "lessons",
+              "tournaments",
+              "other"
+            ],
+            "properties": {
+              "bookings": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "games": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "messages": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "lessons": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "tournaments": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "other": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
           }
         }
       },
@@ -24168,7 +24379,8 @@
               "kind",
               "clubId",
               "slug",
-              "name"
+              "name",
+              "logoUrl"
             ],
             "properties": {
               "kind": {
@@ -24183,6 +24395,13 @@
               },
               "name": {
                 "type": "string"
+              },
+              "logoUrl": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "The club's logo (#668)."
               }
             }
           },
@@ -25300,7 +25519,10 @@
           "sport",
           "resourceType",
           "courtName",
+          "isIndoor",
           "venue",
+          "courtPrice",
+          "players",
           "startTs",
           "endTs",
           "timezone",
@@ -25328,13 +25550,18 @@
           "courtName": {
             "type": "string"
           },
+          "isIndoor": {
+            "type": "boolean",
+            "description": "The court is indoors (#668)."
+          },
           "venue": {
             "type": "object",
             "required": [
               "id",
               "slug",
               "name",
-              "city"
+              "city",
+              "logoUrl"
             ],
             "properties": {
               "id": {
@@ -25348,8 +25575,43 @@
               },
               "city": {
                 "type": "string"
+              },
+              "logoUrl": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "The club's logo (#668)."
               }
             }
+          },
+          "courtPrice": {
+            "type": "object",
+            "description": "The booking's total in integer cents (#668). The card shows the court total, not a share per player; it is paid at the club as before.",
+            "required": [
+              "totalCents",
+              "currency"
+            ],
+            "properties": {
+              "totalCents": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "currency": {
+                "type": "string",
+                "description": "ISO 4217."
+              }
+            }
+          },
+          "players": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/OpenGamePlayer"
+            },
+            "description": "Who is on the game, booker first (#668). Null unless the viewer is the booker, plays in it, or has a PENDING or ACCEPTED request: anyone else browsing sees `playersCount` and empty seats."
           },
           "startTs": {
             "type": "string",
@@ -30536,6 +30798,92 @@
               "$ref": "#/components/schemas/SportType"
             },
             "description": "Sports with a live court at a live venue."
+          }
+        }
+      },
+      "OpenGamePlayer": {
+        "type": "object",
+        "description": "One person on a game (#668). Never carries a user id.",
+        "required": [
+          "firstName",
+          "avatarUrl",
+          "level",
+          "isBooker"
+        ],
+        "properties": {
+          "firstName": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "avatarUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "level": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "Their level in the game's sport (1–7, one decimal) as they let others see it; null when hidden, none, or ranking is off."
+          },
+          "isBooker": {
+            "type": "boolean"
+          }
+        }
+      },
+      "NotificationCategory": {
+        "type": "string",
+        "enum": [
+          "bookings",
+          "games",
+          "messages",
+          "lessons",
+          "tournaments",
+          "other"
+        ],
+        "description": "The bell's group (#668), decided by the server from `kind`; `other` has no chip."
+      },
+      "MySummary": {
+        "type": "object",
+        "description": "The phone's «Профил» tiles and «Начало»'s next booking (#668). Each figure comes from the use case behind the list it opens.",
+        "required": [
+          "upcomingBookings",
+          "upcomingGames",
+          "pendingGameRequests",
+          "unreadNotifications",
+          "nextBooking"
+        ],
+        "properties": {
+          "upcomingBookings": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Резервации → Предстоящи."
+          },
+          "upcomingGames": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Of those, the ones with an open game on them."
+          },
+          "pendingGameRequests": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "The caller's requests to join games still awaiting an answer (capped at 100)."
+          },
+          "unreadNotifications": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "nextBooking": {
+            "description": "The first of Предстоящи, or null.",
+            "$ref": "#/components/schemas/MyBooking",
+            "type": [
+              "object",
+              "null"
+            ]
           }
         }
       }

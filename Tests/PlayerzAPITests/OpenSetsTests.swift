@@ -45,4 +45,4 @@ struct OpenSetsTests {
     }
 }
 
-private let UNKNOWN_SPORT = #"{"data":{"items":[{"id":"g","sport":"SPIKEBALL","resourceType":"NET","courtName":"Court 1","venue":{"id":"v","slug":"v","name":"Venue","city":"Sofia"},"startTs":"2026-10-16T15:56:01.418Z","endTs":"2026-10-16T16:56:01.418Z","timezone":"Europe/Sofia","cutoffAt":"2026-10-15T15:56:01.418Z","capacity":4,"playersCount":1,"spotsLeft":2,"open":true,"levelMin":null,"levelMax":null,"note":null,"booker":{"firstName":"Иван","avatarUrl":null},"viewer":null}],"nextCursor":null}}"#
+private let UNKNOWN_SPORT = #"{"data":{"items":[{"id":"g","sport":"SPIKEBALL","resourceType":"NET","courtName":"Court 1","isIndoor":false,"venue":{"id":"v","slug":"v","name":"Venue","city":"Sofia","logoUrl":null},"courtPrice":{"totalCents":2400,"currency":"EUR"},"players":null,"startTs":"2026-10-16T15:56:01.418Z","endTs":"2026-10-16T16:56:01.418Z","timezone":"Europe/Sofia","cutoffAt":"2026-10-15T15:56:01.418Z","capacity":4,"playersCount":1,"spotsLeft":2,"open":true,"levelMin":null,"levelMax":null,"note":null,"booker":{"firstName":"Иван","avatarUrl":null},"viewer":null}],"nextCursor":null}}"#
