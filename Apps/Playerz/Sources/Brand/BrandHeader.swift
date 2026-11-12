@@ -91,14 +91,18 @@ struct BrandHeader<Accessory: View, Actions: View>: View {
         }
     }
 
-    private func title(_ title: String, lines: Int) -> some View {
-        Text(title)
-            .font(Theme.Typography.headerTitle)
-            .foregroundStyle(Theme.Palette.onHeader)
-            .lineLimit(lines)
-            .frame(minHeight: Theme.minTarget)
-            .accessibilityAddTraits(.isHeader)
-            .accessibilityShowsLargeContentViewer()
+    /// An empty title draws nothing: a screen whose name is on its cover card
+    /// passes "" until the card scrolls away, and VoiceOver must not stop on a blank.
+    @ViewBuilder private func title(_ title: String, lines: Int) -> some View {
+        if !title.isEmpty {
+            Text(title)
+                .font(Theme.Typography.headerTitle)
+                .foregroundStyle(Theme.Palette.onHeader)
+                .lineLimit(lines)
+                .frame(minHeight: Theme.minTarget)
+                .accessibilityAddTraits(.isHeader)
+                .accessibilityShowsLargeContentViewer()
+        }
     }
 }
 

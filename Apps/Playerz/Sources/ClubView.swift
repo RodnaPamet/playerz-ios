@@ -10,6 +10,8 @@ struct ClubView: View {
 
     @State private var club: Components.Schemas.ClubPublic?
     @State private var failed = false
+    /// The name is on the cover card; the header carries it only once the card is scrolled away (#55).
+    @State private var heroShown = true
     /// The club's tournaments (#22), while the ranking module is on.
     @State private var tournaments: [Components.Schemas.Tournament] = []
 
@@ -19,6 +21,8 @@ struct ClubView: View {
                 List {
                     Section {
                         ClubHero(club: club, serverURL: session.serverURL)
+                            .onAppear { heroShown = true }
+                            .onDisappear { heroShown = false }
                     }
                     // The card is its own surface: no row box around it.
                     .listRowInsets(EdgeInsets())
@@ -83,7 +87,7 @@ struct ClubView: View {
         .brandPage()
         // Hidden with the system bar; still what VoiceOver calls the screen.
         .navigationTitle(club?.name ?? "")
-        .brandHeader(.back(club?.name ?? ""))
+        .brandHeader(.back(heroShown ? "" : club?.name ?? ""))
         .task { await load() }
     }
 
