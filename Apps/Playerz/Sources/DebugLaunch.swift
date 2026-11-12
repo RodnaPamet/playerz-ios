@@ -54,6 +54,11 @@ enum DebugLaunch {
     static var coach: String? { env["PLAYERZ_COACH"] }
     static var coachBook: Int? { env["PLAYERZ_COACH_BOOK"].flatMap(Int.init) }
     static var profile: Profile? { env["PLAYERZ_PROFILE"].flatMap(Profile.init(rawValue:)) }
+    /// `PLAYERZ_EMPTY_END=1`: a scrolling empty state opens at its end, to
+    /// photograph the last line above the tab bar at the largest text size.
+    static var emptyStateEnd: Bool { env["PLAYERZ_EMPTY_END"] == "1" }
+    /// `PLAYERZ_BOOKINGS=past`: Резервации opened on «Минали».
+    static var bookingsPast: Bool { env["PLAYERZ_BOOKINGS"] == "past" }
     #else
     static let credentials: (email: String, password: String)? = nil
     static let tab: Tab? = nil
@@ -77,5 +82,7 @@ enum DebugLaunch {
     static let coach: String? = nil
     static let coachBook: Int? = nil
     static let profile: Profile? = nil
+    static let emptyStateEnd = false
+    static let bookingsPast = false
     #endif
 }

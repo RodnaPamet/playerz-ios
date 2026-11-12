@@ -5,6 +5,9 @@ enum BrandBadgeStyle {
     case accent
     /// Ink fill with accent text: on the light page, as in an empty state.
     case ink
+    /// Quiet: the chip grey with ordinary text, for a state that is over
+    /// («Отменена», «Приключила») beside the accent of one that is live.
+    case neutral
 }
 
 /// A small capsule word: «Скоро», «Ново».
@@ -33,6 +36,9 @@ struct BrandBadge: View {
                 .background(Theme.Palette.headerInk, in: .capsule)
                 .overlay(Capsule().stroke(.white.opacity(0.16)))
                 .environment(\.colorScheme, .dark)
+        case .neutral:
+            label.foregroundStyle(Color.primary)
+                .background(Theme.Palette.chipIdle, in: .capsule)
         }
     }
 

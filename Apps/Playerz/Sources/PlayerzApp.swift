@@ -152,7 +152,9 @@ struct RootView: View {
                             BookingInviteView(token: invite.token, session: session)
                         }
                         // The bell's list (#15), one for every tab's bell.
-                        .sheet(isPresented: $session.notificationsOpen) {
+                        // A page under the header band with a back button, as the
+                        // inbox is, not a card.
+                        .fullScreenCover(isPresented: $session.notificationsOpen) {
                             NotificationsView(session: session)
                         }
                         // A tapped push's screen (#15).

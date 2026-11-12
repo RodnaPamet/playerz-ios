@@ -43,6 +43,9 @@ enum Theme {
         /// A count or an unread dot; white on it is 4.8:1.
         static var badge: Color { Color(hex: 0xD92D3A) }
         static var onBadge: Color { .white }
+        /// Text of an action that takes something away («Откажи», «Изход») and
+        /// of a failure, on `page` or `card`: 6.1:1 light, 7.4:1 dark.
+        static var danger: Color { Color(light: 0xC4222E, dark: 0xFF7A85) }
     }
 
     enum Radius {
