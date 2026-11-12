@@ -13,3 +13,6 @@ DerivedData/
 *.xcodeproj
 Apps/*/Info.plist
 scripts/__pycache__/
+
+# xcodebuild logs a run writes next to the project.
+.build.log

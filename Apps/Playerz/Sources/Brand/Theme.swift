@@ -46,6 +46,9 @@ enum Theme {
         /// Text of an action that takes something away («Откажи», «Изход») and
         /// of a failure, on `page` or `card`: 6.1:1 light, 7.4:1 dark.
         static var danger: Color { Color(light: 0xC4222E, dark: 0xFF7A85) }
+        /// Text of an outcome that went through («Запазено»), on `page` or
+        /// `card`: 5.6:1 light, 9.6:1 dark.
+        static var success: Color { Color(light: 0x1E7A3C, dark: 0x5BD58A) }
     }
 
     enum Radius {

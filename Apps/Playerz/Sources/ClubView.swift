@@ -120,7 +120,7 @@ private struct ClubHero: View {
     let serverURL: String
 
     var body: some View {
-        BrandCoverCard(coverHeight: 170) {
+        BrandCoverCard(coverHeight: 170, coverLabel: club.cover?.alt) {
             VenueCover(photo: club.cover, seed: club.id, serverURL: serverURL, pixelWidth: 1280)
         } logo: {
             VenueLogoTile(name: club.name, logoURL: club.logoUrl.flatMap { mediaURL($0, serverURL: serverURL) })

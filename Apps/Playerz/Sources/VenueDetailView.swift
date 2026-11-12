@@ -164,7 +164,7 @@ struct VenueDetailView: View {
                 Text(banner)
                     // Colour alone must not carry the meaning — the words
                     // already say which outcome it is.
-                    .foregroundStyle(model.bannerIsError ? .red : .green)
+                    .foregroundStyle(model.bannerIsError ? Theme.Palette.danger : Theme.Palette.success)
             }
         }
 
@@ -256,7 +256,7 @@ private struct VenueHero: View {
     let serverURL: String
 
     var body: some View {
-        BrandCoverCard(coverHeight: 170) {
+        BrandCoverCard(coverHeight: 170, coverLabel: venue.cover?.alt) {
             VenueCover(photo: venue.cover, seed: venue.id, serverURL: serverURL, pixelWidth: 1280)
         } logo: {
             VenueLogoTile(name: venue.name)
