@@ -65,6 +65,8 @@ enum DebugLaunch {
     static var emptyStateEnd: Bool { env["PLAYERZ_EMPTY_END"] == "1" }
     /// `PLAYERZ_BOOKINGS=past`: Резервации opened on «Минали».
     static var bookingsPast: Bool { env["PLAYERZ_BOOKINGS"] == "past" }
+    /// `PLAYERZ_BOOKINGS=cancelled`: Резервации opened on «Отменени» (#58).
+    static var bookingsCancelled: Bool { env["PLAYERZ_BOOKINGS"] == "cancelled" }
     #else
     static let credentials: (email: String, password: String)? = nil
     static let tab: Tab? = nil
@@ -93,5 +95,6 @@ enum DebugLaunch {
     static let profile: Profile? = nil
     static let emptyStateEnd = false
     static let bookingsPast = false
+    static let bookingsCancelled = false
     #endif
 }

@@ -10,12 +10,10 @@ struct VenueFilters: Equatable {
     /// True indoor, false outdoor, nil either.
     var indoor: Bool?
 
-    /// How many are on. «Близо до мен» is searched by sport alone
-    /// (`/venues/near` takes nothing else), so only that one counts there.
-    func count(near: Bool) -> Int {
-        let sportOn = sport == nil ? 0 : 1
-        if near { return sportOn }
-        return sportOn + (city == nil ? 0 : 1) + (indoor == nil ? 0 : 1)
+    /// How many are on. «Близо до мен» takes the same filters as the list
+    /// since projectZ#667.
+    var count: Int {
+        (sport == nil ? 0 : 1) + (city == nil ? 0 : 1) + (indoor == nil ? 0 : 1)
     }
 }
 
@@ -32,14 +30,16 @@ final class VenueListModel {
         let city: String
         let country: String
         let fromPriceCents: Int?
+        /// ISO 4217 of the price; nil with no price.
+        let currency: String?
         /// Only present in `near` mode.
         let distanceKm: Double?
-        /// Empty in `near` mode: that endpoint names no sports.
         let sports: [String]
         let avgRating: Double
         let reviewCount: Int
-        /// Nil in `near` mode, and for a club with no photo.
+        /// Nil for a club with no photo.
         let cover: Components.Schemas.VenuePhoto?
+        let clubLogoUrl: String?
     }
 
     private(set) var phase: Phase = .loading
@@ -54,7 +54,7 @@ final class VenueListModel {
 
     private let location = LocationProvider()
 
-    var activeFilterCount: Int { filters.count(near: mode == .near) }
+    var activeFilterCount: Int { filters.count }
 
     func setMode(_ mode: Mode, session: SessionModel) async {
         guard mode != self.mode || rows.isEmpty else { return }
@@ -92,7 +92,7 @@ final class VenueListModel {
                 // works signed out and does not widen what a browse correlates
                 // with.
                 let page = try await client.listVenues(query: query(cursor: nil)).ok.body.json.data
-                rows = page.items.map(Self.row)
+                rows = page.items.map { Self.row($0) }
                 nextCursor = page.nextCursor
                 if filters == VenueFilters() { remember(page.items) }
 
@@ -110,20 +110,15 @@ final class VenueListModel {
                             // to 50 rather than rejected — so asking for more
                             // would quietly mean 50 anyway.
                             radiusKm: 50,
-                            sport: filters.sport
+                            sport: filters.sport,
+                            city: filters.city,
+                            indoor: filters.indoor
                         )
                     )
                 ).ok.body.json.data
                 nextCursor = nil
-                rows = result.venues.map {
-                    Row(
-                        id: $0.id, name: $0.name, city: $0.city, country: $0.country,
-                        // /venues/near carries no price, sports or photo; the
-                        // card omits them rather than showing wrong ones.
-                        fromPriceCents: nil, distanceKm: $0.distanceKm,
-                        sports: [], avgRating: $0.avgRating, reviewCount: $0.reviewCount, cover: nil
-                    )
-                }
+                // A full card plus the distance since projectZ#667.
+                rows = result.venues.map { Self.row($0.value1, distanceKm: $0.value2.distanceKm) }
             }
             phase = .loaded
         } catch LocationProvider.Failure.denied {
@@ -144,7 +139,7 @@ final class VenueListModel {
               asked == filters, mode == .all
         else { return }
         let seen = Set(rows.map(\.id))
-        rows += page.items.map(Self.row).filter { !seen.contains($0.id) }
+        rows += page.items.map { Self.row($0) }.filter { !seen.contains($0.id) }
         nextCursor = page.nextCursor
         if filters == VenueFilters() { remember(page.items) }
     }
@@ -161,11 +156,12 @@ final class VenueListModel {
         sports = Sports.known.filter(found.contains) + found.subtracting(Sports.known).sorted()
     }
 
-    private static func row(_ venue: Components.Schemas.VenueSummary) -> Row {
+    private static func row(_ venue: Components.Schemas.VenueSummary, distanceKm: Double? = nil) -> Row {
         Row(
             id: venue.id, name: venue.name, city: venue.city, country: venue.country,
-            fromPriceCents: venue.fromPriceCents, distanceKm: nil,
-            sports: venue.sports, avgRating: venue.avgRating, reviewCount: venue.reviewCount, cover: venue.cover
+            fromPriceCents: venue.fromPriceCents, currency: venue.currency, distanceKm: distanceKm,
+            sports: venue.sports, avgRating: venue.avgRating, reviewCount: venue.reviewCount,
+            cover: venue.cover, clubLogoUrl: venue.clubLogoUrl
         )
     }
 }

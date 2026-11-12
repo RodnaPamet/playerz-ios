@@ -5,26 +5,20 @@ import SwiftUI
 struct VenueFilterSheet: View {
     let cities: [String]
     let sports: [String]
-    /// «Близо до мен» is searched by sport alone.
-    let near: Bool
     let apply: (VenueFilters) -> Void
 
     @State private var draft: VenueFilters
 
-    init(filters: VenueFilters, cities: [String], sports: [String], near: Bool, apply: @escaping (VenueFilters) -> Void) {
+    init(filters: VenueFilters, cities: [String], sports: [String], apply: @escaping (VenueFilters) -> Void) {
         _draft = State(initialValue: filters)
         self.cities = cities
         self.sports = sports
-        self.near = near
         self.apply = apply
     }
 
     var body: some View {
-        BrandDarkSheet(
-            title: String(localized: "venues.filters"),
-            subtitle: near ? String(localized: "venues.filter.nearNote") : nil
-        ) {
-            if !near, !cities.isEmpty {
+        BrandDarkSheet(title: String(localized: "venues.filters"), subtitle: nil) {
+            if !cities.isEmpty {
                 group(String(localized: "venues.filter.city")) {
                     BrandChip(String(localized: "venues.filter.allCities"), isSelected: draft.city == nil) {
                         draft.city = nil
@@ -44,17 +38,15 @@ struct VenueFilterSheet: View {
                     }
                 }
             }
-            if !near {
-                group(String(localized: "venues.filter.court")) {
-                    BrandChip(String(localized: "venues.filter.anyCourt"), isSelected: draft.indoor == nil) {
-                        draft.indoor = nil
-                    }
-                    BrandChip(String(localized: "venues.filter.indoor"), isSelected: draft.indoor == true) {
-                        draft.indoor = true
-                    }
-                    BrandChip(String(localized: "venues.filter.outdoor"), isSelected: draft.indoor == false) {
-                        draft.indoor = false
-                    }
+            group(String(localized: "venues.filter.court")) {
+                BrandChip(String(localized: "venues.filter.anyCourt"), isSelected: draft.indoor == nil) {
+                    draft.indoor = nil
+                }
+                BrandChip(String(localized: "venues.filter.indoor"), isSelected: draft.indoor == true) {
+                    draft.indoor = true
+                }
+                BrandChip(String(localized: "venues.filter.outdoor"), isSelected: draft.indoor == false) {
+                    draft.indoor = false
                 }
             }
             // The same order and widths as the games' «Филтри» (GamesFilterSheet).
@@ -84,6 +76,6 @@ struct VenueFilterSheet: View {
 
 #Preview {
     VenueFilterSheet(
-        filters: VenueFilters(city: "София"), cities: ["Пловдив", "София"], sports: ["TENNIS", "PADEL"], near: false
+        filters: VenueFilters(city: "София"), cities: ["Пловдив", "София"], sports: ["TENNIS", "PADEL"]
     ) { _ in }
 }

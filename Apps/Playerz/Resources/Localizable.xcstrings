@@ -8305,6 +8305,22 @@
         }
       }
     },
+    "myBookings.cancelled": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отменени"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancelled"
+          }
+        }
+      }
+    },
     "myBookings.detail.address": {
       "localizations": {
         "bg": {
@@ -8685,6 +8701,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "When"
+          }
+        }
+      }
+    },
+    "myBookings.emptyCancelled": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нямате отменени резервации"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No cancelled bookings"
           }
         }
       }
@@ -15529,22 +15561,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Indoor"
-          }
-        }
-      }
-    },
-    "venues.filter.nearNote": {
-      "localizations": {
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "„Близо до мен“ търси само по спорт."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "\"Near me\" filters by sport only."
           }
         }
       }
