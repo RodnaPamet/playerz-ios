@@ -41,6 +41,61 @@ enum GameText {
         )
     }
 
+    /// «съб, 14 ное», the day at the venue.
+    static func day(_ date: Date, timezone: String) -> String {
+        date.formatted(
+            Date.FormatStyle(timeZone: TimeZone(identifier: timezone) ?? .current)
+                .weekday(.abbreviated).day().month(.abbreviated)
+        )
+    }
+
+    /// «18:00 – 19:30», on the venue's clock.
+    static func hours(_ start: Date, _ end: Date, timezone: String) -> String {
+        let style = Date.FormatStyle(timeZone: TimeZone(identifier: timezone) ?? .current)
+            .hour(.twoDigits(amPM: .omitted)).minute()
+        return "\(start.formatted(style)) – \(end.formatted(style))"
+    }
+
+    /// «90 мин», from the booking's own start and end.
+    static func duration(_ start: Date, _ end: Date) -> String {
+        String(localized: "games.minutes \(Int((end.timeIntervalSince(start) / 60).rounded()))")
+    }
+
+    /// The game as one sentence, for VoiceOver.
+    static func spoken(_ game: Components.Schemas.OpenGame, status: Components.Schemas.OpenGameRequestStatus? = nil) -> String {
+        var parts = [
+            sport(game.sport),
+            when(game.startTs, timezone: game.timezone),
+            duration(game.startTs, game.endTs),
+            "\(game.venue.name), \(game.venue.city), \(game.courtName)",
+        ]
+        if let name = game.booker.firstName, !name.isEmpty {
+            parts.append(String(localized: "games.card.organisedBy \(name)"))
+        }
+        parts.append(String(localized: "games.card.playersSpoken \(game.playersCount) \(game.capacity)"))
+        if game.spotsLeft > 0 { parts.append(String(localized: "games.card.free \(game.spotsLeft)")) }
+        parts.append(level(min: game.levelMin, max: game.levelMax))
+        if game.viewer?.levelFits == true { parts.append(String(localized: "games.levelFits")) }
+        if game.viewer?.isBooker == true { parts.append(String(localized: "games.yours")) }
+        if let status { parts.append(self.status(status)) }
+        return parts.joined(separator: ", ")
+    }
+
+    /// A picture's address; a relative one is read from the server it came from.
+    static func picture(_ address: String?, server: String) -> URL? {
+        guard let address, !address.isEmpty else { return nil }
+        return URL(string: address, relativeTo: URL(string: server))?.absoluteURL
+    }
+
+    /// A day on the filter's strip: «Днес», «Утре», then «съб, 14 ное».
+    static func filterDay(_ day: VenueDay, zone: String = "Europe/Sofia") -> String {
+        if day.isToday { return String(localized: "venue.today") }
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: zone) ?? .current
+        if calendar.isDateInTomorrow(day.start) { return String(localized: "games.filter.tomorrow") }
+        return self.day(day.start, timezone: zone)
+    }
+
     /// A refusal the server named, in the user's words; the generic line for
     /// anything else.
     static func error(_ code: String?) -> String {
