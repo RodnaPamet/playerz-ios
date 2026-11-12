@@ -7,7 +7,8 @@ import SwiftUI
 struct MyBookingsView: View {
     @Bindable var session: SessionModel
 
-    @State private var when: Operations.listMyBookings.Input.Query.whenPayload = DebugLaunch.bookingsPast ? .past : .upcoming
+    @State private var when: Operations.listMyBookings.Input.Query.whenPayload =
+        DebugLaunch.bookingsCancelled ? .cancelled : DebugLaunch.bookingsPast ? .past : .upcoming
     @State private var items: [Components.Schemas.MyBooking] = []
     @State private var nextCursor: String?
     @State private var phase: Phase = .loading
@@ -33,6 +34,10 @@ struct MyBookingsView: View {
                     BrandChipRow {
                         BrandChip(String(localized: "myBookings.upcoming"), isSelected: when == .upcoming) { when = .upcoming }
                         BrandChip(String(localized: "myBookings.past"), isSelected: when == .past) { when = .past }
+                        // Owner 2026-11-12 (#58): a cancellation is not a game played.
+                        BrandChip(String(localized: "myBookings.cancelled"), isSelected: when == .cancelled) {
+                            when = .cancelled
+                        }
                     }
                     .accessibilityElement(children: .contain)
                     .accessibilityLabel(String(localized: "myBookings.when"))
@@ -81,9 +86,7 @@ struct MyBookingsView: View {
         case .loaded where items.isEmpty:
             BrandEmptyState(
                 systemImage: "calendar",
-                title: when == .upcoming
-                    ? String(localized: "myBookings.emptyUpcoming")
-                    : String(localized: "myBookings.emptyPast")
+                title: emptyTitle
             )
         case .loaded:
             // Cards on the page: each booking is its own, with its own actions.
@@ -106,6 +109,14 @@ struct MyBookingsView: View {
                 .padding(.bottom, Theme.Spacing.l)
             }
             .refreshable { await load() }
+        }
+    }
+
+    private var emptyTitle: String {
+        switch when {
+        case .upcoming: String(localized: "myBookings.emptyUpcoming")
+        case .past: String(localized: "myBookings.emptyPast")
+        case .cancelled: String(localized: "myBookings.emptyCancelled")
         }
     }
 

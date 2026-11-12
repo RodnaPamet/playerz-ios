@@ -119,7 +119,7 @@ struct VenueListView: View {
         }
         .brandSheet(isPresented: $filtering) {
             VenueFilterSheet(
-                filters: model.filters, cities: model.cities, sports: model.sports, near: model.mode == .near
+                filters: model.filters, cities: model.cities, sports: model.sports
             ) { chosen in
                 filtering = false
                 Task { await model.apply(chosen, session: session) }
@@ -258,7 +258,7 @@ private struct VenueCard: View {
         BrandCoverCard(coverHeight: 132) {
             VenueCover(photo: row.cover, seed: row.id, serverURL: serverURL)
         } logo: {
-            VenueLogoTile(name: row.name)
+            VenueLogoTile(name: row.name, logoURL: row.clubLogoUrl.flatMap { mediaURL($0, serverURL: serverURL) })
         } content: {
             VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                 Text(row.name)
@@ -314,17 +314,12 @@ private struct VenueCard: View {
         return "\(place) · \(distance)"
     }
 
-    /// Nil in `near` mode — that endpoint carries no price, and inventing one
-    /// is worse than omitting it.
-    ///
-    /// In `all` mode a null `fromPriceCents` means the club has no bookable
-    /// court. NOT zero: the server's DTO comment is explicit that 0 would
-    /// render as "free".
+    /// A null `fromPriceCents` means the club has no bookable court. NOT
+    /// zero: the server's DTO comment is explicit that 0 would render as "free".
     private var priceLine: String? {
-        guard row.distanceKm == nil else { return nil }
         guard let cents = row.fromPriceCents else {
             return String(localized: "venues.noPrice")
         }
-        return VenueFacts.price(fromCents: cents)
+        return VenueFacts.price(fromCents: cents, currency: row.currency)
     }
 }
