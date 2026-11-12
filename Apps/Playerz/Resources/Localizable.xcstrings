@@ -6681,6 +6681,38 @@
         }
       }
     },
+    "home.nextBooking": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Следваща резервация"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next booking"
+          }
+        }
+      }
+    },
+    "home.tournaments.subtitle": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Запиши се в турнир на клуб"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter a club tournament"
+          }
+        }
+      }
+    },
     "kind.coach": {
       "localizations": {
         "bg": {
@@ -14445,6 +14477,22 @@
         }
       }
     },
+    "venue.dayPicker": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ден"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Day"
+          }
+        }
+      }
+    },
     "venue.failed": {
       "localizations": {
         "bg": {
@@ -14781,6 +14829,22 @@
         }
       }
     },
+    "venues.a11y.rating %@ %lld": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Оценка %1$@, отзиви: %2$lld"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rated %1$@, reviews: %2$lld"
+          }
+        }
+      }
+    },
     "venues.all": {
       "localizations": {
         "bg": {
@@ -14845,6 +14909,182 @@
         }
       }
     },
+    "venues.filter.allCities": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Всички градове"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All cities"
+          }
+        }
+      }
+    },
+    "venues.filter.anyCourt": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Закрити и открити"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indoor and outdoor"
+          }
+        }
+      }
+    },
+    "venues.filter.city": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Град"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "City"
+          }
+        }
+      }
+    },
+    "venues.filter.clear": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изчисти"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear"
+          }
+        }
+      }
+    },
+    "venues.filter.court": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вид корт"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Court type"
+          }
+        }
+      }
+    },
+    "venues.filter.indoor": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Закрити"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indoor"
+          }
+        }
+      }
+    },
+    "venues.filter.nearNote": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "„Близо до мен“ търси само по спорт."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "\"Near me\" filters by sport only."
+          }
+        }
+      }
+    },
+    "venues.filter.outdoor": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Открити"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Outdoor"
+          }
+        }
+      }
+    },
+    "venues.filter.show": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Покажи клубовете"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show clubs"
+          }
+        }
+      }
+    },
+    "venues.filter.sport": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Спорт"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sport"
+          }
+        }
+      }
+    },
+    "venues.filters": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Филтри"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filters"
+          }
+        }
+      }
+    },
     "venues.fromPrice": {
       "localizations": {
         "bg": {
@@ -14905,6 +15145,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Location access is off. Allow it in Settings to see courts near you."
+          }
+        }
+      }
+    },
+    "venues.noMatch": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Няма клубове с тези филтри."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No clubs match these filters."
           }
         }
       }
