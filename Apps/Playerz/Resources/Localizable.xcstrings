@@ -1685,6 +1685,22 @@
         }
       }
     },
+    "coachLessons.failed": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Уроците не можаха да се заредят."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lessons could not be loaded."
+          }
+        }
+      }
+    },
     "coachLessons.fee %@": {
       "localizations": {
         "bg": {
@@ -3469,6 +3485,22 @@
         }
       }
     },
+    "coachVenues.search.askAt %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Поискайте %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ask %@"
+          }
+        }
+      }
+    },
     "coachVenues.search.description": {
       "localizations": {
         "bg": {
@@ -4189,6 +4221,22 @@
         }
       }
     },
+    "coaches.failed": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Треньорите не можаха да се заредят."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coaches could not be loaded."
+          }
+        }
+      }
+    },
     "coaches.filterLabel": {
       "localizations": {
         "bg": {
@@ -4817,6 +4865,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "The court’s price is added to the coach’s. Paid at the club."
+          }
+        }
+      }
+    },
+    "coaches.page.failed": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Треньорът не можа да се зареди."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The coach could not be loaded."
           }
         }
       }

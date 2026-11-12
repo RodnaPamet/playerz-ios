@@ -14,50 +14,65 @@ struct CoachVenuesView: View {
 
     var body: some View {
         List {
-            if model.loaded, !approved {
-                Section { Text(String(localized: "coachVenues.needsApproval")).foregroundStyle(.secondary) }
-            }
-            if let line = model.line {
-                Section { Text(line.text).foregroundStyle(line.isError ? .red : .green) }
-            }
-            if model.loaded, model.links.isEmpty {
-                Section { Text(String(localized: "coachVenues.none")).foregroundStyle(.secondary) }
-            }
-            ForEach(model.links, id: \.id) { link in
-                Section {
-                    CoachLinkRow(link: link)
-                    if link.status == .ACTIVE || link.status == .INVITED {
-                        NavigationLink(String(localized: "coachVenues.action.terms")) {
-                            CoachTermsView(link: link, model: model, session: session)
-                        }
-                    }
-                    switch link.status {
-                    case .REQUESTED:
-                        Button(String(localized: "coachVenues.action.withdraw"), role: .destructive) { askToEnd(link) }
-                    case .ACTIVE:
-                        Button(String(localized: "coachVenues.action.end"), role: .destructive) { askToEnd(link) }
-                    case .DECLINED, .ENDED:
-                        if approved {
-                            Button(String(localized: "coachVenues.action.again")) { askAgain(link) }
-                        }
-                    case .INVITED:
-                        EmptyView()
+            Group {
+                if model.loaded, !approved {
+                    Section { Text(String(localized: "coachVenues.needsApproval")).foregroundStyle(.secondary) }
+                }
+                if let line = model.line {
+                    Section {
+                        Text(line.text).foregroundStyle(line.isError ? Theme.Palette.danger : Theme.Palette.success)
                     }
                 }
+                ForEach(model.links, id: \.id) { link in
+                    Section {
+                        CoachLinkRow(link: link)
+                        if link.status == .ACTIVE || link.status == .INVITED {
+                            NavigationLink(String(localized: "coachVenues.action.terms")) {
+                                CoachTermsView(link: link, model: model, session: session)
+                            }
+                        }
+                        switch link.status {
+                        case .REQUESTED:
+                            Button(String(localized: "coachVenues.action.withdraw"), role: .destructive) { askToEnd(link) }
+                                .foregroundStyle(Theme.Palette.danger)
+                        case .ACTIVE:
+                            Button(String(localized: "coachVenues.action.end"), role: .destructive) { askToEnd(link) }
+                                .foregroundStyle(Theme.Palette.danger)
+                        case .DECLINED, .ENDED:
+                            if approved {
+                                Button(String(localized: "coachVenues.action.again")) { askAgain(link) }
+                            }
+                        case .INVITED:
+                            EmptyView()
+                        }
+                    }
+                }
+            }
+            .brandListRow()
+            if model.loaded, model.links.isEmpty {
+                Section {
+                    BrandEmptyState(systemImage: "sportscourt", title: String(localized: "coachVenues.none")) {
+                        if approved {
+                            Button(String(localized: "coachVenues.add"), action: search)
+                                .buttonStyle(.brandPrimary(fullWidth: false))
+                        }
+                    }
+                    .inline()
+                }
+                .bareListRow()
             }
         }
+        .brandPage()
+        // Hidden with the system bar; still what VoiceOver calls the screen.
         .navigationTitle(String(localized: "coachVenues.title"))
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
+        .brandHeader(.back(String(localized: "coachVenues.title"))) {
             if approved {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(String(localized: "coachVenues.add"), systemImage: "plus", action: search)
-                }
+                BrandHeaderButton(systemImage: "plus", label: String(localized: "coachVenues.add"), action: search)
             }
         }
         .task { await model.load(session) }
         .refreshable { await model.load(session) }
-        .sheet(isPresented: $searching) {
+        .brandSheet(isPresented: $searching, detents: [.large]) {
             CoachVenueSearchSheet(session: session) { venueId in
                 await model.request(venueId, session)
             }

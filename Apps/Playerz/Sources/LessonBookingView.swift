@@ -62,15 +62,11 @@ struct LessonBookingView: View {
                             Text(String(localized: "coaches.lesson.minutes \(length)")).tag(length)
                         }
                     }
-                    Picker(String(localized: "coaches.lesson.dayLabel"), selection: $day) {
-                        ForEach(days, id: \.self) { day in
-                            Text(LessonDayText.label(day)).tag(day)
-                        }
-                    }
                 }
+                .brandListRow()
                 Section {
                     if let problem {
-                        Text(problem).foregroundStyle(.red)
+                        Text(problem).foregroundStyle(Theme.Palette.danger)
                     }
                     if loading && times == nil {
                         ProgressView()
@@ -79,12 +75,11 @@ struct LessonBookingView: View {
                     } else if let times {
                         ForEach(times.times, id: \.startTs) { time in
                             Button { pick(time) } label: {
-                                LabeledContent(
-                                    LessonDayText.time(time.startTs, timezone: times.venue.timezone),
-                                    value: CoachText.money(time.totalCents, times.currency)
+                                LessonTimeRow(
+                                    time: LessonDayText.time(time.startTs, timezone: times.venue.timezone),
+                                    price: CoachText.money(time.totalCents, times.currency)
                                 )
                             }
-                            .tint(.primary)
                         }
                     }
                 } header: {
@@ -94,13 +89,29 @@ struct LessonBookingView: View {
                         Text(String(localized: "coaches.lesson.priceNote \(CoachText.money(times.coachFeeCents, times.currency))"))
                     }
                 }
+                .brandListRow()
             }
         }
+        .brandPage()
+        // Hidden with the system bar; still what VoiceOver calls the screen.
         .navigationTitle(String(localized: "coaches.lesson.title"))
-        .navigationBarTitleDisplayMode(.inline)
+        // The days under the header, as on a venue's screen: one tap, and they
+        // keep their place while a day's times load.
+        .brandChipBar {
+            if days.count > 1 {
+                BrandChipRow {
+                    ForEach(days, id: \.self) { item in
+                        BrandChip(LessonDayText.label(item), isSelected: item == day) { day = item }
+                    }
+                }
+                .accessibilityElement(children: .contain)
+                .accessibilityLabel(String(localized: "coaches.lesson.dayLabel"))
+            }
+        }
+        .brandHeader(.back(String(localized: "coaches.lesson.title")))
         .task(id: "\(linkId)|\(sport)|\(minutes)|\(day)") { await loadTimes() }
         .onChange(of: linkId) { _, _ in fitToVenue() }
-        .sheet(item: $picked) { picked in
+        .brandSheet(item: $picked) { picked in
             if let times, let venue {
                 LessonConfirmSheet(
                     coachSlug: coach.slug,
@@ -154,5 +165,29 @@ struct LessonBookingView: View {
         if let fresh = try? await client.listCoachLessonTimes(path: .init(slug: coach.slug), query: query).ok.body.json.data {
             times = fresh
         }
+    }
+}
+
+/// A free time: the start, and the price for one player in the accent.
+private struct LessonTimeRow: View {
+    let time: String
+    let price: String
+
+    var body: some View {
+        HStack {
+            Text(time)
+                .font(Theme.Typography.rowTitle)
+                .foregroundStyle(Color.primary)
+            Spacer(minLength: Theme.Spacing.s)
+            Text(price)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(Theme.Palette.accentText)
+            Image(systemName: "chevron.right")
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(.tertiary)
+                .accessibilityHidden(true)
+        }
+        .frame(minHeight: Theme.minTarget)
+        .contentShape(.rect)
     }
 }
