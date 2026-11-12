@@ -39,6 +39,14 @@ struct LessonBookingView: View {
         venue.map { LessonDays.days(from: .now, timezone: $0.timezone) } ?? []
     }
 
+    /// «Обект · Клуб», or the one name when the club named its venue after
+    /// itself («Падел клуб Лозенец · Падел клуб Лозенец»).
+    static func place(_ venue: Components.Schemas.PublicCoachVenue) -> String {
+        venue.name == venue.club.name
+            ? venue.name
+            : String(localized: "coaches.lesson.at \(venue.name) \(venue.club.name)")
+    }
+
     var body: some View {
         Form {
             if let venue {
@@ -46,11 +54,11 @@ struct LessonBookingView: View {
                     if coach.venues.count > 1 {
                         Picker(String(localized: "coaches.lesson.venueLabel"), selection: $linkId) {
                             ForEach(coach.venues, id: \.linkId) { venue in
-                                Text(String(localized: "coaches.lesson.at \(venue.name) \(venue.club.name)")).tag(venue.linkId)
+                                Text(Self.place(venue)).tag(venue.linkId)
                             }
                         }
                     } else {
-                        Text(String(localized: "coaches.lesson.at \(venue.name) \(venue.club.name)"))
+                        Text(Self.place(venue))
                     }
                     if venue.sports.count > 1 {
                         Picker(String(localized: "coaches.lesson.sportLabel"), selection: $sport) {

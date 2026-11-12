@@ -8,6 +8,7 @@ struct InboxView: View {
     @Bindable var session: SessionModel
     /// The header button's dot: unread conversations and requests, from the inbox.
     @Binding var unread: Int
+    @State private var requestsWaiting = 0
 
     @State private var tab: Operations.listMyConversations.Input.Query.tabPayload = .conversations
     @State private var items: [Components.Schemas.ConversationSummary] = []
@@ -30,7 +31,13 @@ struct InboxView: View {
                         BrandChip(String(localized: "messages.tab.conversations"), isSelected: tab == .conversations) {
                             tab = .conversations
                         }
-                        BrandChip(String(localized: "messages.tab.requests"), isSelected: tab == .requests) {
+                        // The requests waiting, as the bell's chips count theirs.
+                        BrandChip(
+                            requestsWaiting > 0
+                                ? "\(String(localized: "messages.tab.requests")) · \(requestsWaiting)"
+                                : String(localized: "messages.tab.requests"),
+                            isSelected: tab == .requests
+                        ) {
                             tab = .requests
                         }
                     }
@@ -130,6 +137,7 @@ struct InboxView: View {
         }
         if let counts = try? await client.getMyUnreadConversations().ok.body.json.data {
             unread = counts.conversations + counts.requests
+            requestsWaiting = counts.requests
         }
     }
 
@@ -172,10 +180,14 @@ private struct ConversationRow: View {
                     time
                 }
                 HStack(alignment: .top, spacing: Theme.Spacing.s) {
-                    Text(ConversationText.preview(item.lastMessage))
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(large ? 3 : 2)
+                    // A conversation with no message yet has no line here, not a blank one.
+                    let preview = ConversationText.preview(item.lastMessage)
+                    if !preview.isEmpty {
+                        Text(preview)
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(large ? 3 : 2)
+                    }
                     Spacer(minLength: 0)
                     if item.unreadCount > 0 {
                         Text("\(item.unreadCount)")

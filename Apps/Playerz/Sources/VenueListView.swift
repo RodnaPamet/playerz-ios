@@ -313,7 +313,8 @@ private struct VenueCard: View {
     }
 
     private var placeLine: String {
-        let place = [row.city, row.country].joined(separator: ", ")
+        // Every club so far is in Bulgaria: «София», not «София, BG».
+        let place = row.country == "BG" ? row.city : [row.city, row.country].joined(separator: ", ")
         guard let km = row.distanceKm else { return place }
         let distance = String(
             format: String(localized: "venues.distance"),

@@ -140,10 +140,17 @@ private struct CoachHero: View {
     let coach: Components.Schemas.PublicCoach
     let serverURL: String
 
+    @Environment(\.dynamicTypeSize) private var typeSize
+
     var body: some View {
         BrandContentCard {
             VStack(alignment: .leading, spacing: Theme.Spacing.m) {
-                HStack(spacing: Theme.Spacing.m) {
+                // The picture above the name at the accessibility sizes, so the
+                // name has the card's width («Тодоро/в» broke beside it).
+                let layout = typeSize.isAccessibilitySize
+                    ? AnyLayout(VStackLayout(alignment: .leading, spacing: Theme.Spacing.m))
+                    : AnyLayout(HStackLayout(spacing: Theme.Spacing.m))
+                layout {
                     BrandAvatar(name: coach.name, url: GameText.picture(coach.avatarUrl, server: serverURL), side: 64)
                     VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                         Text(CoachText.name(coach.name))
