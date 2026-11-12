@@ -10,6 +10,8 @@ struct VenueDetailView: View {
     @State private var writeProblem: String?
     @State private var showingWriteProblem = false
     @State private var showingBookings = false
+    /// The name is on the cover card; the header carries it only once the card is scrolled away (#55).
+    @State private var heroShown = true
     /// The coaches teaching here (#19), while the coaches module is on.
     @State private var coaches: [Components.Schemas.PublicCoach] = []
 
@@ -56,7 +58,7 @@ struct VenueDetailView: View {
                 .accessibilityLabel(String(localized: "venue.dayPicker"))
             }
         }
-        .brandHeader(.back(model.venue?.name ?? "")) {
+        .brandHeader(.back(heroShown ? "" : model.venue?.name ?? "")) {
             // The CLUB's slug: `/t/{slug}/bookings` is the club's namespace, and
             // a venue's slug matches it only when the club named it so.
             if model.venue?.clubSlug != nil {
@@ -121,6 +123,8 @@ struct VenueDetailView: View {
             if let venue = model.venue {
                 Section {
                     VenueHero(venue: venue, serverURL: session.serverURL)
+                        .onAppear { heroShown = true }
+                        .onDisappear { heroShown = false }
                 }
                 // The card is its own surface: no row box around it.
                 .listRowInsets(EdgeInsets())
