@@ -21,7 +21,8 @@ struct VenueFilters: Equatable {
 @Observable
 final class VenueListModel {
     enum Phase { case loading, loaded, failed, locating, locationDenied }
-    enum Mode { case all, near }
+    /// «Всички», «Близо до мен», or «Любими» (projectZ#672).
+    enum Mode { case all, near, favourites }
 
     /// A row either way, so the list does not need two branches.
     struct Row: Identifiable {
@@ -50,6 +51,8 @@ final class VenueListModel {
     /// The cities and sports to offer in the filter: the server's venue
     /// facets (projectZ#667), so every option finds at least one club.
     private(set) var cities: [CityChoice] = []
+    /// The clubs with the heart on, for every card's heart.
+    private(set) var favouriteIds: Set<String> = []
     private(set) var sports: [String] = []
 
     /// The chosen city's name, for its chip.
@@ -101,6 +104,14 @@ final class VenueListModel {
                 rows = page.items.map { Self.row($0) }
                 nextCursor = page.nextCursor
                 await loadChoices(client)
+                await loadFavouriteIds(client)
+
+            case .favourites:
+                if !quiet { phase = .loading }
+                let favourites = try await client.listMyFavouriteVenues().ok.body.json.data
+                favouriteIds = Set(favourites.ids)
+                rows = favourites.items.map { Self.row($0) }
+                nextCursor = nil
 
             case .near:
                 if !quiet { phase = .locating }
@@ -152,6 +163,31 @@ final class VenueListModel {
     private func query(cursor: String?) -> Operations.listVenues.Input.Query {
         // 50 is the server's ceiling for a page.
         .init(city: filters.city, sport: filters.sport, indoor: filters.indoor, cursor: cursor, limit: 50)
+    }
+
+    private func loadFavouriteIds(_ client: Client) async {
+        if let ids = try? await client.listMyFavouriteVenues().ok.body.json.data.ids {
+            favouriteIds = Set(ids)
+        }
+    }
+
+    /// The heart on or off: shown at once, put back if the server says no.
+    func toggleFavourite(_ venueId: String, session: SessionModel) async {
+        guard let client = await session.client() else { return }
+        let on = !favouriteIds.contains(venueId)
+        if on { favouriteIds.insert(venueId) } else { favouriteIds.remove(venueId) }
+        let saved: Bool
+        if on {
+            saved = (try? await client.addFavouriteVenue(path: .init(venueId: venueId)).ok) != nil
+        } else {
+            saved = (try? await client.removeFavouriteVenue(path: .init(venueId: venueId)).ok) != nil
+        }
+        guard saved else {
+            if on { favouriteIds.remove(venueId) } else { favouriteIds.insert(venueId) }
+            return
+        }
+        // «Любими» drops a club the moment its heart goes off.
+        if mode == .favourites, !on { rows.removeAll { $0.id == venueId } }
     }
 
     /// Once; a failure leaves the filter without those sections until the next load.

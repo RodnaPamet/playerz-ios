@@ -10,6 +10,8 @@ struct VenueDetailView: View {
     @State private var writeProblem: String?
     @State private var showingWriteProblem = false
     @State private var showingBookings = false
+    /// The heart (projectZ#672); nil until read.
+    @State private var favourite: Bool?
     /// The name is on the cover card; the header carries it only once the card is scrolled away (#55).
     @State private var heroShown = true
     /// The coaches teaching here (#19), while the coaches module is on.
@@ -58,7 +60,16 @@ struct VenueDetailView: View {
                 .accessibilityLabel(String(localized: "venue.dayPicker"))
             }
         }
+        .task { await loadFavourite() }
         .brandHeader(.back(heroShown ? "" : model.venue?.name ?? "")) {
+            if let favourite {
+                // The band's own round button, as its neighbours; the filled heart says it is on.
+                BrandHeaderButton(
+                    systemImage: favourite ? "heart.fill" : "heart",
+                    label: String(localized: favourite ? "favourites.remove" : "favourites.add")
+                ) { Task { await toggleFavourite() } }
+                .accessibilityAddTraits(favourite ? .isSelected : [])
+            }
             // The CLUB's slug: `/t/{slug}/bookings` is the club's namespace, and
             // a venue's slug matches it only when the club named it so.
             if model.venue?.clubSlug != nil {
@@ -217,6 +228,23 @@ struct VenueDetailView: View {
             writeProblem = failure.text
             showingWriteProblem = true
         }
+    }
+
+    private func loadFavourite() async {
+        guard let client = await session.client(),
+              let ids = try? await client.listMyFavouriteVenues().ok.body.json.data.ids
+        else { return }
+        favourite = ids.contains(venueId)
+    }
+
+    /// Shown at once, put back if the server says no.
+    private func toggleFavourite() async {
+        guard let was = favourite, let client = await session.client() else { return }
+        favourite = !was
+        let saved = was
+            ? (try? await client.removeFavouriteVenue(path: .init(venueId: venueId)).ok) != nil
+            : (try? await client.addFavouriteVenue(path: .init(venueId: venueId)).ok) != nil
+        if !saved { favourite = was }
     }
 }
 
