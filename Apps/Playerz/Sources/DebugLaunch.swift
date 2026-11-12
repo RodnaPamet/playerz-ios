@@ -17,7 +17,8 @@ enum DebugLaunch {
     enum Tab: String { case play, games, bookings, messages, profile }
     /// Профил's deletion section (#9): `delete` scrolls to it, `confirm` also
     /// opens the confirmation. Nothing here deletes: the word is still typed.
-    enum Profile: String { case delete, confirm, coach }
+    /// `ratings` opens «Класиране».
+    enum Profile: String { case delete, confirm, coach, ratings }
 
     #if DEBUG
     private static let env = ProcessInfo.processInfo.environment
@@ -40,6 +41,8 @@ enum DebugLaunch {
     static var bookingGame: String? { env["PLAYERZ_BOOKING_GAME"] }
     /// Играй opened on a club's page (`PLAYERZ_CLUB=<slug>`) or a venue (`PLAYERZ_VENUE=<id>`), #17.
     static var club: String? { env["PLAYERZ_CLUB"] }
+    /// With `PLAYERZ_CLUB`, the club's «Класиране» on top (`PLAYERZ_CLUB_LEADERBOARD=1`), #18.
+    static var clubLeaderboard: Bool { env["PLAYERZ_CLUB_LEADERBOARD"] == "1" }
     static var venue: String? { env["PLAYERZ_VENUE"] }
     static var booking: String? { env["PLAYERZ_BOOKING"] }
     static var bookingPlayers: String? { env["PLAYERZ_BOOKING_PLAYERS"] }
@@ -87,6 +90,7 @@ enum DebugLaunch {
     static let tournamentDraw = false
     static let bookingGame: String? = nil
     static let club: String? = nil
+    static let clubLeaderboard = false
     static let venue: String? = nil
     static let booking: String? = nil
     static let bookingPlayers: String? = nil

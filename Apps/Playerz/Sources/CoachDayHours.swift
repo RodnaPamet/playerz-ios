@@ -14,7 +14,7 @@ struct CoachDayHours: View {
         let name = CoachVenueText.day(day)
         VStack(alignment: .leading) {
             HStack {
-                Text(name).font(.headline)
+                Text(name).font(Theme.Typography.rowTitle)
                 Spacer()
                 if stretches.isEmpty {
                     Text(String(localized: "coachVenues.terms.dayOff")).foregroundStyle(.secondary)
@@ -33,16 +33,26 @@ struct CoachDayHours: View {
                     }
                     .labelsHidden()
                     Spacer()
-                    Button(String(localized: "coachVenues.terms.removeStretch"), systemImage: "minus.circle", role: .destructive) {
+                    Button(role: .destructive) {
                         remove(stretch)
+                    } label: {
+                        // The target as large as a finger, not as the icon.
+                        Label(String(localized: "coachVenues.terms.removeStretch"), systemImage: "minus.circle")
+                            .labelStyle(.iconOnly)
+                            .foregroundStyle(Theme.Palette.danger)
+                            .frame(minWidth: Theme.minTarget, minHeight: Theme.minTarget)
+                            .contentShape(.rect)
                     }
-                    .labelStyle(.iconOnly)
                     .buttonStyle(.borderless)
                 }
             }
             if stretches.count < 4 {
-                Button(String(localized: "coachVenues.terms.addStretch"), systemImage: "plus", action: add)
-                    .buttonStyle(.borderless)
+                Button(action: add) {
+                    Label(String(localized: "coachVenues.terms.addStretch"), systemImage: "plus")
+                        .frame(minHeight: Theme.minTarget)
+                        .contentShape(.rect)
+                }
+                .buttonStyle(.borderless)
             }
         }
     }

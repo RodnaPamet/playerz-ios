@@ -46,54 +46,68 @@ struct ProposeMatchSheet: View {
     }
 
     var body: some View {
-        NavigationStack {
-            Form {
-                Section {
-                    Text(String(localized: "tournaments.propose.description \(opponents)")).foregroundStyle(.secondary)
-                }
-                Section {
-                    Picker(String(localized: "tournaments.propose.day"), selection: $day) {
-                        ForEach(LessonDays.days(from: .now, timezone: timezone), id: \.self) { day in
-                            Text(LessonDayText.label(day)).tag(day)
-                        }
-                    }
-                    if let availability, availability.resources.count > 1 {
-                        Picker(String(localized: "tournaments.propose.court"), selection: $court) {
-                            ForEach(availability.resources, id: \.resourceId) { resource in
-                                Text(resource.name).tag(Optional(resource.resourceId))
-                            }
-                        }
+        BrandDarkSheet(
+            title: String(localized: "tournaments.propose.title"),
+            subtitle: String(localized: "tournaments.propose.description \(opponents)")
+        ) {
+            section(String(localized: "tournaments.propose.day")) {
+                BrandChipRow {
+                    ForEach(LessonDays.days(from: .now, timezone: timezone), id: \.self) { item in
+                        BrandChip(LessonDayText.label(item), isSelected: day == item) { day = item }
                     }
                 }
-                Section {
-                    if availability != nil, times.isEmpty {
-                        Text(String(localized: "tournaments.propose.none")).foregroundStyle(.secondary)
-                    }
-                    ForEach(times, id: \.startTs) { slot in
-                        Button { send(slot) } label: {
-                            LabeledContent(
-                                LessonDayText.time(slot.startTs, timezone: timezone),
-                                value: CoachText.money(slot.priceCents, resource?.currency ?? "EUR")
-                            )
+                // To the sheet's edges, so a long row visibly runs on.
+                .padding(.horizontal, -Theme.Spacing.l)
+            }
+            if let availability, availability.resources.count > 1 {
+                section(String(localized: "tournaments.propose.court")) {
+                    BrandChipRow {
+                        ForEach(availability.resources, id: \.resourceId) { item in
+                            BrandChip(item.name, isSelected: court == item.resourceId) { court = item.resourceId }
                         }
-                        .tint(.primary)
-                        .disabled(sending)
                     }
-                } header: {
-                    Text(String(localized: "tournaments.propose.times \(resource?.name ?? "")"))
-                } footer: {
-                    Text(String(localized: "tournaments.propose.hint"))
+                    .padding(.horizontal, -Theme.Spacing.l)
                 }
             }
-            .navigationTitle(String(localized: "tournaments.propose.title"))
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(String(localized: "tournaments.propose.cancel"), action: close)
+            section(String(localized: "tournaments.propose.times \(resource?.name ?? "")")) {
+                if availability == nil {
+                    ProgressView().frame(maxWidth: .infinity, minHeight: Theme.minTarget)
+                } else if times.isEmpty {
+                    note(String(localized: "tournaments.propose.none"))
+                }
+                ForEach(times, id: \.startTs) { slot in
+                    BrandSheetRow(
+                        title: LessonDayText.time(slot.startTs, timezone: timezone),
+                        subtitle: CoachText.money(slot.priceCents, resource?.currency ?? "EUR"),
+                        systemImage: "clock"
+                    ) { send(slot) }
+                    .disabled(sending)
                 }
             }
-            .task(id: day) { await load() }
+            note(String(localized: "tournaments.propose.hint"))
+            Button(String(localized: "tournaments.propose.cancel"), action: close)
+                .buttonStyle(.brandSecondary)
+                .padding(.top, Theme.Spacing.s)
         }
+        .task(id: day) { await load() }
+    }
+
+    /// A titled part of the sheet, as the filters' sheets have them.
+    private func section<Content: View>(_ title: String, @ViewBuilder content: () -> Content) -> some View {
+        VStack(alignment: .leading, spacing: Theme.Spacing.s) {
+            Text(title)
+                .font(.footnote.weight(.semibold))
+                .textCase(.uppercase)
+                .foregroundStyle(.white.opacity(0.72))
+                .accessibilityAddTraits(.isHeader)
+            content()
+        }
+    }
+
+    private func note(_ text: String) -> some View {
+        Text(text)
+            .font(.subheadline)
+            .foregroundStyle(.white.opacity(0.72))
     }
 
     private func close() {

@@ -16,44 +16,57 @@ struct CoachTimeOffView: View {
 
     var body: some View {
         Form {
-            Section {
-                if items.isEmpty {
-                    Text(String(localized: "coachVenues.timeOff.none")).foregroundStyle(.secondary)
-                }
-                ForEach(items, id: \.id) { off in
-                    VStack(alignment: .leading) {
-                        Text(span(off))
-                        if let note = off.note, !note.isEmpty {
-                            Text(note).font(.footnote).foregroundStyle(.secondary)
+            Group {
+                Section {
+                    if items.isEmpty {
+                        Text(String(localized: "coachVenues.timeOff.none")).foregroundStyle(.secondary)
+                    }
+                    ForEach(items, id: \.id) { off in
+                        VStack(alignment: .leading) {
+                            Text(span(off))
+                            if let note = off.note, !note.isEmpty {
+                                Text(note).font(.footnote).foregroundStyle(.secondary)
+                            }
+                        }
+                        .swipeActions {
+                            Button(String(localized: "coachVenues.timeOff.remove"), role: .destructive) { remove(off) }
+                        }
+                        .accessibilityActions {
+                            Button(String(localized: "coachVenues.timeOff.remove")) { remove(off) }
                         }
                     }
-                    .swipeActions {
-                        Button(String(localized: "coachVenues.timeOff.remove"), role: .destructive) { remove(off) }
-                    }
-                    .accessibilityActions {
-                        Button(String(localized: "coachVenues.timeOff.remove")) { remove(off) }
-                    }
+                } footer: {
+                    Text(String(localized: "coachVenues.timeOff.hint"))
                 }
-            } footer: {
-                Text(String(localized: "coachVenues.timeOff.hint"))
+                Section {
+                    DatePicker(String(localized: "coachVenues.timeOff.start"), selection: $start, displayedComponents: .date)
+                    Toggle(String(localized: "coachVenues.timeOff.end"), isOn: $hasEnd)
+                        .tint(Theme.Palette.controlOn)
+                    if hasEnd {
+                        DatePicker(String(localized: "coachVenues.timeOff.end"), selection: $end, in: start..., displayedComponents: .date)
+                    }
+                    TextField(String(localized: "coachVenues.timeOff.note"), text: $note)
+                } footer: {
+                    if let problem { Text(problem).foregroundStyle(Theme.Palette.danger) }
+                }
             }
+            .brandListRow()
             Section {
-                DatePicker(String(localized: "coachVenues.timeOff.start"), selection: $start, displayedComponents: .date)
-                Toggle(String(localized: "coachVenues.timeOff.end"), isOn: $hasEnd)
-                    .tint(Theme.Palette.controlOn)
-                if hasEnd {
-                    DatePicker(String(localized: "coachVenues.timeOff.end"), selection: $end, in: start..., displayedComponents: .date)
-                }
-                TextField(String(localized: "coachVenues.timeOff.note"), text: $note)
                 Button(String(localized: "coachVenues.timeOff.add"), action: add)
+                    .buttonStyle(.brandPrimary)
                     .disabled(busy || note.count > 200)
-            } footer: {
-                if let problem { Text(problem).foregroundStyle(.red) }
             }
+            .bareListRow()
         }
+        .brandPage()
+        // Hidden with the system bar; still what VoiceOver calls the screen.
         .navigationTitle(String(localized: "coachVenues.timeOff.title"))
-        .navigationBarTitleDisplayMode(.inline)
+        .brandHeader(.back(String(localized: "coachVenues.timeOff.title")))
         .task { await load() }
+        .onChange(of: problem) { _, text in
+            // Under the fields, out of VoiceOver's way: said as well.
+            if let text { AccessibilityNotification.Announcement(text).post() }
+        }
     }
 
     /// «24 окт. – 2 ное.», or one day.

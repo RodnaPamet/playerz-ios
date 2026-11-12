@@ -8,7 +8,7 @@ struct CoachLessonRow: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
-            Text(GameText.when(lesson.startTs, timezone: lesson.venue.timezone)).font(.headline)
+            Text(GameText.when(lesson.startTs, timezone: lesson.venue.timezone)).font(Theme.Typography.rowTitle)
             Text(String(localized: "coachLessons.where \(lesson.venue.name) \(lesson.court.name) \(GameText.sport(lesson.court.sport))"))
                 .font(.subheadline)
             Text(player).font(.subheadline)
@@ -19,7 +19,10 @@ struct CoachLessonRow: View {
                 .font(.footnote)
                 .foregroundStyle(.secondary)
             if let phone = lesson.player?.phone, let call = URL(string: "tel:\(phone.filter { !$0.isWhitespace })") {
-                Link(phone, destination: call).font(.footnote)
+                Link(phone, destination: call)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(Theme.Palette.accentText)
+                    .frame(minHeight: Theme.minTarget)
             }
         }
     }

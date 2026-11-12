@@ -11,6 +11,8 @@ struct ProfileView: View {
     @State private var debugCoach = DebugLaunch.profile == .coach
     /// A DEBUG launch can land on the delete button, now one screen in.
     @State private var debugAccount = DebugLaunch.profile == .delete || DebugLaunch.profile == .confirm
+    /// …or «Класиране».
+    @State private var debugRatings = DebugLaunch.profile == .ratings
     @State private var me: Components.Schemas.Me?
     @State private var ratings: Components.Schemas.MyRatings?
     /// The tiles' numbers (projectZ#677).
@@ -61,6 +63,9 @@ struct ProfileView: View {
             }
             .navigationDestination(isPresented: $debugAccount) {
                 AccountDataView(session: session)
+            }
+            .navigationDestination(isPresented: $debugRatings) {
+                MyRatingsView(session: session)
             }
             .task { await load() }
             .refreshable { await load() }

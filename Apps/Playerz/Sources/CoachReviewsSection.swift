@@ -33,7 +33,7 @@ struct CoachReviewsSection: View {
                 Button(String(localized: "coaches.reviews.more"), action: more)
             }
             if let problem = model.problem {
-                Text(problem).foregroundStyle(.red)
+                Text(problem).foregroundStyle(Theme.Palette.danger)
             }
         } header: {
             Text(header)

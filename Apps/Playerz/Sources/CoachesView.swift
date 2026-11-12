@@ -15,56 +15,62 @@ struct CoachesView: View {
 
     var body: some View {
         content
+            .brandPage()
+            // Hidden with the system bar; still what VoiceOver calls the screen.
             .navigationTitle(String(localized: "coaches.title"))
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Menu {
-                        Picker(String(localized: "coaches.filterLabel"), selection: $sport) {
-                            Text(String(localized: "coaches.allSports")).tag(String?.none)
-                            ForEach(Sports.known, id: \.self) { sport in
-                                Text(GameText.sport(sport)).tag(Optional(sport))
-                            }
-                        }
-                    } label: {
-                        Label(String(localized: "coaches.filterLabel"), systemImage: "line.3.horizontal.decrease.circle")
+            // The sport filter as the venue's day strip: one tap, always in view.
+            .brandChipBar {
+                BrandChipRow {
+                    BrandChip(String(localized: "coaches.allSports"), isSelected: sport == nil) { sport = nil }
+                    ForEach(Sports.known, id: \.self) { item in
+                        BrandChip(GameText.sport(item), isSelected: sport == item) { sport = item }
                     }
                 }
+                .accessibilityElement(children: .contain)
+                .accessibilityLabel(String(localized: "coaches.filterLabel"))
             }
+            .brandHeader(.back(String(localized: "coaches.title")))
             .task(id: sport) { await load() }
     }
 
     @ViewBuilder private var content: some View {
         switch phase {
         case .loading:
-            ProgressView()
+            ProgressView(String(localized: "common.loading"))
         case .failed:
-            ContentUnavailableView {
-                Text(String(localized: "venues.failed"))
-            } actions: {
+            BrandEmptyState(systemImage: "wifi.exclamationmark", title: String(localized: "coaches.failed")) {
                 Button(String(localized: "venues.retry"), action: retry)
+                    .buttonStyle(.brandSecondary(fullWidth: false))
             }
         case .loaded where items.isEmpty:
-            ContentUnavailableView(
-                sport == nil ? String(localized: "coaches.empty.title") : String(localized: "coaches.empty.sport"),
+            BrandEmptyState(
                 systemImage: "figure.tennis",
-                description: sport == nil ? Text(String(localized: "coaches.empty.description")) : nil
+                title: sport == nil ? String(localized: "coaches.empty.title") : String(localized: "coaches.empty.sport"),
+                message: sport == nil ? String(localized: "coaches.empty.description") : nil
             )
         case .loaded:
-            List {
-                Section {
+            // Cards on the page, as the clubs' list: each coach opens their page.
+            ScrollView {
+                LazyVStack(alignment: .leading, spacing: Theme.Spacing.m) {
+                    Text(String(localized: "coaches.intro"))
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
                     ForEach(items, id: \.slug) { coach in
                         NavigationLink {
                             CoachView(slug: coach.slug, session: session)
                         } label: {
-                            CoachRow(coach: coach)
+                            BrandContentCard {
+                                CoachRow(coach: coach, serverURL: session.serverURL)
+                            }
                         }
+                        .buttonStyle(.brandCard)
                         .onAppear {
                             if coach.slug == items.last?.slug { Task { await loadMore() } }
                         }
                     }
-                } footer: {
-                    Text(String(localized: "coaches.intro"))
                 }
+                .padding(.horizontal, Theme.Spacing.l)
+                .padding(.bottom, Theme.Spacing.l)
             }
             .refreshable { await load() }
         }

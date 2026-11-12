@@ -6,17 +6,20 @@ struct ResultScoreRow: View {
     @Binding var first: String
     @Binding var second: String
 
+    /// Two digits wide at any text size.
+    @ScaledMetric(relativeTo: .body) private var cellWidth: CGFloat = 56
+
     var body: some View {
         LabeledContent(label) {
             HStack {
                 TextField(text: $first, prompt: Text(verbatim: "0")) {
                     Text(String(localized: "results.editor.cell \(label) \(1)"))
                 }
-                .frame(maxWidth: 56)
+                .frame(maxWidth: cellWidth, minHeight: Theme.minTarget)
                 TextField(text: $second, prompt: Text(verbatim: "0")) {
                     Text(String(localized: "results.editor.cell \(label) \(2)"))
                 }
-                .frame(maxWidth: 56)
+                .frame(maxWidth: cellWidth, minHeight: Theme.minTarget)
             }
             .keyboardType(.numberPad)
             .multilineTextAlignment(.center)
