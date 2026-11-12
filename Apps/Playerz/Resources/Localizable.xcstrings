@@ -8417,6 +8417,22 @@
         }
       }
     },
+    "myBookings.lesson": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Урок"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lesson"
+          }
+        }
+      }
+    },
     "myBookings.past": {
       "localizations": {
         "bg": {
@@ -9629,6 +9645,38 @@
         }
       }
     },
+    "notifications.emptyFiltered": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Няма такива известия"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No notifications of this kind"
+          }
+        }
+      }
+    },
+    "notifications.emptyFilteredBody": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изберете „Всички“, за да видите останалите."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose All to see the rest."
+          }
+        }
+      }
+    },
     "notifications.error": {
       "localizations": {
         "bg": {
@@ -9641,6 +9689,134 @@
           "stringUnit": {
             "state": "translated",
             "value": "Notifications could not be loaded."
+          }
+        }
+      }
+    },
+    "notifications.filter.all": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Всички"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All"
+          }
+        }
+      }
+    },
+    "notifications.filter.bookings": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Резервации"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bookings"
+          }
+        }
+      }
+    },
+    "notifications.filter.games": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Игри"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Games"
+          }
+        }
+      }
+    },
+    "notifications.filter.lessons": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Уроци"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lessons"
+          }
+        }
+      }
+    },
+    "notifications.filter.messages": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Съобщения"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Messages"
+          }
+        }
+      }
+    },
+    "notifications.filter.other": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Други"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Other"
+          }
+        }
+      }
+    },
+    "notifications.filter.tournaments": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Турнири"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tournaments"
+          }
+        }
+      }
+    },
+    "notifications.filters": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вид известия"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kind of notification"
           }
         }
       }
@@ -10849,6 +11025,86 @@
           "stringUnit": {
             "state": "translated",
             "value": "The profile did not load."
+          }
+        }
+      }
+    },
+    "profile.hub.account": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Акаунт"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Account"
+          }
+        }
+      }
+    },
+    "profile.hub.alerts": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Имейли и известия"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Emails and notifications"
+          }
+        }
+      }
+    },
+    "profile.hub.alertsHint": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изберете какво да получавате"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose what you get"
+          }
+        }
+      }
+    },
+    "profile.hub.data": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Данни и изтриване на профила"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Data and account deletion"
+          }
+        }
+      }
+    },
+    "profile.hub.settings": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Настройки"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Settings"
           }
         }
       }

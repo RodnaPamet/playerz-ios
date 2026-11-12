@@ -79,17 +79,31 @@ struct InboxView: View {
                     : String(localized: "messages.emptyRequestsHint")
             )
         case .loaded:
-            List {
-                ForEach(items, id: \.id) { item in
-                    NavigationLink(value: item.id) { ConversationRow(item: item) }
+            ScrollView {
+                LazyVStack(spacing: Theme.Spacing.m) {
+                    ForEach(items, id: \.id) { item in
+                        NavigationLink(value: item.id) {
+                            BrandContentCard { ConversationRow(item: item, avatarURL: avatarURL(item)) }
+                        }
+                        .buttonStyle(.brandCard)
                         .onAppear {
                             if item.id == items.last?.id { Task { await loadMore() } }
                         }
+                    }
                 }
-                .brandListRow()
+                .padding(.horizontal, Theme.Spacing.l)
+                .padding(.bottom, Theme.Spacing.l)
             }
             .refreshable { await load() }
         }
+    }
+
+    /// A player's picture, when the server has one; a club and a game have none.
+    private func avatarURL(_ item: Components.Schemas.ConversationSummary) -> URL? {
+        if case let .case1(player) = item.counterpart, !player.deleted {
+            return session.mediaURL(player.avatarUrl)
+        }
+        return nil
     }
 
     private func close() {
@@ -132,39 +146,33 @@ struct InboxView: View {
 /// One conversation: who, when, the start of the last message, and what is unread.
 private struct ConversationRow: View {
     let item: Components.Schemas.ConversationSummary
+    let avatarURL: URL?
 
-    /// Grows with the text beside it.
-    @ScaledMetric(relativeTo: .headline) private var avatarSide: CGFloat = 44
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
         let name = ConversationText.title(item.counterpart)
-        HStack(alignment: .top, spacing: Theme.Spacing.m) {
-            Text(verbatim: name.first.map { String($0).uppercased() } ?? "")
-                .font(.headline)
-                .foregroundStyle(Theme.Palette.accentText)
-                .frame(width: avatarSide, height: avatarSide)
-                .background(Theme.Palette.chipIdle, in: .circle)
-                .accessibilityHidden(true)
+        // At the accessibility sizes the picture goes above the words, so the
+        // name has the card's whole width and is not cut short.
+        let large = typeSize.isAccessibilitySize
+        let layout = large
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: Theme.Spacing.s))
+            : AnyLayout(HStackLayout(alignment: .top, spacing: Theme.Spacing.m))
+        layout {
+            avatar(name)
             VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
-                // The time on the name's line, so the preview has the row's width.
-                HStack(alignment: .firstTextBaseline, spacing: Theme.Spacing.s) {
-                    Text(name)
-                        .font(item.unreadCount > 0 ? .headline : .body)
-                        .lineLimit(1)
-                        .layoutPriority(1)
-                    Spacer(minLength: 0)
-                    // Whole, always: a long name gives way, not «предходен м…».
-                    Text(item.lastMessageAt, format: .relative(presentation: .named))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .fixedSize()
-                        .layoutPriority(2)
+                // The name is who this is: it is never the one cut short. On
+                // one line with the time while both fit whole; otherwise the
+                // name takes the line and the time goes under it.
+                BrandTitleLine {
+                    nameText(name).lineLimit(large ? nil : 2)
+                    time
                 }
                 HStack(alignment: .top, spacing: Theme.Spacing.s) {
                     Text(ConversationText.preview(item.lastMessage))
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
-                        .lineLimit(2)
+                        .lineLimit(large ? 3 : 2)
                     Spacer(minLength: 0)
                     if item.unreadCount > 0 {
                         Text("\(item.unreadCount)")
@@ -173,13 +181,45 @@ private struct ConversationRow: View {
                             .foregroundStyle(Theme.Palette.onAccent)
                             .padding(.horizontal, 6)
                             .padding(.vertical, 2)
+                            .frame(minWidth: 20)
                             .background(Theme.Palette.accentFill, in: .capsule)
                             .accessibilityLabel(String(localized: "messages.unread \(item.unreadCount)"))
                     }
                 }
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            if !large { chevron }
         }
-        .padding(.vertical, Theme.Spacing.xs)
+        .overlay(alignment: .topTrailing) {
+            if large { chevron }
+        }
+        .multilineTextAlignment(.leading)
         .accessibilityElement(children: .combine)
+    }
+
+    private var chevron: some View {
+        Image(systemName: "chevron.right")
+            .font(.footnote.weight(.semibold))
+            .foregroundStyle(.tertiary)
+            .accessibilityHidden(true)
+    }
+
+    private func nameText(_ name: String) -> some View {
+        // Unread is said by the count and by the heavier name, not by colour.
+        Text(name).font(item.unreadCount > 0 ? Theme.Typography.rowTitle : .body)
+    }
+
+    private var time: some View {
+        Text(item.lastMessageAt, format: .relative(presentation: .named))
+            .font(.caption)
+            .foregroundStyle(.secondary)
+    }
+
+    @ViewBuilder private func avatar(_ name: String) -> some View {
+        switch item.counterpart {
+        case .case1: BrandAvatar(name: name, url: avatarURL)
+        case .case2: BrandAvatar(name: name, systemImage: "building.2")
+        case .case3: BrandAvatar(name: name, systemImage: "person.3")
+        }
     }
 }

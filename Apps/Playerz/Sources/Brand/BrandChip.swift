@@ -37,6 +37,11 @@ struct BrandChip: View {
         }
         .buttonStyle(.plain)
         .accessibilityAddTraits(isSelected ? .isSelected : [])
+        // The chip stops growing with the bar it sits in (BrandChipRow); a
+        // long press shows its word at full size.
+        .accessibilityShowsLargeContentViewer {
+            if let systemImage { Label(title, systemImage: systemImage) } else { Text(title) }
+        }
     }
 }
 
@@ -51,15 +56,39 @@ struct BrandChipRow<Chips: View, Trailing: View>: View {
         self.trailing = trailing()
     }
 
+    @Environment(\.layoutDirection) private var direction
+
+    /// Whether something is pinned at the row's end.
+    private var hasTrailing: Bool { Trailing.self != EmptyView.self }
+
     var body: some View {
-        HStack(spacing: 0) {
+        HStack(spacing: Theme.Spacing.s) {
             ScrollView(.horizontal) {
                 HStack(spacing: Theme.Spacing.s) { chips }
-                    .padding(.horizontal, Theme.Spacing.l)
+                    .padding(.leading, Theme.Spacing.l)
+                    // Room to scroll the last chip out from under the fade.
+                    .padding(.trailing, hasTrailing ? Theme.Spacing.xl : Theme.Spacing.l)
             }
             .scrollIndicators(.hidden)
+            // Beside a pinned control a chip leaves by fading out: cut off
+            // square against the filter button it read as a broken pill.
+            .mask { if hasTrailing { edgeFade } else { Rectangle() } }
             trailing.padding(.trailing, Theme.Spacing.l)
         }
+        // A bar, like the header band: past this size one chip would take the
+        // whole row and push the filter button off. Each chip offers the
+        // large content viewer instead.
+        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+    }
+
+    private var edgeFade: some View {
+        HStack(spacing: 0) {
+            Rectangle()
+            LinearGradient(colors: [.black, .clear], startPoint: .leading, endPoint: .trailing)
+                .frame(width: Theme.Spacing.xl)
+        }
+        // The mask is drawn, not laid out: mirror it by hand for right-to-left.
+        .scaleEffect(x: direction == .rightToLeft ? -1 : 1)
     }
 }
 
