@@ -19,44 +19,57 @@ struct TournamentsList: View {
             case .loading:
                 ProgressView(String(localized: "common.loading"))
             case .failed:
-                ContentUnavailableView {
-                    Text(String(localized: "games.failed"))
-                } actions: {
+                BrandEmptyState(systemImage: "wifi.exclamationmark", title: String(localized: "games.failed")) {
                     Button(String(localized: "venues.retry"), action: retry)
+                        .buttonStyle(.brandSecondary(fullWidth: false))
                 }
             case .loaded where mine.isEmpty && open.isEmpty:
-                ContentUnavailableView(
-                    String(localized: "tournaments.none"),
+                BrandEmptyState(
                     systemImage: "trophy",
-                    description: Text(String(localized: "tournaments.noneHint"))
+                    title: String(localized: "tournaments.none"),
+                    message: String(localized: "tournaments.noneHint")
                 )
             case .loaded:
-                List {
-                    if !mine.isEmpty {
-                        Section(String(localized: "tournaments.mine")) {
+                // Cards on the page, as the games beside them in «Открий».
+                ScrollView {
+                    LazyVStack(alignment: .leading, spacing: Theme.Spacing.l) {
+                        if !mine.isEmpty {
+                            heading(String(localized: "tournaments.mine"))
                             ForEach(mine, id: \.value1.id) { view in
-                                NavigationLink(value: TournamentRoute(id: view.value1.id)) {
-                                    TournamentRow(tournament: view.value1, entry: view.value2.myEntry)
-                                }
+                                card(view.value1, entry: view.value2.myEntry)
                             }
                         }
-                        .brandListRow()
-                    }
-                    if !open.isEmpty {
-                        Section(String(localized: "tournaments.open")) {
+                        if !open.isEmpty {
+                            heading(String(localized: "tournaments.open"))
+                                .padding(.top, mine.isEmpty ? 0 : Theme.Spacing.s)
                             ForEach(open, id: \.id) { tournament in
-                                NavigationLink(value: TournamentRoute(id: tournament.id)) {
-                                    TournamentRow(tournament: tournament, entry: nil)
-                                }
+                                card(tournament, entry: nil)
                             }
                         }
-                        .brandListRow()
                     }
+                    .padding(.horizontal, Theme.Spacing.l)
+                    .padding(.bottom, Theme.Spacing.l)
                 }
                 .refreshable { await load() }
             }
         }
         .task { await load() }
+    }
+
+    private func heading(_ title: String) -> some View {
+        Text(title)
+            .font(Theme.Typography.sectionTitle)
+            .accessibilityAddTraits(.isHeader)
+    }
+
+    /// The whole card opens the tournament.
+    private func card(_ tournament: Components.Schemas.Tournament, entry: Components.Schemas.MyTournamentEntry?) -> some View {
+        NavigationLink(value: TournamentRoute(id: tournament.id)) {
+            BrandContentCard {
+                TournamentRow(tournament: tournament, entry: entry)
+            }
+        }
+        .buttonStyle(.brandCard)
     }
 
     private func retry() {

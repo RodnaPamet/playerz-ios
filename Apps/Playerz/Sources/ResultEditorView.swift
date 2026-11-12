@@ -35,55 +35,69 @@ struct ResultEditorView: View {
 
     var body: some View {
         Form {
-            Section(String(localized: "results.editor.sides")) {
-                if let fixed = standing.fixedSides {
-                    ForEach(fixed.indices, id: \.self) { side in
-                        LabeledContent(
-                            String(localized: "results.editor.side \(side + 1)"),
-                            value: ResultText.side(fixed[side])
+            Group {
+                Section(String(localized: "results.editor.sides")) {
+                    if let fixed = standing.fixedSides {
+                        ForEach(fixed.indices, id: \.self) { side in
+                            LabeledContent(
+                                String(localized: "results.editor.side \(side + 1)"),
+                                value: ResultText.side(fixed[side])
+                            )
+                        }
+                    } else {
+                        ForEach(standing.players, id: \.userId) { player in
+                            ResultSeatPicker(name: ResultText.name(player), seat: $draft[seat: player.userId])
+                        }
+                    }
+                }
+                Section {
+                    ForEach(draft.rows.indices, id: \.self) { row in
+                        ResultScoreRow(
+                            label: draft.format == .periods
+                                ? String(localized: "results.editor.set \(row + 1)")
+                                : String(localized: "results.editor.total"),
+                            first: $draft.rows[row][0],
+                            second: $draft.rows[row][1]
                         )
                     }
-                } else {
-                    ForEach(standing.players, id: \.userId) { player in
-                        ResultSeatPicker(name: ResultText.name(player), seat: $draft[seat: player.userId])
+                    if draft.canAddSet {
+                        Button(String(localized: "results.editor.addSet"), systemImage: "plus", action: addSet)
+                    }
+                    if draft.canRemoveSet {
+                        Button(role: .destructive, action: removeSet) {
+                            Label(String(localized: "results.editor.removeSet"), systemImage: "minus")
+                                .foregroundStyle(Theme.Palette.danger)
+                        }
+                    }
+                } header: {
+                    Text(draft.format == .periods
+                        ? String(localized: "results.editor.scoreSets")
+                        : String(localized: "results.editor.scoreTotal"))
+                } footer: {
+                    if let total = standing.pointsTotal {
+                        Text(String(localized: "myBookings.result.pointsTotal \(total)"))
+                    }
+                }
+                if let problem {
+                    Section {
+                        // The words say what is wrong; the colour and the sign only back them up.
+                        Label(problem, systemImage: "exclamationmark.triangle")
+                            .foregroundStyle(Theme.Palette.danger)
                     }
                 }
             }
-            Section {
-                ForEach(draft.rows.indices, id: \.self) { row in
-                    ResultScoreRow(
-                        label: draft.format == .periods
-                            ? String(localized: "results.editor.set \(row + 1)")
-                            : String(localized: "results.editor.total"),
-                        first: $draft.rows[row][0],
-                        second: $draft.rows[row][1]
-                    )
-                }
-                if draft.canAddSet {
-                    Button(String(localized: "results.editor.addSet"), systemImage: "plus", action: addSet)
-                }
-                if draft.canRemoveSet {
-                    Button(String(localized: "results.editor.removeSet"), systemImage: "minus", role: .destructive, action: removeSet)
-                }
-            } header: {
-                Text(draft.format == .periods
-                    ? String(localized: "results.editor.scoreSets")
-                    : String(localized: "results.editor.scoreTotal"))
-            } footer: {
-                if let total = standing.pointsTotal {
-                    Text(String(localized: "myBookings.result.pointsTotal \(total)"))
-                }
-            }
-            if let problem {
-                Section { Text(problem).foregroundStyle(.red) }
-            }
+            .brandListRow()
             Section {
                 Button(String(localized: "myBookings.result.send"), action: send)
+                    .buttonStyle(.brandPrimary)
                     .disabled(sending)
             }
+            .listPillRow()
         }
+        .brandPage()
+        // Hidden with the system bar; still what VoiceOver calls the screen.
         .navigationTitle(String(localized: "myBookings.result.report"))
-        .navigationBarTitleDisplayMode(.inline)
+        .brandHeader(.back(String(localized: "myBookings.result.report")))
     }
 
     private func addSet() {
