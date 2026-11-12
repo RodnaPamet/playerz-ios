@@ -185,6 +185,9 @@ struct VenueListView: View {
         BrandChip(String(localized: "venues.nearMe"), systemImage: "location", isSelected: model.mode == .near) {
             Task { await model.setMode(.near, session: session) }
         }
+        BrandChip(String(localized: "favourites.chip"), systemImage: "heart", isSelected: model.mode == .favourites) {
+            Task { await model.setMode(.favourites, session: session) }
+        }
         // What is on, by name; the sheet changes it.
         if let city = model.cityName {
             BrandChip(city, systemImage: "mappin", isSelected: true) { filtering = true }
@@ -232,6 +235,13 @@ struct VenueListView: View {
                     VenueCard(row: row, serverURL: session.serverURL)
                 }
                 .buttonStyle(.brandCard)
+                // Outside the link, so a tap on the heart is not a tap on the card.
+                .overlay(alignment: .topTrailing) {
+                    FavouriteHeart(isOn: model.favouriteIds.contains(row.id)) {
+                        Task { await model.toggleFavourite(row.id, session: session) }
+                    }
+                    .padding(Theme.Spacing.m)
+                }
                 .onAppear {
                     if row.id == model.rows.last?.id { Task { await model.loadMore(session) } }
                 }
@@ -240,6 +250,7 @@ struct VenueListView: View {
     }
 
     private var emptyTitle: String {
+        if model.mode == .favourites { return String(localized: "favourites.empty") }
         if model.activeFilterCount > 0 { return String(localized: "venues.noMatch") }
         return model.mode == .near ? String(localized: "venues.noneNearby") : String(localized: "venues.empty")
     }
