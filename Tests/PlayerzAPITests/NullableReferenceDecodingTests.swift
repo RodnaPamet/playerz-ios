@@ -75,7 +75,7 @@ private let MY_BOOKINGS = """
        "createdAt": "2026-10-20T08:00:00.000Z", "cancellableUntil": "2026-10-21T13:00:00.000Z",
        "resource": {"id": "c1", "name": "Корт 1", "sport": "TENNIS", "resourceType": "COURT"},
        "venue": {"id": "v1", "name": "ТК Левски – Борисова градина", "city": "София", "cityKey": null, "cityNames": {"bg": "София", "en": "София"}, "timezone": "Europe/Sofia"},
-       "clubSlug": "tennis-club-levski", "venueReview": null, "canReview": false, "viewerRole": "BOOKER",
+       "clubSlug": "tennis-club-levski", "venueReview": null, "canReview": false, "viewerRole": "BOOKER", "tournamentMatch": null,
        "lesson": {"id": "l1", "coach": {"slug": "maria", "name": "Мария"}, "coachFeeCents": 3000,
                   "groupFeeCents": null, "courtPriceCents": 1500, "totalCents": 4500, "myReview": null,
                   "canReview": false}},
@@ -86,6 +86,6 @@ private let MY_BOOKINGS = """
        "venue": {"id": "v4", "name": "Тенис клуб Малееви", "city": "София", "cityKey": null, "cityNames": {"bg": "София", "en": "София"}, "timezone": "Europe/Sofia"},
        "clubSlug": "maleeva-club",
        "venueReview": {"id": "r1", "bookingId": "b2", "rating": 5, "status": "PUBLISHED"},
-       "canReview": false, "viewerRole": "BOOKER", "lesson": null}
+       "canReview": false, "viewerRole": "BOOKER", "tournamentMatch": null, "lesson": null}
     ]}}
     """

@@ -128,7 +128,9 @@ struct MyBookingsView: View {
         let canCancel = booking.clubSlug != nil
             && (booking.cancellableUntil.map { $0 > .now } ?? false)
             && booking.viewerRole == .BOOKER
+        // Not for a tournament match: its players are the draw's (projectZ#685).
         let canSeekPlayers = session.modules.openPlay && when == .upcoming && booking.status == "CONFIRMED"
+            && booking.tournamentMatch == nil
         return VStack(alignment: .leading, spacing: 0) {
             NavigationLink {
                 BookingDetailView(bookingId: booking.id, session: session)

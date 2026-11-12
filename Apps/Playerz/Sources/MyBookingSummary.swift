@@ -29,6 +29,12 @@ struct MyBookingSummary: View {
                 Label(booking.resource.name, systemImage: "sportscourt")
                     .font(Theme.Typography.cardSubtitle)
                     .foregroundStyle(.secondary)
+                // A tournament match (projectZ#685): which tournament's.
+                if let match = booking.tournamentMatch {
+                    Label(match.tournamentName, systemImage: "trophy")
+                        .font(Theme.Typography.cardSubtitle)
+                        .foregroundStyle(Theme.Palette.accentText)
+                }
             }
             HStack(alignment: .firstTextBaseline) {
                 if booking.viewerRole == .PARTICIPANT {
@@ -58,7 +64,10 @@ struct MyBookingSummary: View {
             if booking.lesson != nil {
                 BrandBadge(String(localized: "myBookings.lesson"), style: .neutral)
             }
-            BrandBadge(BookingCancel.status(booking.status), style: Self.badgeStyle(booking.status))
+            BrandBadge(
+                BookingCancel.status(booking.status, isMatch: booking.tournamentMatch != nil),
+                style: Self.badgeStyle(booking.status)
+            )
         }
     }
 
