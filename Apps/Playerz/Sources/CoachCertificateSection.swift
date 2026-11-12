@@ -66,7 +66,9 @@ struct CoachCertificateSection: View {
         switch profile.state {
         case .SUBMITTED: lines.append(String(localized: "coachProfile.certificate.lockedSubmitted"))
         case .APPROVED: lines.append(String(localized: "coachProfile.certificate.lockedApproved"))
-        case .DRAFT, .DECLINED where profile.certificate != nil:
+        // `where` binds to one pattern only; both need it, or a DRAFT with no
+        // certificate is told how long its certificate is kept (#70).
+        case .DRAFT where profile.certificate != nil, .DECLINED where profile.certificate != nil:
             lines.append(String(localized: "coachProfile.certificate.keptDays \(CoachProfileModel.keptDays)"))
         default: break
         }

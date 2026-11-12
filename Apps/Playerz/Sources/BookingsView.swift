@@ -99,7 +99,9 @@ private struct BookingRow: View {
         // is still reachable and actionable.
         .accessibilityElement(children: .combine)
 
-        if booking.status != "CANCELLED" {
+        // Only while the server would still take it (#74): a booking that is
+        // over, or past the club's cutoff, offered «Откажи» and earned a 403.
+        if booking.status != "CANCELLED", let until = booking.cancellableUntil, until > .now {
             Button(role: .destructive, action: cancel) {
                 if busy {
                     ProgressView()
