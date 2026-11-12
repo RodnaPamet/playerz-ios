@@ -24,26 +24,35 @@ struct ConfirmDeletionSheet: View {
                 } footer: {
                     Text(String(localized: "profile.delete.dialog.typeToConfirm \(String(localized: "profile.delete.dialog.word"))"))
                 }
+                .brandListRow()
                 Section {
                     Button(role: .destructive, action: confirm) {
                         HStack {
                             Text(String(localized: "profile.delete.dialog.confirm"))
+                                .font(.body.weight(.semibold))
                             if deleting {
                                 Spacer()
                                 ProgressView()
                             }
                         }
+                        .foregroundStyle(Theme.Palette.danger)
+                        // The colour is set by hand, so the off state has to be drawn too.
+                        .opacity(DeletionWord.confirms(typed) && !deleting ? 1 : 0.4)
+                        .frame(minHeight: Theme.minTarget)
                     }
                     .disabled(!DeletionWord.confirms(typed) || deleting)
                 }
+                .brandListRow()
             }
+            .brandPage()
+            // Hidden with the system bar; still what VoiceOver calls the screen.
             .navigationTitle(String(localized: "profile.delete.dialog.title"))
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(String(localized: "profile.delete.dialog.cancel"), action: cancel)
-                        .disabled(deleting)
-                }
+            .brandHeader(.title(String(localized: "profile.delete.dialog.title"))) {
+                Button(String(localized: "profile.delete.dialog.cancel"), action: cancel)
+                    .font(.body.weight(.semibold))
+                    .foregroundStyle(Theme.Palette.onHeader)
+                    .frame(minHeight: Theme.minTarget)
+                    .disabled(deleting)
             }
         }
         .interactiveDismissDisabled(deleting)

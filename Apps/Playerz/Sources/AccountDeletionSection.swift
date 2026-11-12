@@ -61,7 +61,7 @@ struct AccountDeletionSection: View {
             }
             if let exportProblem {
                 Text(exportProblem)
-                    .foregroundStyle(.red)
+                    .foregroundStyle(Theme.Palette.danger)
                     .accessibilityFocused($exportProblemFocused)
             }
 

@@ -56,7 +56,7 @@ struct BookingResultSection: View {
                     }
                 }
                 if let problem {
-                    Text(problem).foregroundStyle(.red)
+                    Text(problem).foregroundStyle(Theme.Palette.danger)
                 }
             }
         }
