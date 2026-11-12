@@ -33,6 +33,9 @@ struct BrandChip: View {
             .background(isSelected ? Theme.Palette.chipSelected : Theme.Palette.chipIdle, in: .capsule)
             // The pill is shorter than a finger; the target is not.
             .frame(minHeight: Theme.minTarget)
+            // The row scrolls to the chosen chip (#83): where it is, by its title.
+            .id(isSelected ? SelectedChip.id(title) : "chip:\(title)")
+            .preference(key: SelectedChip.self, value: isSelected ? title : nil)
             .contentShape(.rect)
         }
         .buttonStyle(.plain)
@@ -47,6 +50,18 @@ struct BrandChip: View {
 
 /// Chips in a row that scrolls sideways, and, pinned at its end, `trailing`:
 /// the filter button.
+/// The chosen chip's title, for its row to scroll to (#83): a day picked past
+/// the first screen of a strip was otherwise out of view, and nothing said
+/// which day's hours were listed.
+struct SelectedChip: PreferenceKey {
+    static let defaultValue: String? = nil
+    static func reduce(value: inout String?, nextValue: () -> String?) {
+        value = value ?? nextValue()
+    }
+
+    static func id(_ title: String) -> String { "chip:selected:\(title)" }
+}
+
 struct BrandChipRow<Chips: View, Trailing: View>: View {
     let chips: Chips
     let trailing: Trailing
@@ -57,19 +72,30 @@ struct BrandChipRow<Chips: View, Trailing: View>: View {
     }
 
     @Environment(\.layoutDirection) private var direction
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     /// Whether something is pinned at the row's end.
     private var hasTrailing: Bool { Trailing.self != EmptyView.self }
 
     var body: some View {
         HStack(spacing: Theme.Spacing.s) {
-            ScrollView(.horizontal) {
-                HStack(spacing: Theme.Spacing.s) { chips }
-                    .padding(.leading, Theme.Spacing.l)
-                    // Room to scroll the last chip out from under the fade.
-                    .padding(.trailing, hasTrailing ? Theme.Spacing.xl : Theme.Spacing.l)
+            ScrollViewReader { proxy in
+                ScrollView(.horizontal) {
+                    HStack(spacing: Theme.Spacing.s) { chips }
+                        .padding(.leading, Theme.Spacing.l)
+                        // Room to scroll the last chip out from under the fade.
+                        .padding(.trailing, hasTrailing ? Theme.Spacing.xl : Theme.Spacing.l)
+                }
+                .scrollIndicators(.hidden)
+                // On the chosen chip when the row appears, and when the choice
+                // changes: from outside, or a tap on a chip half under the fade.
+                .onPreferenceChange(SelectedChip.self) { title in
+                    guard let title else { return }
+                    withAnimation(reduceMotion ? nil : .snappy) {
+                        proxy.scrollTo(SelectedChip.id(title), anchor: .center)
+                    }
+                }
             }
-            .scrollIndicators(.hidden)
             // Beside a pinned control a chip leaves by fading out: cut off
             // square against the filter button it read as a broken pill.
             .mask { if hasTrailing { edgeFade } else { Rectangle() } }
