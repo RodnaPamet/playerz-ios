@@ -14,7 +14,8 @@ struct LinkedScreen: View {
         case let .conversation(id) where session.modules.messaging:
             ConversationView(conversationId: id, session: session)
         default:
-            ContentUnavailableView(String(localized: "notifications.noScreen"), systemImage: "bell.slash")
+            BrandEmptyState(systemImage: "bell.slash", title: String(localized: "notifications.noScreen"))
+                .brandPage()
         }
     }
 }

@@ -56,11 +56,12 @@ struct ClubView: View {
                         }
                         Section {
                             if club.venues.isEmpty {
-                                ContentUnavailableView(
-                                    String(localized: "club.noVenues.title"),
+                                BrandEmptyState(
                                     systemImage: "sportscourt",
-                                    description: Text(String(localized: "club.noVenues.description"))
+                                    title: String(localized: "club.noVenues.title"),
+                                    message: String(localized: "club.noVenues.description")
                                 )
+                                .inline()
                             }
                             ForEach(club.venues, id: \.id) { venue in
                                 NavigationLink {

@@ -38,9 +38,9 @@ struct DeletionOutcomeView: View {
                 }
             }
         case .rateLimited:
-            Text(String(localized: "profile.delete.error.RATE_LIMITED")).foregroundStyle(.red)
+            Text(String(localized: "profile.delete.error.RATE_LIMITED")).foregroundStyle(Theme.Palette.danger)
         case .failed:
-            Text(String(localized: "profile.delete.error.FAILED")).foregroundStyle(.red)
+            Text(String(localized: "profile.delete.error.FAILED")).foregroundStyle(Theme.Palette.danger)
         case .deleted:
             EmptyView()
         }
