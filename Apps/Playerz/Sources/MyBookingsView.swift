@@ -26,22 +26,21 @@ struct MyBookingsView: View {
     var body: some View {
         NavigationStack {
             content
+                .brandPage()
+                // Hidden with the system bar, but still what a pushed screen's back button says.
                 .navigationTitle(String(localized: "myBookings.title"))
-                .toolbar { ToolbarItem(placement: .topBarTrailing) { NotificationBell(session: session) } }
-                // Inline: with a segmented control inset below the bar, iOS 26 hid the large
-                // title under the bar's material.
-                .navigationBarTitleDisplayMode(.inline)
-                .safeAreaInset(edge: .top) {
-                    Picker(String(localized: "myBookings.when"), selection: $when) {
-                        Text(String(localized: "myBookings.upcoming"))
-                            .tag(Operations.listMyBookings.Input.Query.whenPayload.upcoming)
-                        Text(String(localized: "myBookings.past"))
-                            .tag(Operations.listMyBookings.Input.Query.whenPayload.past)
+                .safeAreaInset(edge: .top, spacing: 0) {
+                    BrandChipRow {
+                        BrandChip(String(localized: "myBookings.upcoming"), isSelected: when == .upcoming) { when = .upcoming }
+                        BrandChip(String(localized: "myBookings.past"), isSelected: when == .past) { when = .past }
                     }
-                    .pickerStyle(.segmented)
-                    .padding(.horizontal)
-                    .padding(.bottom, 4)
-                    .background(.bar)
+                    .padding(.vertical, Theme.Spacing.xs)
+                    .background(Theme.Palette.page)
+                    .accessibilityElement(children: .contain)
+                    .accessibilityLabel(String(localized: "myBookings.when"))
+                }
+                .brandHeader(.title(String(localized: "myBookings.title"))) {
+                    BrandHeaderActions(session: session)
                 }
                 .navigationDestination(item: $debugGame) { id in
                     BookingGameView(bookingId: id, session: session)
@@ -54,6 +53,8 @@ struct MyBookingsView: View {
                 }
         }
         .task(id: when) { await load() }
+        // Back on this tab: a court booked on another one is in the list.
+        .onShellTabReturn { await load() }
         .onChange(of: banner?.text) { _, text in
             if let text { AccessibilityNotification.Announcement(text).post() }
         }
@@ -75,17 +76,16 @@ struct MyBookingsView: View {
         case .loading:
             ProgressView(String(localized: "common.loading"))
         case .failed:
-            ContentUnavailableView {
-                Text(String(localized: "bookings.failed"))
-            } actions: {
+            BrandEmptyState(systemImage: "wifi.exclamationmark", title: String(localized: "bookings.failed")) {
                 Button(String(localized: "venues.retry")) { Task { await load() } }
+                    .buttonStyle(.brandSecondary(fullWidth: false))
             }
         case .loaded where items.isEmpty:
-            ContentUnavailableView(
-                when == .upcoming
+            BrandEmptyState(
+                systemImage: "calendar",
+                title: when == .upcoming
                     ? String(localized: "myBookings.emptyUpcoming")
-                    : String(localized: "myBookings.emptyPast"),
-                systemImage: "calendar"
+                    : String(localized: "myBookings.emptyPast")
             )
         case .loaded:
             List {

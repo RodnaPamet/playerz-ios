@@ -72,8 +72,12 @@ struct ProfileView: View {
                         }
                     }
                 }
+                .brandPage()
+                // Hidden with the system bar, but still what a pushed screen's back button says.
                 .navigationTitle(String(localized: "profile.title"))
-                .toolbar { ToolbarItem(placement: .topBarTrailing) { NotificationBell(session: session) } }
+                .brandHeader(.title(String(localized: "profile.title"))) {
+                    BrandHeaderActions(session: session)
+                }
                 // A DEBUG launch can open «Профил на треньор» (DebugLaunch).
                 .navigationDestination(isPresented: $debugCoach) {
                     CoachProfileView(session: session)

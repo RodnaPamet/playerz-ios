@@ -41,8 +41,26 @@ final class SessionModel {
     var notificationsOpen = DebugLaunch.notifications
     /// A screen to open over the tabs: a tapped push (#15).
     var pendingLink: AppLink? = DebugLaunch.link.flatMap(AppLink.init(path:))
-    /// A tab a link asked for; RootView switches to it.
+    /// A tab a link asked for; RootView switches to it. `.messages` is the
+    /// inbox, which RootView opens over the tabs.
     var requestedTab: DebugLaunch.Tab?
+    /// The inbox, open over the tabs from a header's messages button.
+    var messagesOpen = DebugLaunch.tab == .messages
+    /// Unread conversations and requests, for that button's dot: read every
+    /// minute by RootView, and by the inbox whenever it loads.
+    var messagesUnread = 0
+    /// A conversation to open in the inbox that is already on show.
+    var requestedConversation: String?
+    /// A screen of «Начало» asked for from elsewhere («Създай»).
+    var homeRequest: HomeScreen?
+
+    enum HomeScreen { case clubs, coaches }
+
+    /// «Начало» on its club list, or on «Треньори».
+    func showHome(_ screen: HomeScreen) {
+        homeRequest = screen
+        requestedTab = .play
+    }
 
     /// Raised when an action was refused for want of a confirmed phone
     /// (`PHONE_REQUIRED`, #11): RootView opens the phone step over the screen.
@@ -65,7 +83,11 @@ final class SessionModel {
         case .bookings: requestedTab = .bookings
         case .messages: if modules.messaging { requestedTab = .messages }
         case .games: if modules.openPlay { requestedTab = .games }
-        case .conversation: if modules.messaging { pendingLink = link }
+        case let .conversation(id):
+            guard modules.messaging else { return }
+            // Over an open inbox a second sheet cannot be presented from under
+            // it; the inbox opens the conversation itself.
+            if messagesOpen { requestedConversation = id } else { pendingLink = link }
         case .booking: pendingLink = link
         }
     }

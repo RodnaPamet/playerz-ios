@@ -44,6 +44,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
         didFinishLaunchingWithOptions options: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
         UNUserNotificationCenter.current().delegate = self
+        // Alerts and dialogs are UIKit's and do not read SwiftUI's tint.
+        UIWindow.appearance().tintColor = UIColor(Theme.Palette.accentText)
         return true
     }
 
@@ -105,9 +107,15 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
 struct RootView: View {
     @Bindable var session: SessionModel
     @Environment(\.scenePhase) private var scenePhase
-    /// Unread conversations and requests, for the Съобщения tab's badge.
-    @State private var unread = 0
-    @State private var tab: DebugLaunch.Tab = DebugLaunch.tab ?? .play
+    @State private var tab: DebugLaunch.Tab = RootView.firstTab
+    /// «Съобщения» asked for while a sheet was still up: opened once it is gone.
+    @State private var messagesAfterSheet = false
+
+    /// `PLAYERZ_TAB=messages` opens the inbox over «Начало» (SessionModel.messagesOpen).
+    private static var firstTab: DebugLaunch.Tab {
+        guard let tab = DebugLaunch.tab, tab != .messages else { return .play }
+        return tab
+    }
 
     var body: some View {
         Group {
@@ -117,68 +125,51 @@ struct RootView: View {
             case .signedOut:
                 SignInView(session: session)
             case .signedIn:
-                // The player's tabs, as the web's bottom bar (#362): Играй, Игри (#510),
-                // Резервации; then Съобщения, which the web keeps in its header, and Профил.
-                // `.tabItem`, not `Tab`: the app supports iOS 17, and `Tab` is 18.
+                // The player's tabs (PlayerShell): Начало, Открий (#510), Резервации,
+                // Профил; Съобщения is in the header, where the web keeps it (#362).
                 // Where this account lands first (#167): a club account and an
                 // undecided one do not get the player's tabs.
                 LandingGate(session: session) {
-                    TabView(selection: $tab) {
-                        VenueListView(session: session)
-                            .tabItem { Label(String(localized: "tab.play"), systemImage: "figure.tennis") }
-                            .tag(DebugLaunch.Tab.play)
-                        // A module the server has off is not shown at all (#16).
-                        if session.modules.openPlay {
-                            GamesView(session: session)
-                                .tabItem { Label(String(localized: "tab.games"), systemImage: "person.3") }
-                                .tag(DebugLaunch.Tab.games)
-                        }
-                        MyBookingsView(session: session)
-                            .tabItem { Label(String(localized: "tab.bookings"), systemImage: "calendar") }
-                            .tag(DebugLaunch.Tab.bookings)
-                        if session.modules.messaging {
-                            InboxView(session: session, unread: $unread)
-                                .tabItem { Label(String(localized: "tab.messages"), systemImage: "bubble.left.and.bubble.right") }
-                                .badge(unread)
-                                .tag(DebugLaunch.Tab.messages)
-                        }
-                        ProfileView(session: session)
-                            .tabItem { Label(String(localized: "tab.profile"), systemImage: "person.crop.circle") }
-                            .tag(DebugLaunch.Tab.profile)
-                    }
-                    // The badge without opening the tab: read on launch, then each
-                    // minute, and only while messaging is on.
-                    .task(id: session.modules.messaging) {
-                        while !Task.isCancelled, session.modules.messaging {
-                            if let client = await session.client(),
-                               let counts = try? await client.getMyUnreadConversations().ok.body.json.data {
-                                unread = counts.conversations + counts.requests
+                    PlayerShell(session: session, tab: $tab)
+                        // The dot without opening the inbox: read on launch, then each
+                        // minute, and only while messaging is on.
+                        .task(id: session.modules.messaging) {
+                            while !Task.isCancelled, session.modules.messaging {
+                                if let client = await session.client(),
+                                   let counts = try? await client.getMyUnreadConversations().ok.body.json.data {
+                                    session.messagesUnread = counts.conversations + counts.requests
+                                }
+                                try? await Task.sleep(for: .seconds(60))
                             }
-                            try? await Task.sleep(for: .seconds(60))
                         }
-                    }
-                    // The bell's count (#15): read on launch, then each minute.
-                    .task {
-                        while !Task.isCancelled {
-                            await session.refreshNotificationCount()
-                            try? await Task.sleep(for: .seconds(60))
+                        // The bell's count (#15): read on launch, then each minute.
+                        .task {
+                            while !Task.isCancelled {
+                                await session.refreshNotificationCount()
+                                try? await Task.sleep(for: .seconds(60))
+                            }
                         }
-                    }
-                    // An invite link opened in the app (#14), once past the gate's steps.
-                    .sheet(item: $session.pendingInvite) { invite in
-                        BookingInviteView(token: invite.token, session: session)
-                    }
-                    // The bell's list (#15), one for every tab's bell.
-                    .sheet(isPresented: $session.notificationsOpen) {
-                        NotificationsView(session: session)
-                    }
-                    // A tapped push's screen (#15).
-                    .sheet(item: $session.pendingLink) { link in
-                        LinkedSheet(link: link, session: session)
-                    }
+                        // An invite link opened in the app (#14), once past the gate's steps.
+                        .sheet(item: $session.pendingInvite, onDismiss: openMessagesIfAsked) { invite in
+                            BookingInviteView(token: invite.token, session: session)
+                        }
+                        // The bell's list (#15), one for every tab's bell.
+                        .sheet(isPresented: $session.notificationsOpen, onDismiss: openMessagesIfAsked) {
+                            NotificationsView(session: session)
+                        }
+                        // A tapped push's screen (#15).
+                        .sheet(item: $session.pendingLink, onDismiss: openMessagesIfAsked) { link in
+                            LinkedSheet(link: link, session: session)
+                        }
+                        // The inbox, from a header's messages button or a link.
+                        .fullScreenCover(isPresented: $session.messagesOpen) {
+                            InboxView(session: session, unread: $session.messagesUnread)
+                        }
                 }
             }
         }
+        // One accent for every control that takes the tint.
+        .tint(Theme.Palette.accentText)
         // The switches can change while the app is open: read them again
         // whenever it comes back (#16).
         .task(id: scenePhase) {
@@ -187,13 +178,28 @@ struct RootView: View {
         // A link that names a tab (#15): the bell's row or a tapped push.
         .onChange(of: session.requestedTab) { _, requested in
             guard let requested else { return }
-            tab = requested
             session.requestedTab = nil
-        }
-        .onChange(of: session.modules) { _, modules in
-            if (tab == .games && !modules.openPlay) || (tab == .messages && !modules.messaging) {
-                tab = .play
+            if requested == .messages {
+                // A sheet on show has to leave first: two cannot be presented at once.
+                if session.notificationsOpen || session.pendingLink != nil || session.pendingInvite != nil {
+                    messagesAfterSheet = true
+                } else {
+                    session.messagesOpen = true
+                }
+            } else {
+                tab = requested
+                session.messagesOpen = false
             }
         }
+        .onChange(of: session.modules) { _, modules in
+            if tab == .games && !modules.openPlay { tab = .play }
+            if !modules.messaging { session.messagesOpen = false }
+        }
+    }
+
+    private func openMessagesIfAsked() {
+        guard messagesAfterSheet else { return }
+        messagesAfterSheet = false
+        session.messagesOpen = session.modules.messaging
     }
 }

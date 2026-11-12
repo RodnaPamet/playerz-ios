@@ -6,7 +6,10 @@ struct VenueListView: View {
     @State private var model = VenueListModel()
     @State private var debugClub: String? = DebugLaunch.club
     @State private var debugVenue: String? = DebugLaunch.venue
-    @State private var debugCoaches = DebugLaunch.coaches
+    /// «Треньори» on show: from the header's pill, «Създай», or a DEBUG launch.
+    @State private var showingCoaches = DebugLaunch.coaches
+    /// Changed to start the stack again from the club list.
+    @State private var stackID = 0
     @State private var debugCoach: String? = DebugLaunch.coach
 
     var body: some View {
@@ -16,27 +19,26 @@ struct VenueListView: View {
                 case .loading:
                     ProgressView(String(localized: "common.loading"))
                 case .failed:
-                    ContentUnavailableView {
-                        Text(String(localized: "venues.failed"))
-                    } actions: {
+                    BrandEmptyState(systemImage: "wifi.exclamationmark", title: String(localized: "venues.failed")) {
                         Button(String(localized: "venues.retry")) {
                             Task { await model.load(session) }
                         }
+                        .buttonStyle(.brandSecondary(fullWidth: false))
                     }
                 case .locating:
                     ProgressView(String(localized: "venues.locating"))
                 case .locationDenied:
-                    ContentUnavailableView(
-                        String(localized: "venues.nearMe"),
+                    BrandEmptyState(
                         systemImage: "location.slash",
-                        description: Text(String(localized: "venues.noLocation"))
+                        title: String(localized: "venues.nearMe"),
+                        message: String(localized: "venues.noLocation")
                     )
                 case .loaded where model.rows.isEmpty:
-                    ContentUnavailableView(
-                        model.mode == .near
+                    BrandEmptyState(
+                        systemImage: "figure.tennis",
+                        title: model.mode == .near
                             ? String(localized: "venues.noneNearby")
-                            : String(localized: "venues.empty"),
-                        systemImage: "figure.tennis"
+                            : String(localized: "venues.empty")
                     )
                 case .loaded:
                     List(model.rows) { row in
@@ -55,42 +57,53 @@ struct VenueListView: View {
             .navigationDestination(item: $debugVenue) { id in
                 VenueDetailView(venueId: id, session: session)
             }
-            .navigationDestination(isPresented: $debugCoaches) {
+            .brandPage()
+            .navigationDestination(isPresented: $showingCoaches) {
                 CoachesView(session: session)
             }
             .navigationDestination(item: $debugCoach) { slug in
                 CoachView(slug: slug, session: session)
             }
+            // Hidden with the system bar, but still what a pushed screen's back button says.
             .navigationTitle(String(localized: "venues.title"))
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) { NotificationBell(session: session) }
-                // «Треньори» (#19), while the coaches module is on.
-                if session.modules.coaches {
-                    ToolbarItem(placement: .topBarLeading) {
-                        NavigationLink(String(localized: "coaches.title")) {
-                            CoachesView(session: session)
-                        }
+            .safeAreaInset(edge: .top, spacing: 0) {
+                BrandChipRow {
+                    BrandChip(String(localized: "venues.all"), isSelected: model.mode == .all) { show(.all) }
+                    BrandChip(String(localized: "venues.nearMe"), systemImage: "location", isSelected: model.mode == .near) {
+                        show(.near)
                     }
                 }
+                .padding(.vertical, Theme.Spacing.xs)
+                .background(Theme.Palette.page)
             }
-            // Inline: with a segmented control inset below the bar, iOS 26 hid the large
-            // title under the bar's material.
-            .navigationBarTitleDisplayMode(.inline)
-            .safeAreaInset(edge: .top) {
-                Picker("", selection: .init(
-                    get: { model.mode },
-                    set: { newMode in Task { await model.setMode(newMode, session: session) } }
-                )) {
-                    Text(String(localized: "venues.all")).tag(VenueListModel.Mode.all)
-                    Text(String(localized: "venues.nearMe")).tag(VenueListModel.Mode.near)
+            .brandHeader(.wordmark) {
+                // «Треньори» (#19), while the coaches module is on.
+                if session.modules.coaches {
+                    BrandHeaderPill(title: String(localized: "coaches.title"), systemImage: "figure.tennis") {
+                        showingCoaches = true
+                    }
                 }
-                .pickerStyle(.segmented)
-                .padding(.horizontal)
-                .padding(.bottom, 4)
-                .background(.bar)
+            } actions: {
+                BrandHeaderActions(session: session)
             }
         }
+        .id(stackID)
         .task { await model.load(session) }
+        // «Създай» asked for the club list or «Треньори»; `initial`, for a
+        // request made before this tab was first opened.
+        .onChange(of: session.homeRequest, initial: true) { _, request in
+            guard let request else { return }
+            session.homeRequest = nil
+            debugClub = nil
+            debugVenue = nil
+            debugCoach = nil
+            showingCoaches = request == .coaches && session.modules.coaches
+            stackID += 1
+        }
+    }
+
+    private func show(_ mode: VenueListModel.Mode) {
+        Task { await model.setMode(mode, session: session) }
     }
 }
 

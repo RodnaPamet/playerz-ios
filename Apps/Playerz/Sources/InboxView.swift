@@ -2,10 +2,11 @@ import PlayerzAPI
 import SwiftUI
 
 /// Съобщения (#484): the caller's conversations, and «Заявки» — first messages
-/// from players they have not played with yet (#375).
+/// from players they have not played with yet (#375). Opened over the tabs
+/// from a header's messages button (RootView).
 struct InboxView: View {
     @Bindable var session: SessionModel
-    /// The tab's badge: unread conversations and requests, from the inbox.
+    /// The header button's dot: unread conversations and requests, from the inbox.
     @Binding var unread: Int
 
     @State private var tab: Operations.listMyConversations.Input.Query.tabPayload = .conversations
@@ -20,27 +21,28 @@ struct InboxView: View {
     var body: some View {
         NavigationStack(path: $path) {
             content
+                .brandPage()
+                // Hidden with the system bar, but still what a conversation's back button says.
                 .navigationTitle(String(localized: "messages.title"))
-                // Inline: with a segmented control inset below the bar, iOS 26 hid the large
-                // title under the bar's material.
-                .navigationBarTitleDisplayMode(.inline)
-                .safeAreaInset(edge: .top) {
-                    Picker(String(localized: "messages.tabs"), selection: $tab) {
-                        Text(String(localized: "messages.tab.conversations")).tag(Operations.listMyConversations.Input.Query.tabPayload.conversations)
-                        Text(String(localized: "messages.tab.requests")).tag(Operations.listMyConversations.Input.Query.tabPayload.requests)
-                    }
-                    .pickerStyle(.segmented)
-                    .padding(.horizontal)
-                    .padding(.bottom, 4)
-                    .background(.bar)
-                }
-                .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button(String(localized: "messages.new"), systemImage: "square.and.pencil") {
-                            searching = true
+                .safeAreaInset(edge: .top, spacing: 0) {
+                    BrandChipRow {
+                        BrandChip(String(localized: "messages.tab.conversations"), isSelected: tab == .conversations) {
+                            tab = .conversations
+                        }
+                        BrandChip(String(localized: "messages.tab.requests"), isSelected: tab == .requests) {
+                            tab = .requests
                         }
                     }
-                    ToolbarItem(placement: .topBarTrailing) { NotificationBell(session: session) }
+                    .padding(.vertical, Theme.Spacing.xs)
+                    .background(Theme.Palette.page)
+                    .accessibilityElement(children: .contain)
+                    .accessibilityLabel(String(localized: "messages.tabs"))
+                }
+                // Presented over the tabs: back closes it.
+                .brandHeader(.back(String(localized: "messages.title"), action: close)) {
+                    BrandHeaderButton(systemImage: "square.and.pencil", label: String(localized: "messages.new")) {
+                        searching = true
+                    }
                 }
                 .navigationDestination(for: String.self) { id in
                     ConversationView(conversationId: id, session: session)
@@ -57,6 +59,12 @@ struct InboxView: View {
         .onChange(of: path) { _, now in
             if now.isEmpty { Task { await load() } }
         }
+        // A tapped push for a conversation while the inbox is on show.
+        .onChange(of: session.requestedConversation) { _, id in
+            guard let id else { return }
+            session.requestedConversation = nil
+            path = [id]
+        }
     }
 
     @ViewBuilder private var content: some View {
@@ -64,20 +72,19 @@ struct InboxView: View {
         case .loading:
             ProgressView(String(localized: "common.loading"))
         case .failed:
-            ContentUnavailableView {
-                Text(String(localized: "messages.failed"))
-            } actions: {
+            BrandEmptyState(systemImage: "wifi.exclamationmark", title: String(localized: "messages.failed")) {
                 Button(String(localized: "venues.retry")) { Task { await load() } }
+                    .buttonStyle(.brandSecondary(fullWidth: false))
             }
         case .loaded where items.isEmpty:
-            ContentUnavailableView(
-                tab == .conversations
+            BrandEmptyState(
+                systemImage: "bubble.left.and.bubble.right",
+                title: tab == .conversations
                     ? String(localized: "messages.empty")
                     : String(localized: "messages.emptyRequests"),
-                systemImage: "bubble.left.and.bubble.right",
-                description: Text(tab == .conversations
+                message: tab == .conversations
                     ? String(localized: "messages.emptyHint")
-                    : String(localized: "messages.emptyRequestsHint"))
+                    : String(localized: "messages.emptyRequestsHint")
             )
         case .loaded:
             List {
@@ -90,6 +97,10 @@ struct InboxView: View {
             }
             .refreshable { await load() }
         }
+    }
+
+    private func close() {
+        session.messagesOpen = false
     }
 
     private func load() async {

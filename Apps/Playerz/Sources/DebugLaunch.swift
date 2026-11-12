@@ -11,6 +11,8 @@ import Foundation
 /// Compiled out of release builds: nothing here can sign anyone in, or move
 /// anyone, in a shipped app.
 enum DebugLaunch {
+    /// The shell's tabs by their first names: `play` is «Начало», `games` is
+    /// «Открий». `messages` is no longer a tab: it opens the inbox over «Начало».
     enum Tab: String { case play, games, bookings, messages, profile }
     /// Профил's deletion section (#9): `delete` scrolls to it, `confirm` also
     /// opens the confirmation. Nothing here deletes: the word is still typed.
@@ -47,6 +49,8 @@ enum DebugLaunch {
     /// Играй opened on «Треньори» (`PLAYERZ_COACHES=1`), a coach (`PLAYERZ_COACH=<slug>`),
     /// or that coach's lesson booking that many days ahead (also `PLAYERZ_COACH_BOOK=<days>`), #19.
     static var coaches: Bool { env["PLAYERZ_COACHES"] == "1" }
+    /// `PLAYERZ_CREATE=1`: the «Създай» sheet on show, for a screenshot.
+    static var create: Bool { env["PLAYERZ_CREATE"] == "1" }
     static var coach: String? { env["PLAYERZ_COACH"] }
     static var coachBook: Int? { env["PLAYERZ_COACH_BOOK"].flatMap(Int.init) }
     static var profile: Profile? { env["PLAYERZ_PROFILE"].flatMap(Profile.init(rawValue:)) }
@@ -69,6 +73,7 @@ enum DebugLaunch {
     static let link: String? = nil
     static let result: String? = nil
     static let coaches = false
+    static let create = false
     static let coach: String? = nil
     static let coachBook: Int? = nil
     static let profile: Profile? = nil
