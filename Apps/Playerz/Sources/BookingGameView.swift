@@ -102,7 +102,7 @@ struct BookingGameView: View {
                 .buttonStyle(.brandPrimary)
                 .disabled(busy || note.count > 280 || !levelsInOrder)
             }
-            .listPillRow()
+            .bareListRow()
         }
         if g.game?.open == true {
             Section {

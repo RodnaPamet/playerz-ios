@@ -59,13 +59,13 @@ struct InvitePlayersView: View {
                     message: Text(String(localized: "myBookings.players.shareTitle"))
                 ) {
                     Label(String(localized: "myBookings.players.share"), systemImage: "square.and.arrow.up")
-                        .labelStyle(PillLabelStyle())
+                        .labelStyle(.brandPill)
                 }
                 .buttonStyle(.brandPrimary)
             } else {
                 Button(action: makeLink) {
                     Label(String(localized: "myBookings.players.share"), systemImage: "link")
-                        .labelStyle(PillLabelStyle())
+                        .labelStyle(.brandPill)
                 }
                 .buttonStyle(.brandPrimary)
                 .disabled(busy)
@@ -200,30 +200,6 @@ struct InvitePlayersView: View {
                 linksStopped = true
             } else {
                 problem = BookingPlayerText.error(response.flatMap { apiErrorCode($0) })
-            }
-        }
-    }
-}
-
-/// A pill's icon and title, the title alone at the accessibility sizes: beside
-/// the icon «Покани играчи» broke mid-word and was cut off.
-struct PillLabelStyle: LabelStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        PillLabel(configuration: configuration)
-    }
-
-    private struct PillLabel: View {
-        let configuration: LabelStyleConfiguration
-        @Environment(\.dynamicTypeSize) private var typeSize
-
-        var body: some View {
-            if typeSize.isAccessibilitySize {
-                configuration.title
-            } else {
-                HStack(spacing: Theme.Spacing.s) {
-                    configuration.icon
-                    configuration.title
-                }
             }
         }
     }

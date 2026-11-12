@@ -56,11 +56,11 @@ struct BookingPlayersView: View {
                         Section {
                             Button(action: invite) {
                                 Label(String(localized: "myBookings.players.invite"), systemImage: "person.badge.plus")
-                                    .labelStyle(PillLabelStyle())
+                                    .labelStyle(.brandPill)
                             }
                             .buttonStyle(.brandPrimary)
                         }
-                        .listPillRow()
+                        .bareListRow()
                     }
                 }
                 .refreshable { await load() }
