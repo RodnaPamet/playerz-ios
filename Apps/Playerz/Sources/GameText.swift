@@ -64,7 +64,7 @@ enum GameText {
     /// The game as one sentence, for VoiceOver.
     /// «Корт 1 · София · Закрит»: the court, the city, and indoor when it is.
     static func courtLine(_ game: Components.Schemas.OpenGame) -> String {
-        var parts = [game.courtName, game.venue.city]
+        var parts = [game.courtName, CityText.shown(game.venue.cityNames)]
         if game.isIndoor { parts.append(String(localized: "games.indoor")) }
         return parts.joined(separator: " · ")
     }
@@ -93,7 +93,7 @@ enum GameText {
             parts.append(String(localized: "games.card.organisedBy \(name)"))
         }
         // The others by name, when the server names them to this viewer.
-        let others = (game.players ?? []).dropFirst().compactMap(\.firstName).filter { !$0.isEmpty }
+        let others = (game.players ?? []).dropFirst().filter { !$0.isYou }.compactMap(\.firstName).filter { !$0.isEmpty }
         if !others.isEmpty {
             parts.append(String(localized: "games.card.with \(others.formatted(.list(type: .and)))"))
         }

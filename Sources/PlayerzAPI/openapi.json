@@ -25774,6 +25774,8 @@
               "slug",
               "name",
               "city",
+              "cityKey",
+              "cityNames",
               "logoUrl"
             ],
             "properties": {
@@ -25788,6 +25790,16 @@
               },
               "city": {
                 "type": "string"
+              },
+              "cityKey": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "The canonical city (#667)."
+              },
+              "cityNames": {
+                "$ref": "#/components/schemas/CityNames"
               },
               "logoUrl": {
                 "type": [
@@ -31021,7 +31033,8 @@
           "firstName",
           "avatarUrl",
           "level",
-          "isBooker"
+          "isBooker",
+          "isYou"
         ],
         "properties": {
           "firstName": {
@@ -31045,6 +31058,10 @@
           },
           "isBooker": {
             "type": "boolean"
+          },
+          "isYou": {
+            "type": "boolean",
+            "description": "The viewer themselves, so their seat can say «Вие»."
           }
         }
       },

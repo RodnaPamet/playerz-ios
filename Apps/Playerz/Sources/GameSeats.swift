@@ -41,11 +41,13 @@ struct GameSeats: Equatable {
     init(game: Components.Schemas.OpenGame, server: String) {
         let named = game.players.map { players in
             players.dropFirst().map { p in
-                Person(
+                // The viewer's own seat says «Вие», as before players were named.
+                if p.isYou { return Seat.you }
+                return Seat.player(Person(
                     name: p.firstName,
                     picture: GameText.picture(p.avatarUrl, server: server),
                     level: p.level.map { $0.formatted(.number.precision(.fractionLength(1))) }
-                )
+                ))
             }
         }
         self.init(
@@ -61,7 +63,7 @@ struct GameSeats: Equatable {
     /// `named`: everyone after the organiser, when the server names them.
     init(
         capacity: Int, players: Int, spotsLeft: Int, viewerIsBooker: Bool, viewerIsPlaying: Bool,
-        named: [Person]? = nil
+        named: [Seat]? = nil
     ) {
         let players = max(players, 1)
         let spots = max(spotsLeft, 0)
@@ -71,7 +73,7 @@ struct GameSeats: Equatable {
         var others = players - 1
         if let named {
             // Named: each in their seat; any the server counts beyond them stay anonymous.
-            seats += named.prefix(others).map(Seat.player)
+            seats += named.prefix(others)
             others -= min(named.count, others)
         } else if viewerIsPlaying, !viewerIsBooker, others > 0 {
             seats.append(.you)

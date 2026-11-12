@@ -149,9 +149,11 @@ struct GameDetailView: View {
                     ForEach(named.indices, id: \.self) { i in
                         divider
                         playerRow(
-                            initial: named[i].firstName?.first,
-                            symbol: "person.fill",
-                            title: named[i].firstName ?? String(localized: "games.organiserUnknown"),
+                            initial: named[i].isYou ? nil : named[i].firstName?.first,
+                            symbol: named[i].isYou ? "checkmark" : "person.fill",
+                            title: named[i].isYou
+                                ? String(localized: "games.seat.you")
+                                : named[i].firstName ?? String(localized: "games.organiserUnknown"),
                             subtitle: named[i].level.map {
                                 String(localized: "games.detail.level \($0.formatted(.number.precision(.fractionLength(1))))")
                             }
@@ -220,7 +222,7 @@ struct GameDetailView: View {
     private var facts: some View {
         BrandContentCard {
             VStack(spacing: Theme.Spacing.m) {
-                LabeledContent(String(localized: "games.detail.where"), value: "\(game.venue.name), \(game.venue.city)")
+                LabeledContent(String(localized: "games.detail.where"), value: "\(game.venue.name), \(CityText.shown(game.venue.cityNames))")
                 divider
                 LabeledContent(String(localized: "games.detail.court"), value: game.courtName)
                 LabeledContent(String(localized: "games.detail.price"), value: GameText.money(game))
