@@ -26,19 +26,18 @@ struct PhoneStepView: View {
         NavigationStack {
             Form {
                 Section {
-                    // The full title here, where it wraps: beside «Не сега» in the bar it is cut.
+                    // The full title here, where it wraps: beside «Не сега» in the band it is cut.
                     Text(String(localized: "phone.step.title"))
                         .font(.headline)
                         .accessibilityAddTraits(.isHeader)
                     Text(String(localized: "phone.step.description"))
                 }
+                .brandListRow()
                 if let sent {
                     Section {
                         TextField(String(localized: "phone.step.code.label"), text: $code)
                             .keyboardType(.numberPad)
                             .textContentType(.oneTimeCode)
-                        Button(String(localized: "phone.step.code.submit"), action: confirm)
-                            .disabled(busy || code.isEmpty)
                         Button(String(localized: "phone.step.code.resend"), action: resend)
                             .disabled(busy)
                         Button(String(localized: "phone.step.code.change"), action: changeNumber)
@@ -48,39 +47,55 @@ struct PhoneStepView: View {
                     } footer: {
                         if let note { Text(note) }
                     }
+                    .brandListRow()
+                    Section {
+                        Button(String(localized: "phone.step.code.submit"), action: confirm)
+                            .buttonStyle(.brandPrimary)
+                            .disabled(busy || code.isEmpty)
+                    }
+                    .listPillRow()
                 } else {
                     Section {
                         TextField(String(localized: "phone.step.number.placeholder"), text: $number)
                             .keyboardType(.phonePad)
                             .textContentType(.telephoneNumber)
-                        Button(String(localized: "phone.step.number.submit"), action: send)
-                            .disabled(busy || number.trimmingCharacters(in: .whitespaces).isEmpty)
                     } header: {
                         Text(String(localized: "phone.step.number.label"))
                     } footer: {
                         Text(String(localized: "phone.step.number.hint"))
                     }
+                    .brandListRow()
+                    Section {
+                        Button(String(localized: "phone.step.number.submit"), action: send)
+                            .buttonStyle(.brandPrimary)
+                            .disabled(busy || number.trimmingCharacters(in: .whitespaces).isEmpty)
+                    }
+                    .listPillRow()
                 }
                 if let problem {
                     Section {
                         Text(problem)
-                            .foregroundStyle(.red)
+                            .foregroundStyle(Theme.Palette.danger)
                             .accessibilityFocused($problemFocused)
                     }
+                    .brandListRow()
                 }
                 Section {
                     Text(String(localized: "phone.step.privacy"))
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
+                .brandListRow()
             }
+            .brandPage()
+            // Hidden with the system bar; still what VoiceOver calls the screen.
             .navigationTitle(String(localized: "phone.step.number.label"))
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(String(localized: "phone.step.later"), action: later)
-                        .disabled(busy)
-                }
+            .brandHeader(.title(String(localized: "phone.step.number.label"))) {
+                Button(String(localized: "phone.step.later"), action: later)
+                    .font(.body.weight(.semibold))
+                    .foregroundStyle(Theme.Palette.onHeader)
+                    .frame(minHeight: Theme.minTarget)
+                    .disabled(busy)
             }
         }
         .interactiveDismissDisabled(busy)

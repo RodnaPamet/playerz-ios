@@ -25,11 +25,13 @@ struct LegalStepView: View {
                 Section {
                     Text(String(localized: "onboarding.terms.description"))
                 }
+                .brandListRow()
                 Section {
                     ForEach(owed.texts) { text in
                         LegalTextRow(text: text, url: session.legalTextURL(text.id))
                     }
                 }
+                .brandListRow()
                 Section {
                     Button(action: accept) {
                         HStack {
@@ -39,27 +41,32 @@ struct LegalStepView: View {
                                     : String(localized: "onboarding.terms.accept")
                             )
                             if accepting {
-                                Spacer()
-                                ProgressView()
+                                ProgressView().tint(Theme.Palette.onAccent)
                             }
                         }
                     }
+                    .buttonStyle(.brandPrimary)
                     .disabled(accepting)
                     if let problem {
                         Text(problem)
-                            .foregroundStyle(.red)
+                            .foregroundStyle(Theme.Palette.danger)
                             .accessibilityFocused($problemFocused)
                     }
                 } footer: {
                     Text(String(localized: "onboarding.terms.decline"))
                 }
+                .listPillRow()
                 Section {
                     Button(String(localized: "profile.title"), action: openProfile)
+                        .buttonStyle(.brandSecondary)
                 }
+                .listPillRow()
             }
+            .brandPage()
+            // Hidden with the system bar; still what VoiceOver calls the screen.
             .navigationTitle(String(localized: "onboarding.terms.title"))
-            // Inline: a large title cannot wrap, and «Условия и поверителност» is cut.
-            .navigationBarTitleDisplayMode(.inline)
+            // The band's title wraps, so «Условия и поверителност» is no longer cut.
+            .brandHeader(.title(String(localized: "onboarding.terms.title")))
             .sheet(isPresented: $showingProfile) {
                 ProfileView(session: session)
             }

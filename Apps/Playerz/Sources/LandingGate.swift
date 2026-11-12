@@ -52,11 +52,15 @@ struct LandingGate<Tabs: View>: View {
                 case .club: ClubAccountView(session: session)
                 }
             } else if failed {
-                ContentUnavailableView {
-                    Text(String(localized: "profile.failed"))
-                } actions: {
-                    Button(String(localized: "venues.retry")) { Task { await load() } }
-                    Button(String(localized: "common.signOut")) { Task { await session.signOut() } }
+                NavigationStack {
+                    BrandEmptyState(systemImage: "wifi.exclamationmark", title: String(localized: "profile.failed")) {
+                        Button(String(localized: "venues.retry")) { Task { await load() } }
+                            .buttonStyle(.brandPrimary(fullWidth: false))
+                        Button(String(localized: "common.signOut")) { Task { await session.signOut() } }
+                            .buttonStyle(.brandSecondary(fullWidth: false))
+                    }
+                    .brandPage()
+                    .brandHeader(.wordmark)
                 }
             } else {
                 ProgressView().controlSize(.large)
@@ -132,6 +136,7 @@ private struct AccountKindView: View {
                 Section {
                     Text(String(localized: "kind.description"))
                 }
+                .brandListRow()
                 Section(String(localized: "kind.legend")) {
                     Picker(String(localized: "kind.legend"), selection: $kind) {
                         VStack(alignment: .leading) {
@@ -147,20 +152,28 @@ private struct AccountKindView: View {
                     }
                     .pickerStyle(.inline)
                     .labelsHidden()
+                    .tint(Theme.Palette.accentText)
                 }
+                .brandListRow()
                 if let problem {
-                    Section { Text(problem).foregroundStyle(.red) }
+                    Section { Text(problem).foregroundStyle(Theme.Palette.danger) }
+                        .brandListRow()
                 }
                 Section {
                     Button(String(localized: "kind.continue")) { Task { await choose() } }
+                        .buttonStyle(.brandPrimary)
                         .disabled(busy)
                 }
+                .listPillRow()
             }
+            .brandPage()
+            // Hidden with the system bar; still what VoiceOver calls the screen.
             .navigationTitle(String(localized: "kind.title"))
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(String(localized: "common.signOut")) { Task { await session.signOut() } }
-                }
+            .brandHeader(.title(String(localized: "kind.title"))) {
+                Button(String(localized: "common.signOut")) { Task { await session.signOut() } }
+                    .font(.body.weight(.semibold))
+                    .foregroundStyle(Theme.Palette.onHeader)
+                    .frame(minHeight: Theme.minTarget)
             }
         }
     }
@@ -196,13 +209,19 @@ private struct ClubAccountView: View {
     @Bindable var session: SessionModel
 
     var body: some View {
-        ContentUnavailableView {
-            Label(String(localized: "club.title"), systemImage: "building.2")
-        } description: {
-            Text(String(localized: "club.description"))
-        } actions: {
-            Link(String(localized: "club.openWeb"), destination: URL(string: "https://playerz.bg")!)
-            Button(String(localized: "common.signOut")) { Task { await session.signOut() } }
+        NavigationStack {
+            BrandEmptyState(
+                systemImage: "building.2",
+                title: String(localized: "club.title"),
+                message: String(localized: "club.description")
+            ) {
+                Link(String(localized: "club.openWeb"), destination: URL(string: "https://playerz.bg")!)
+                    .buttonStyle(.brandPrimary(fullWidth: false))
+                Button(String(localized: "common.signOut")) { Task { await session.signOut() } }
+                    .buttonStyle(.brandSecondary(fullWidth: false))
+            }
+            .brandPage()
+            .brandHeader(.wordmark)
         }
     }
 }
