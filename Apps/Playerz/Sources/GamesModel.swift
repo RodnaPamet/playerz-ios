@@ -22,9 +22,8 @@ final class GamesModel {
     var day: VenueDay?
     var city: String?
 
-    /// What the filters can offer, read from the clubs the server lists: there
-    /// is no endpoint that names the cities or the sports with games in them.
-    private(set) var cities: [String] = []
+    /// What the filters can offer: the server's venue facets (projectZ#667).
+    private(set) var cities: [CityChoice] = []
     private(set) var offeredSports: [String] = Sports.known
 
     /// `date` is a day AT THE VENUE; a Sofia club's "today" is Sofia's. The
@@ -88,18 +87,13 @@ final class GamesModel {
         }
     }
 
-    /// The cities and sports of the listed clubs, once: what the sport sheet
-    /// and the city filter offer. A failure leaves the known sports and no cities.
+    /// The cities and sports the server's venues have, once: what the sport
+    /// sheet and the city filter offer. A failure leaves the known sports and no cities.
     func loadChoices(_ session: SessionModel) async {
-        guard cities.isEmpty, let client = await session.client() else { return }
-        guard let venues = try? await client.listVenues(.init(query: .init(limit: 50))).ok.body.json.data.items else { return }
-        var seen = Set<String>()
-        cities = venues.map(\.city).filter { !$0.isEmpty && seen.insert($0).inserted }
-        let played = Set(venues.flatMap(\.sports))
-        if !played.isEmpty {
-            // The spec's order first, then whatever the server added since this build.
-            offeredSports = Sports.known.filter(played.contains) + played.subtracting(Sports.known).sorted()
-        }
+        guard cities.isEmpty, let client = await session.client(),
+              let facets = await VenueFacetChoices.load(client) else { return }
+        cities = facets.cities
+        if !facets.sports.isEmpty { offeredSports = facets.sports }
     }
 
     /// A game the server just answered with (a request sent): shown at once,

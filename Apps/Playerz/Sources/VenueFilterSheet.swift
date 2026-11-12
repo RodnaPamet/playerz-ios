@@ -3,13 +3,13 @@ import SwiftUI
 /// «Филтри» for the club list: city, sport, indoor or outdoor. The choices are
 /// a draft until «Покажи клубовете», so the list is read once, not per tap.
 struct VenueFilterSheet: View {
-    let cities: [String]
+    let cities: [CityChoice]
     let sports: [String]
     let apply: (VenueFilters) -> Void
 
     @State private var draft: VenueFilters
 
-    init(filters: VenueFilters, cities: [String], sports: [String], apply: @escaping (VenueFilters) -> Void) {
+    init(filters: VenueFilters, cities: [CityChoice], sports: [String], apply: @escaping (VenueFilters) -> Void) {
         _draft = State(initialValue: filters)
         self.cities = cities
         self.sports = sports
@@ -23,8 +23,8 @@ struct VenueFilterSheet: View {
                     BrandChip(String(localized: "venues.filter.allCities"), isSelected: draft.city == nil) {
                         draft.city = nil
                     }
-                    ForEach(cities, id: \.self) { city in
-                        BrandChip(city, isSelected: draft.city == city) { draft.city = city }
+                    ForEach(cities) { city in
+                        BrandChip(city.name, isSelected: draft.city == city.value) { draft.city = city.value }
                     }
                 }
             }
@@ -76,6 +76,8 @@ struct VenueFilterSheet: View {
 
 #Preview {
     VenueFilterSheet(
-        filters: VenueFilters(city: "София"), cities: ["Пловдив", "София"], sports: ["TENNIS", "PADEL"]
+        filters: VenueFilters(city: "sofia"),
+        cities: [CityChoice(value: "plovdiv", name: "Пловдив"), CityChoice(value: "sofia", name: "София")],
+        sports: ["TENNIS", "PADEL"]
     ) { _ in }
 }

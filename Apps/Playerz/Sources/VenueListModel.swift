@@ -27,6 +27,7 @@ final class VenueListModel {
     struct Row: Identifiable {
         let id: String
         let name: String
+        /// In the app's language (projectZ#667).
         let city: String
         let country: String
         let fromPriceCents: Int?
@@ -46,10 +47,15 @@ final class VenueListModel {
     private(set) var rows: [Row] = []
     private(set) var mode: Mode = .all
     private(set) var filters = VenueFilters()
-    /// The cities and sports to offer in the filter: those of the clubs the
-    /// unfiltered list returned, so every option finds at least one club.
-    private(set) var cities: [String] = []
+    /// The cities and sports to offer in the filter: the server's venue
+    /// facets (projectZ#667), so every option finds at least one club.
+    private(set) var cities: [CityChoice] = []
     private(set) var sports: [String] = []
+
+    /// The chosen city's name, for its chip.
+    var cityName: String? {
+        filters.city.map { value in cities.first { $0.value == value }?.name ?? value }
+    }
     private var nextCursor: String?
 
     private let location = LocationProvider()
@@ -94,7 +100,7 @@ final class VenueListModel {
                 let page = try await client.listVenues(query: query(cursor: nil)).ok.body.json.data
                 rows = page.items.map { Self.row($0) }
                 nextCursor = page.nextCursor
-                if filters == VenueFilters() { remember(page.items) }
+                await loadChoices(client)
 
             case .near:
                 if !quiet { phase = .locating }
@@ -141,7 +147,6 @@ final class VenueListModel {
         let seen = Set(rows.map(\.id))
         rows += page.items.map { Self.row($0) }.filter { !seen.contains($0.id) }
         nextCursor = page.nextCursor
-        if filters == VenueFilters() { remember(page.items) }
     }
 
     private func query(cursor: String?) -> Operations.listVenues.Input.Query {
@@ -149,16 +154,16 @@ final class VenueListModel {
         .init(city: filters.city, sport: filters.sport, indoor: filters.indoor, cursor: cursor, limit: 50)
     }
 
-    private func remember(_ items: [Components.Schemas.VenueSummary]) {
-        cities = Array(Set(cities + items.map(\.city))).sorted { $0.localizedCompare($1) == .orderedAscending }
-        let found = Set(sports + items.flatMap(\.sports))
-        // The server's order for the sports this build names, then any other.
-        sports = Sports.known.filter(found.contains) + found.subtracting(Sports.known).sorted()
+    /// Once; a failure leaves the filter without those sections until the next load.
+    private func loadChoices(_ client: Client) async {
+        guard cities.isEmpty, let facets = await VenueFacetChoices.load(client) else { return }
+        cities = facets.cities
+        sports = facets.sports
     }
 
     private static func row(_ venue: Components.Schemas.VenueSummary, distanceKm: Double? = nil) -> Row {
         Row(
-            id: venue.id, name: venue.name, city: venue.city, country: venue.country,
+            id: venue.id, name: venue.name, city: CityText.shown(venue.cityNames), country: venue.country,
             fromPriceCents: venue.fromPriceCents, currency: venue.currency, distanceKm: distanceKm,
             sports: venue.sports, avgRating: venue.avgRating, reviewCount: venue.reviewCount,
             cover: venue.cover, clubLogoUrl: venue.clubLogoUrl
