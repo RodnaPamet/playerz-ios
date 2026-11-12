@@ -15421,6 +15421,22 @@
         }
       }
     },
+    "venue.photos": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Снимки"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Photos"
+          }
+        }
+      }
+    },
     "venue.slotTaken": {
       "localizations": {
         "bg": {

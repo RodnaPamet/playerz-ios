@@ -140,6 +140,13 @@ struct VenueDetailView: View {
                 // The card is its own surface: no row box around it.
                 .listRowInsets(EdgeInsets())
                 .listRowBackground(Color.clear)
+                if !venue.photos.isEmpty {
+                    Section {
+                        VenueGallery(photos: venue.photos, serverURL: session.serverURL)
+                    }
+                    .listRowInsets(EdgeInsets())
+                    .listRowBackground(Color.clear)
+                }
             }
             Group {
                 sections
