@@ -96,6 +96,21 @@ struct GameCourtView: View {
                 }
                 .overlay(alignment: .bottomTrailing) { mark("checkmark") }
                 .accessibilityHidden(true)
+        case .player(let person):
+            portrait(name: person.name, picture: person.picture)
+                .overlay(alignment: .bottom) {
+                    if let level = person.level {
+                        Text(level)
+                            .font(.caption2.weight(.bold))
+                            .foregroundStyle(Theme.Palette.headerInk)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 1)
+                            .background(Theme.Palette.onHeader, in: .capsule)
+                            .overlay(Capsule().strokeBorder(Theme.Palette.headerInk.opacity(0.2)))
+                            .offset(y: seat * 0.18)
+                    }
+                }
+                .accessibilityHidden(true)
         case .taken:
             Circle()
                 .fill(Theme.Palette.onHeader.opacity(0.85))
@@ -132,11 +147,15 @@ struct GameCourtView: View {
     /// The organiser: their picture, their initial, or a figure when the
     /// server gives neither.
     private var face: some View {
+        portrait(name: organiserName, picture: organiserAvatar)
+    }
+
+    private func portrait(name: String?, picture: URL?) -> some View {
         Circle()
             .fill(Theme.Palette.onHeader)
             .frame(width: seat, height: seat)
             .overlay {
-                if let initial = organiserName?.first {
+                if let initial = name?.first {
                     Text(String(initial).uppercased())
                         .font(.system(size: seat * 0.42, weight: .bold, design: .rounded))
                         .foregroundStyle(Theme.Palette.headerInk)
@@ -145,8 +164,8 @@ struct GameCourtView: View {
                 }
             }
             .overlay {
-                if let organiserAvatar {
-                    AsyncImage(url: organiserAvatar) { image in
+                if let picture {
+                    AsyncImage(url: picture) { image in
                         image.resizable().scaledToFill()
                     } placeholder: {
                         Color.clear

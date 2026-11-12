@@ -47,6 +47,22 @@ struct OpenPlayDecodingTests {
         #expect(game.endTs.timeIntervalSince(game.startTs) == 3600)
     }
 
+    /// A viewer who asked sees who plays, with the level each shows (projectZ#676).
+    @Test func namedPlayersAndTheCourtTotal() async throws {
+        let named = GAME.replacingOccurrences(
+            of: #""players":null"#,
+            with: #""players":[{"firstName":"Иван","avatarUrl":null,"level":null,"isBooker":true},{"firstName":"Мария","avatarUrl":"/media/a.webp","level":4.5,"isBooker":false}]"#
+        )
+        #expect(named != GAME)
+        let game = try await client(["getOpenGame": (200, named)])
+            .getOpenGame(path: .init(id: "g")).ok.body.json.data
+        let players = try #require(game.players)
+        #expect(players.map(\.firstName) == ["Иван", "Мария"])
+        #expect(players[1].level == 4.5 && players[0].isBooker)
+        #expect(game.courtPrice.totalCents == 2400 && game.courtPrice.currency == "EUR")
+        #expect(game.isIndoor == false && game.venue.logoUrl == nil)
+    }
+
     @Test func askingAnswersTheGameWithTheRequest() async throws {
         let response = try await client().askToJoinGame(path: .init(id: "g"), body: .json(.init(note: "x")))
         let game = try response.created.body.json.data

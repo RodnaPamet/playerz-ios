@@ -5657,6 +5657,22 @@
         }
       }
     },
+    "games.card.with %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "с %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "with %@"
+          }
+        }
+      }
+    },
     "games.court.more %lld": {
       "localizations": {
         "bg": {
@@ -5669,6 +5685,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "More places not drawn: %lld"
+          }
+        }
+      }
+    },
+    "games.courtPrice %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Корт: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Court: %@"
           }
         }
       }
@@ -5717,6 +5749,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Level"
+          }
+        }
+      }
+    },
+    "games.detail.level %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ниво %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Level %@"
           }
         }
       }
@@ -5821,6 +5869,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Players"
+          }
+        }
+      }
+    },
+    "games.detail.price": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Цена на корта"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Court price"
           }
         }
       }
@@ -6129,6 +6193,22 @@
         }
       }
     },
+    "games.filter.afternoon": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Следобед"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Afternoon"
+          }
+        }
+      }
+    },
     "games.filter.allSports": {
       "localizations": {
         "bg": {
@@ -6177,6 +6257,22 @@
         }
       }
     },
+    "games.filter.anyTime": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "По всяко време"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Any time"
+          }
+        }
+      }
+    },
     "games.filter.city": {
       "localizations": {
         "bg": {
@@ -6209,6 +6305,38 @@
         }
       }
     },
+    "games.filter.evening": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вечер"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Evening"
+          }
+        }
+      }
+    },
+    "games.filter.morning": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сутрин"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Morning"
+          }
+        }
+      }
+    },
     "games.filter.sport": {
       "localizations": {
         "bg": {
@@ -6221,6 +6349,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sport"
+          }
+        }
+      }
+    },
+    "games.filter.time": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Час"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Time"
           }
         }
       }
@@ -6317,6 +6461,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Filters"
+          }
+        }
+      }
+    },
+    "games.indoor": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Закрит"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indoor"
           }
         }
       }

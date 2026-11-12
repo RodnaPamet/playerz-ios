@@ -21,6 +21,10 @@ final class GamesModel {
     /// The day at the venue, or any day.
     var day: VenueDay?
     var city: String?
+    /// Morning, afternoon or evening at the venue (projectZ#676).
+    var part: DayPart?
+    /// Indoor or outdoor courts only.
+    var indoor: Bool?
 
     /// What the filters can offer: the server's venue facets (projectZ#667).
     private(set) var cities: [CityChoice] = []
@@ -33,7 +37,16 @@ final class GamesModel {
     /// Games are listed 14 days ahead, so those are the days worth offering.
     var days: [VenueDay] { VenueDay.upcoming(inTimeZone: Self.zone) }
 
-    var activeFilters: Int { (day == nil ? 0 : 1) + (city == nil ? 0 : 1) }
+    var activeFilters: Int {
+        [day != nil, city != nil, part != nil, indoor != nil].filter { $0 }.count
+    }
+
+    private func query(cursor: String? = nil) -> Operations.listOpenGames.Input.Query {
+        .init(
+            sport: sport, date: dateParam, fromHour: part?.hours.lowerBound, toHour: part?.hours.upperBound,
+            indoor: indoor, city: city, cursor: cursor
+        )
+    }
 
     private var dateParam: String? { day?.apiDate }
 
@@ -45,7 +58,7 @@ final class GamesModel {
         }
         do {
             let page = try await client
-                .listOpenGames(.init(query: .init(sport: sport, date: dateParam, city: city)))
+                .listOpenGames(.init(query: query()))
                 .ok.body.json.data
             games = page.items
             nextCursor = page.nextCursor
@@ -62,7 +75,7 @@ final class GamesModel {
         defer { loadingMore = false }
         do {
             let page = try await client
-                .listOpenGames(.init(query: .init(sport: sport, date: dateParam, city: city, cursor: cursor)))
+                .listOpenGames(.init(query: query(cursor: cursor)))
                 .ok.body.json.data
             // A game can move between pages while they are read; keep the first copy.
             let seen = Set(games.map(\.id))
@@ -101,4 +114,34 @@ final class GamesModel {
     func replace(_ game: Components.Schemas.OpenGame) {
         if let index = games.firstIndex(where: { $0.id == game.id }) { games[index] = game }
     }
+}
+
+/// A part of the day for the games filter: start hours at the venue, the
+/// server's `fromHour` up to before `toHour`.
+enum DayPart: CaseIterable, Hashable {
+    case morning, afternoon, evening
+
+    var hours: Range<Int> {
+        switch self {
+        case .morning: 0..<12
+        case .afternoon: 12..<17
+        case .evening: 17..<24
+        }
+    }
+
+    var label: String {
+        switch self {
+        case .morning: String(localized: "games.filter.morning")
+        case .afternoon: String(localized: "games.filter.afternoon")
+        case .evening: String(localized: "games.filter.evening")
+        }
+    }
+}
+
+/// What the games' «Филтри» sheet hands back.
+struct GamesFilterChoice: Equatable {
+    var day: VenueDay?
+    var city: String?
+    var part: DayPart?
+    var indoor: Bool?
 }

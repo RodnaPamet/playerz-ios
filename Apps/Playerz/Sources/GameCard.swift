@@ -6,8 +6,8 @@ import SwiftUI
 /// game; a «+» on the court asks for a place. `status` is the caller's
 /// request, on «Моите заявки».
 ///
-/// There is no price and no player levels here: the server sends neither
-/// with a game (the court is paid at the club).
+/// The price is the court's total (owner 2026-11-12), paid at the club; the
+/// players are named only for whoever books, plays or asked (projectZ#676).
 struct GameCard: View {
     let game: Components.Schemas.OpenGame
     var status: Components.Schemas.OpenGameRequestStatus?
@@ -26,7 +26,7 @@ struct GameCard: View {
                 VStack(alignment: .leading, spacing: 2) { whenParts }
             }
             GameCourtView(
-                seats: GameSeats(game: game),
+                seats: GameSeats(game: game, server: server),
                 court: GameSport.court(game.sport),
                 organiserName: game.booker.firstName,
                 organiserAvatar: GameText.picture(game.booker.avatarUrl, server: server),
@@ -109,13 +109,26 @@ struct GameCard: View {
             .foregroundStyle(.secondary)
     }
 
+    @ScaledMetric(relativeTo: .body) private var logoSide: CGFloat = 40
+
     private var place: some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(game.venue.name)
-                .font(Theme.Typography.rowTitle)
-            Label("\(game.courtName) · \(game.venue.city)", systemImage: "mappin.and.ellipse")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+        HStack(alignment: .top, spacing: Theme.Spacing.m) {
+            VenueLogoTile(
+                name: game.venue.name,
+                logoURL: game.venue.logoUrl.flatMap { mediaURL($0, serverURL: server) }
+            )
+            .frame(width: logoSide, height: logoSide)
+            .clipShape(.rect(cornerRadius: Theme.Radius.tile))
+            .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(game.venue.name)
+                    .font(Theme.Typography.rowTitle)
+                Label(GameText.courtLine(game), systemImage: "mappin.and.ellipse")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                Text(GameText.courtPrice(game))
+                    .font(.subheadline.weight(.semibold))
+            }
         }
     }
 
