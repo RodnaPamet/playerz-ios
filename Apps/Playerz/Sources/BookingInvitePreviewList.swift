@@ -8,6 +8,8 @@ struct BookingInvitePreviewList: View {
     let problem: String?
     let joining: Bool
     let join: () -> Void
+    /// «Към моите резервации», for the booker or a player already on it (projectZ#681).
+    var openBookings: () -> Void = {}
 
     var body: some View {
         List {
@@ -35,6 +37,19 @@ struct BookingInvitePreviewList: View {
                 }
             }
             .brandListRow()
+            // Their own booking, or one they are on already (projectZ#681): no
+            // «Включи се», which would only answer that they are on it.
+            if let viewer = preview.viewer, viewer.isPlaying {
+                Section {
+                    Text(String(localized: viewer.isBooker ? "bookingInvite.yours" : "bookingInvite.alreadyOn"))
+                        .font(Theme.Typography.rowTitle)
+                        .padding(.horizontal, Theme.Spacing.l)
+                        .padding(.bottom, Theme.Spacing.s)
+                    Button(String(localized: "bookingInvite.toMyBookings"), action: openBookings)
+                        .buttonStyle(.brandSecondary)
+                }
+                .bareListRow()
+            } else {
             // The screen's one action: the accent pill, on the page.
             Section {
                 Button(action: join) {
@@ -57,6 +72,7 @@ struct BookingInvitePreviewList: View {
                 .padding(.top, Theme.Spacing.s)
             }
             .bareListRow()
+            }
         }
     }
 

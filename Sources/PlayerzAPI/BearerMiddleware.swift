@@ -37,8 +37,9 @@ public struct BearerMiddleware: ClientMiddleware {
         "getClub",
         // The funnel beacon (#17): anonymous by construction.
         "postVenueUsageEvent",
-        // What an invite link is for (#14): read before signing in.
-        "previewBookingInvite",
+        // Not `previewBookingInvite` since projectZ#681: it is still read
+        // signed out (no token then), and signed in the token is what lets
+        // the server tell the booker, or a player already on it, apart.
     ]
 
     public init(

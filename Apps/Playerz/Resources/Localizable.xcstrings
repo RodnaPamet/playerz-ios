@@ -417,6 +417,22 @@
         }
       }
     },
+    "bookingInvite.alreadyOn": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вече сте в тази игра."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You are already in this game."
+          }
+        }
+      }
+    },
     "bookingInvite.court": {
       "localizations": {
         "bg": {
@@ -773,6 +789,22 @@
         }
       }
     },
+    "bookingInvite.toMyBookings": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Към моите резервации"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Go to my bookings"
+          }
+        }
+      }
+    },
     "bookingInvite.track.court": {
       "localizations": {
         "bg": {
@@ -817,6 +849,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Where"
+          }
+        }
+      }
+    },
+    "bookingInvite.yours": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Това е вашата резервация: поканата е за други играчи."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This is your booking: the invite is for other players."
           }
         }
       }

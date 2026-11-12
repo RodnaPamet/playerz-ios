@@ -8,7 +8,7 @@ struct BookingDetailPlace: View {
 
     var body: some View {
         Section(String(localized: "myBookings.detail.address")) {
-            Text("\(booking.venue.addressLine), \(booking.venue.city)")
+            Text("\(booking.venue.addressLine), \(CityText.shown(booking.venue.cityNames))")
             if let directions {
                 Link(destination: directions) {
                     Label(String(localized: "myBookings.detail.directions"), systemImage: "map")
