@@ -36,6 +36,10 @@ struct ConversationView: View {
         .brandHeader(.back(title)) { menu }
         // The bottom of this screen is the composer.
         .floatingTabBarHidden()
+        .onAppear { session.conversationOnScreen = model.conversationId }
+        .onDisappear {
+            if session.conversationOnScreen == model.conversationId { session.conversationOnScreen = nil }
+        }
         .task {
             await model.load(session)
             // A DEBUG launch can look at the report sheet (`PLAYERZ_OPEN=report`).
@@ -58,9 +62,7 @@ struct ConversationView: View {
         } message: { _ in
             Text(String(localized: "messages.retractBody"))
         }
-        // ReportSheet brings its own dark sheet look: it is presented from a
-        // coach's screen too.
-        .sheet(item: $reporting) { what in
+        .brandSheet(item: $reporting, detents: [.medium, .large]) { what in
             ReportSheet(title: String(localized: "messages.report")) { reason, details in
                 await model.report(what, reason: reason, details: details, session)
             } done: {
@@ -206,7 +208,7 @@ struct ConversationView: View {
 
     @ViewBuilder private var menu: some View {
         if let conversation = model.conversation {
-            HeaderMenuButton(label: String(localized: "messages.more")) {
+            BrandHeaderMenuButton(label: String(localized: "messages.more")) {
                 // A game chat is reported, not blocked (#376).
                 if conversation.kind == .player, conversation.state != .closed {
                     Button(conversation.blockedByMe

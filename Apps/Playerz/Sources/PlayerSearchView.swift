@@ -170,7 +170,7 @@ struct PlayerCardView: View {
                             .buttonStyle(.brandPrimary)
                             .disabled(busy)
                     }
-                    .listPillRow()
+                    .bareListRow()
                 }
             } else {
                 ProgressView()

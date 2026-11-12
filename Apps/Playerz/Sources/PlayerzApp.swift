@@ -155,6 +155,16 @@ struct RootView: View {
                         // A page under the header band with a back button, as the
                         // inbox is, not a card.
                         .fullScreenCover(isPresented: $session.notificationsOpen) {
+                            // A push tapped while it was open (#56): its screen, now that it can rise.
+                            if let link = session.linkAfterNotifications {
+                                session.linkAfterNotifications = nil
+                                session.pendingLink = link
+                            }
+                            if let invite = session.inviteAfterNotifications {
+                                session.inviteAfterNotifications = nil
+                                session.pendingInvite = invite
+                            }
+                        } content: {
                             NotificationsView(session: session)
                         }
                         // A tapped push's screen (#15).
@@ -176,6 +186,9 @@ struct RootView: View {
         .onChange(of: session.requestedTab) { _, requested in
             guard let requested else { return }
             session.requestedTab = nil
+            // A tab asked for while «Известия» is open: the list closes, or the
+            // switch happens under it, unseen (#56).
+            session.notificationsOpen = false
             if requested == .messages {
                 // A layer of the shell, so a sheet still closing does not stop it.
                 session.messagesOpen = true
