@@ -75,6 +75,8 @@ struct BrandCoverCard<Cover: View, Logo: View, Content: View>: View {
                 .background(Theme.Palette.card)
                 .clipShape(.rect(cornerRadius: Theme.Radius.tile))
                 .overlay(RoundedRectangle(cornerRadius: Theme.Radius.tile).strokeBorder(Theme.Palette.card, lineWidth: 3))
+                // The card-coloured ring vanishes on a dark card: a hairline outside it keeps the tile's edge.
+                .overlay(RoundedRectangle(cornerRadius: Theme.Radius.tile).strokeBorder(Theme.Palette.hairline, lineWidth: 1))
                 .themeShadow(.card)
                 .padding(.leading, Theme.Spacing.l)
                 .offset(y: coverHeight - logoSide / 2)
