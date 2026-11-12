@@ -241,6 +241,22 @@
         }
       }
     },
+    "bookingGame.linkParticipant": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Играта"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The game"
+          }
+        }
+      }
+    },
     "bookingGame.noRequests": {
       "localizations": {
         "bg": {
