@@ -51,17 +51,14 @@ struct GamesFilterSheet: View {
     private func section<Chips: View>(_ title: String, @ViewBuilder chips: () -> Chips) -> some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
             Text(title)
-                .font(.caption.weight(.semibold))
+                .font(.footnote.weight(.semibold))
                 .textCase(.uppercase)
                 .foregroundStyle(.white.opacity(0.72))
                 .accessibilityAddTraits(.isHeader)
-            // To the sheet's edges, so a long row visibly runs on.
-            ScrollView(.horizontal) {
-                HStack(spacing: Theme.Spacing.s) { chips() }
-                    .padding(.horizontal, Theme.Spacing.l)
-            }
-            .scrollIndicators(.hidden)
-            .padding(.horizontal, -Theme.Spacing.l)
+            // To the sheet's edges, so a long row visibly runs on; the same
+            // row as the clubs' «Филтри», with its cap on the text size.
+            BrandChipRow { chips() }
+                .padding(.horizontal, -Theme.Spacing.l)
         }
     }
 }

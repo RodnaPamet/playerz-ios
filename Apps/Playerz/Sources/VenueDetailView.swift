@@ -44,7 +44,8 @@ struct VenueDetailView: View {
                 BrandChipRow {
                     ForEach(model.days) { day in
                         BrandChip(
-                            day.label(timeZone: model.timezone, today: String(localized: "venue.today")),
+                            // «Днес», «Утре», «сб, 14.11»: as the games' day filter says it.
+                            GameText.filterDay(day, zone: model.timezone),
                             isSelected: day.apiDate == model.selectedDate
                         ) {
                             Task { await model.select(session, venueId: venueId, day: day) }

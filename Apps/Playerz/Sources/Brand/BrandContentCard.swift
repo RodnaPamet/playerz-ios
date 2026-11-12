@@ -32,7 +32,10 @@ struct BrandCoverCard<Cover: View, Logo: View, Content: View>: View {
     let content: Content
 
     /// Grows with the text size, so the logo keeps its place beside larger text.
-    @ScaledMetric(relativeTo: .title3) private var logoSide: CGFloat = 64
+    @ScaledMetric(relativeTo: .title3) private var scaledLogoSide: CGFloat = 64
+    /// To a point: at the largest sizes an uncapped tile was half the card's
+    /// width and pushed the name it stands for off the first screen.
+    private var logoSide: CGFloat { min(scaledLogoSide, 96) }
 
     init(
         coverHeight: CGFloat = 160,

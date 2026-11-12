@@ -30,10 +30,10 @@ struct GameAskSheet: View {
             VStack(alignment: .leading, spacing: Theme.Spacing.s) {
                 Text(String(localized: "games.noteLabel"))
                     .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Theme.Palette.onHeader)
                 TextField(String(localized: "games.notePlaceholder"), text: $note, axis: .vertical)
                     .lineLimit(3...6)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Theme.Palette.onHeader)
                     .padding(Theme.Spacing.m)
                     .background(Theme.Palette.sheetRow, in: .rect(cornerRadius: Theme.Radius.row))
                     .accessibilityLabel(String(localized: "games.noteLabel"))

@@ -57,21 +57,14 @@ struct VenueFilterSheet: View {
                     }
                 }
             }
-            ViewThatFits(in: .horizontal) {
-                HStack(spacing: Theme.Spacing.m) { buttons }
-                // At large text the two do not fit side by side.
-                VStack(spacing: Theme.Spacing.m) { buttons }
-            }
-            .padding(.top, Theme.Spacing.s)
+            // The same order and widths as the games' «Филтри» (GamesFilterSheet).
+            Button(String(localized: "venues.filter.show")) { apply(draft) }
+                .buttonStyle(.brandPrimary)
+                .padding(.top, Theme.Spacing.s)
+            Button(String(localized: "venues.filter.clear")) { draft = VenueFilters() }
+                .buttonStyle(.brandSecondary)
+                .disabled(draft == VenueFilters())
         }
-    }
-
-    @ViewBuilder private var buttons: some View {
-        Button(String(localized: "venues.filter.clear")) { draft = VenueFilters() }
-            .buttonStyle(.brandSecondary(fullWidth: false))
-            .disabled(draft == VenueFilters())
-        Button(String(localized: "venues.filter.show")) { apply(draft) }
-            .buttonStyle(.brandPrimary)
     }
 
     /// A named row of chips that scrolls sideways out to the sheet's edges.

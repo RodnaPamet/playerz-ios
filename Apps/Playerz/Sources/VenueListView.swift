@@ -216,14 +216,17 @@ struct VenueListView: View {
                 }
                 .buttonStyle(.brandSecondary(fullWidth: false))
             }
+            // Under the tiles, in the page's own scroll view.
+            .inline()
         case .locationDenied:
             BrandEmptyState(
                 systemImage: "location.slash",
                 title: String(localized: "venues.nearMe"),
                 message: String(localized: "venues.noLocation")
             )
+            .inline()
         case .loaded where model.rows.isEmpty:
-            BrandEmptyState(systemImage: "figure.tennis", title: emptyTitle)
+            BrandEmptyState(systemImage: "figure.tennis", title: emptyTitle).inline()
         case .loaded:
             ForEach(model.rows) { row in
                 NavigationLink {
@@ -261,12 +264,16 @@ private struct VenueCard: View {
                 Text(row.name)
                     .font(Theme.Typography.cardTitle)
                     .foregroundStyle(Color.primary)
+                    // The whole name: in the lazy stack it was cut to one
+                    // line with "…" at the accessibility sizes.
+                    .fixedSize(horizontal: false, vertical: true)
                 // A separate "·" Text is read as its own fragment by VoiceOver and
                 // wraps badly at large sizes. One string instead.
                 Label(placeLine, systemImage: "mappin.and.ellipse")
                     .labelStyle(.titleAndIcon)
                     .font(Theme.Typography.cardSubtitle)
                     .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
                 ChipFlow {
                     if let priceLine {
                         VenueFactChip(text: priceLine, prominent: row.fromPriceCents != nil)

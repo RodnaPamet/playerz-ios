@@ -4,13 +4,15 @@ import SwiftUI
 /// («Скоро»), a title, a sentence, and room for a button. In place of
 /// ContentUnavailableView on restyled screens. It fills the space it is given,
 /// and scrolls when the text is larger than that; it is for a page's whole
-/// content area, not for the inside of another scroll view.
+/// content area. Inside another scroll view (a state under a page's other
+/// content) use `.inline()`: a scroll view in a scroll view has no height.
 struct BrandEmptyState<Actions: View>: View {
     let systemImage: String
     let title: String
     var message: String?
     var badge: String?
     let actions: Actions
+    private var scrolls = true
 
     init(
         systemImage: String,
@@ -31,14 +33,25 @@ struct BrandEmptyState<Actions: View>: View {
     /// in the middle while it fits and scrolls from the top when it does not.
     @State private var room: CGFloat = 0
 
+    /// The stack alone, as tall as its words: for use inside a scroll view.
+    func inline() -> Self {
+        var copy = self
+        copy.scrolls = false
+        return copy
+    }
+
     var body: some View {
+        if scrolls { scrolling } else { stack }
+    }
+
+    private var scrolling: some View {
         // Always a scroll view, measured, not `ViewThatFits`: that one chose
         // the unscrolling stack at the largest text sizes and left the last
         // lines under the tab bar.
         ScrollView {
             stack
                 // Past the floating bar's shadow, so the last line ends clear of it.
-                .padding(.bottom, Theme.Spacing.l)
+                .padding(.bottom, Theme.Spacing.xl)
                 .frame(maxWidth: .infinity, minHeight: room)
         }
         .scrollBounceBehavior(.basedOnSize)
