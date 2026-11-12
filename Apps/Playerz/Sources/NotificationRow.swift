@@ -47,7 +47,7 @@ struct NotificationRow: View {
     }
 
     private var icon: some View {
-        Image(systemName: NotificationCategory(kind: item.kind).systemImage)
+        Image(systemName: NotificationCategory(item).systemImage)
             .font(.headline)
             .foregroundStyle(Theme.Palette.accentText)
             .frame(width: min(iconSide, 64), height: min(iconSide, 64))

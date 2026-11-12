@@ -140,12 +140,9 @@ struct VenueListView: View {
 
     private func loadNextBooking() async {
         guard let client = await session.client() else { return }
-        // `upcoming` is soonest first, so one row is the next one.
-        guard let page = try? await client
-            .listMyBookings(.init(query: .init(limit: 1, when: .upcoming)))
-            .ok.body.json.data
-        else { return }
-        nextBooking = page.items.first
+        // The first of Предстоящи, from the one summary call (projectZ#677).
+        guard let summary = try? await client.getMySummary().ok.body.json.data else { return }
+        nextBooking = summary.nextBooking
     }
 
     // MARK: Clubs

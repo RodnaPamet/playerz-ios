@@ -52,6 +52,9 @@ struct ProfileHubTile: Identifiable {
     var count = 0
     /// What VoiceOver says in place of the title when something is unread.
     var spokenCount: String?
+    /// A count that is not an alert (bookings ahead): the accent, not the
+    /// red of unread.
+    var calm = false
     let action: () -> Void
 }
 
@@ -115,10 +118,10 @@ struct ProfileHubTiles: View {
                     Text("\(tile.count)")
                         .font(Theme.Typography.badge)
                         .monospacedDigit()
-                        .foregroundStyle(Theme.Palette.onBadge)
+                        .foregroundStyle(tile.calm ? Theme.Palette.onAccent : Theme.Palette.onBadge)
                         .padding(.horizontal, 5)
                         .frame(minWidth: 18, minHeight: 18)
-                        .background(Theme.Palette.badge, in: .capsule)
+                        .background(tile.calm ? Theme.Palette.accentFill : Theme.Palette.badge, in: .capsule)
                         .offset(x: 10, y: -8)
                 }
             }

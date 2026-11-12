@@ -13,6 +13,8 @@ struct ProfileView: View {
     @State private var debugAccount = DebugLaunch.profile == .delete || DebugLaunch.profile == .confirm
     @State private var me: Components.Schemas.Me?
     @State private var ratings: Components.Schemas.MyRatings?
+    /// The tiles' numbers (projectZ#677).
+    @State private var summary: Components.Schemas.MySummary?
     @State private var failed = false
     @State private var problem: String?
     // The switch, as the server last said; a change is written back.
@@ -80,11 +82,28 @@ struct ProfileView: View {
     private var tiles: [ProfileHubTile] {
         var tiles: [ProfileHubTile] = []
         if session.modules.openPlay {
-            tiles.append(.init(id: "games", title: String(localized: "tab.games"), systemImage: "figure.tennis") {
+            // Requests still waiting for an answer: what the player is watching for.
+            let waiting = summary?.pendingGameRequests ?? 0
+            tiles.append(.init(
+                id: "games",
+                title: String(localized: "tab.games"),
+                systemImage: "figure.tennis",
+                count: waiting,
+                spokenCount: String(localized: "profile.tile.waiting \(waiting)"),
+                calm: true
+            ) {
                 session.requestedTab = .games
             })
         }
-        tiles.append(.init(id: "bookings", title: String(localized: "tab.bookings"), systemImage: "calendar") {
+        let upcoming = summary?.upcomingBookings ?? 0
+        tiles.append(.init(
+            id: "bookings",
+            title: String(localized: "tab.bookings"),
+            systemImage: "calendar",
+            count: upcoming,
+            spokenCount: String(localized: "profile.tile.upcoming \(upcoming)"),
+            calm: true
+        ) {
             session.requestedTab = .bookings
         })
         if session.modules.messaging {
@@ -237,6 +256,9 @@ struct ProfileView: View {
         if session.modules.ranking,
            let fresh = try? await client.getMyRatings().ok.body.json.data {
             ratings = fresh
+        }
+        if let fresh = try? await client.getMySummary().ok.body.json.data {
+            summary = fresh
         }
     }
 

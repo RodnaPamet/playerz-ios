@@ -1,26 +1,14 @@
 import PlayerzAPI
 
-/// What a notification is about, for the list's chips. The server sends a
-/// `kind` per notification and no grouping of its own, so the groups are
-/// read off the kind's name: a kind added later with a known prefix
-/// (`BOOKING_…`) lands in its group, anything else is only under «Всички».
+/// What a notification is about, for the list's chips: the server's
+/// `category` (projectZ#677), which also filters the list.
 enum NotificationCategory: String, CaseIterable, Hashable {
     case bookings, games, messages, lessons, tournaments, other
 
-    init(kind: String) {
-        if kind == "MESSAGE_RECEIVED" || kind == "CONTACT_REQUEST" {
-            self = .messages
-        } else if kind.hasPrefix("TOURNAMENT_") {
-            self = .tournaments
-        } else if kind.hasPrefix("OPEN_PLAY_") || kind.hasPrefix("RESULT_") || kind == "MATCH_RESULT" {
-            self = .games
-        } else if kind.hasPrefix("LESSON_") || kind.hasPrefix("COACH_") {
-            self = .lessons
-        } else if kind.hasPrefix("BOOKING_") || ["SESSION_FULL", "PAYMENT_RECEIVED", "SPLIT_REQUESTED"].contains(kind) {
-            self = .bookings
-        } else {
-            self = .other
-        }
+    /// The server's group for a notification (projectZ#677), so a new kind
+    /// lands where the server puts it.
+    init(_ item: Components.Schemas.Notification) {
+        self = NotificationCategory(rawValue: item.category.rawValue) ?? .other
     }
 
     /// The chip's word; `other` has no chip.
