@@ -72,7 +72,7 @@ struct TournamentEntrySection: View {
                 .buttonStyle(.brandPrimary)
                 .disabled(busy)
             }
-            .listPillRow()
+            .bareListRow()
         }
     }
 
@@ -100,6 +100,6 @@ struct TournamentEntrySection: View {
                 ? String(localized: "tournaments.feeNote")
                 : String(localized: "tournaments.enterNote"))
         }
-        .listPillRow()
+        .bareListRow()
     }
 }

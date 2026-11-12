@@ -49,7 +49,7 @@ struct SignInView: View {
                     .buttonStyle(.brandPrimary)
                     .disabled(session.busy || email.isEmpty || password.isEmpty)
                 }
-                .listPillRow()
+                .bareListRow()
             }
             .brandPage()
             // Hidden with the system bar; still what VoiceOver calls the screen.

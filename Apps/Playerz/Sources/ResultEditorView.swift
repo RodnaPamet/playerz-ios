@@ -92,7 +92,7 @@ struct ResultEditorView: View {
                     .buttonStyle(.brandPrimary)
                     .disabled(sending)
             }
-            .listPillRow()
+            .bareListRow()
         }
         .brandPage()
         // Hidden with the system bar; still what VoiceOver calls the screen.

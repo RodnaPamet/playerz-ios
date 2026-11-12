@@ -2,10 +2,7 @@ import SwiftUI
 
 /// A round button on the header band that opens a menu («Още»): the face of
 /// `BrandHeaderButton`, for a Menu, whose label cannot be a Button.
-///
-/// Outside Brand/ for now; it belongs beside `BrandHeaderButton` once the
-/// restyle's shared files are open again.
-struct HeaderMenuButton<Content: View>: View {
+struct BrandHeaderMenuButton<Content: View>: View {
     let systemImage: String
     let label: String
     let content: Content
@@ -37,7 +34,7 @@ struct HeaderMenuButton<Content: View>: View {
 
 #Preview {
     HStack {
-        HeaderMenuButton(label: "Още") {
+        BrandHeaderMenuButton(label: "Още") {
             Button(String("Блокирай")) {}
             Button(String("Сигнал"), role: .destructive) {}
         }

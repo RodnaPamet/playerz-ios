@@ -53,7 +53,7 @@ struct PhoneStepView: View {
                             .buttonStyle(.brandPrimary)
                             .disabled(busy || code.isEmpty)
                     }
-                    .listPillRow()
+                    .bareListRow()
                 } else {
                     Section {
                         TextField(String(localized: "phone.step.number.placeholder"), text: $number)
@@ -70,7 +70,7 @@ struct PhoneStepView: View {
                             .buttonStyle(.brandPrimary)
                             .disabled(busy || number.trimmingCharacters(in: .whitespaces).isEmpty)
                     }
-                    .listPillRow()
+                    .bareListRow()
                 }
                 if let problem {
                     Section {
