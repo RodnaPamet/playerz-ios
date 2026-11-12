@@ -22575,6 +22575,8 @@
             "required": [
               "name",
               "city",
+              "cityKey",
+              "cityNames",
               "timezone"
             ],
             "properties": {
@@ -22583,6 +22585,16 @@
               },
               "city": {
                 "type": "string"
+              },
+              "cityKey": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "The canonical city (#686)."
+              },
+              "cityNames": {
+                "$ref": "#/components/schemas/CityNames"
               },
               "timezone": {
                 "type": "string",
