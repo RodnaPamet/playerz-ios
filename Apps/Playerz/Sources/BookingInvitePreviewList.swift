@@ -56,8 +56,7 @@ struct BookingInvitePreviewList: View {
                 )
                 .padding(.top, Theme.Spacing.s)
             }
-            .listRowInsets(EdgeInsets())
-            .listRowBackground(Color.clear)
+            .listPillRow()
         }
     }
 

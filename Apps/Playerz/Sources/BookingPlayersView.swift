@@ -60,8 +60,7 @@ struct BookingPlayersView: View {
                             }
                             .buttonStyle(.brandPrimary)
                         }
-                        .listRowInsets(EdgeInsets())
-                        .listRowBackground(Color.clear)
+                        .listPillRow()
                     }
                 }
                 .refreshable { await load() }

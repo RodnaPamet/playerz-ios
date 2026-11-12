@@ -36,14 +36,6 @@ struct RejectResultSheet: View {
             Button(String(localized: "myBookings.result.back"), action: close)
                 .buttonStyle(.brandSecondary)
         }
-        // The presenter (BookingResultSection) opens this with a plain
-        // `sheet`, so the dark chrome `brandSheet` gives is set here; the
-        // keyboard needs more than the note's height.
-        .presentationDetents([.medium, .large])
-        .presentationDragIndicator(.visible)
-        .presentationBackground(Theme.Palette.sheetSurface)
-        .presentationCornerRadius(Theme.Radius.sheet)
-        .environment(\.colorScheme, .dark)
     }
 
     private func submit() {

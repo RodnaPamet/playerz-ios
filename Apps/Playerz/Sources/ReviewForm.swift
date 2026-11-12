@@ -39,8 +39,7 @@ struct ReviewForm: View {
                     .buttonStyle(.brandPrimary)
                     .disabled(rating == 0 || sending || text.count > maxLength)
             }
-            .listRowInsets(EdgeInsets())
-            .listRowBackground(Color.clear)
+            .listPillRow()
         }
         .brandPage()
         // Hidden with the system bar; still what VoiceOver calls the screen.

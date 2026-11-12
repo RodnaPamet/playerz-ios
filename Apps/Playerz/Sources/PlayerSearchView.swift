@@ -170,8 +170,7 @@ struct PlayerCardView: View {
                             .buttonStyle(.brandPrimary)
                             .disabled(busy)
                     }
-                    .listRowInsets(EdgeInsets())
-                    .listRowBackground(Color.clear)
+                    .listPillRow()
                 }
             } else {
                 ProgressView()
