@@ -36,6 +36,10 @@ struct ConversationView: View {
         .brandHeader(.back(title)) { menu }
         // The bottom of this screen is the composer.
         .floatingTabBarHidden()
+        .onAppear { session.conversationOnScreen = model.conversationId }
+        .onDisappear {
+            if session.conversationOnScreen == model.conversationId { session.conversationOnScreen = nil }
+        }
         .task {
             await model.load(session)
             // A DEBUG launch can look at the report sheet (`PLAYERZ_OPEN=report`).
