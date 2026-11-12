@@ -17,6 +17,9 @@ struct GameCard: View {
     /// nil when the caller cannot ask: their own game, already asked, closed.
     var join: (() -> Void)?
 
+    @GestureState private var pressed = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.m) {
             header
@@ -57,8 +60,17 @@ struct GameCard: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .brandCardSurface()
         .contentShape(.rect(cornerRadius: Theme.Radius.card))
+        // The press a Button would draw (#55), drawn by hand: a touch held on
+        // the card dims and settles it, as `.brandCard` does a button.
+        .scaleEffect(pressed && !reduceMotion ? 0.98 : 1)
+        .opacity(pressed ? 0.88 : 1)
+        .animation(reduceMotion ? nil : .easeOut(duration: 0.12), value: pressed)
         // Not a Button: the «+» inside is one, and a button in a button loses its tap.
         .onTapGesture(perform: open)
+        .simultaneousGesture(
+            DragGesture(minimumDistance: 0)
+                .updating($pressed) { _, pressed, _ in pressed = true }
+        )
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(GameText.spoken(game, status: status))
         .accessibilityAddTraits(.isButton)
@@ -144,12 +156,14 @@ struct GameCard: View {
 
     @ViewBuilder private var spots: some View {
         if game.spotsLeft > 0 {
-            Text(String(localized: "games.card.free \(game.spotsLeft)"))
+            // A fact, not a button (#55): the purple fill read as one, and it
+            // only opened the game like the rest of the card. The «+» seats ask.
+            Label(String(localized: "games.card.free \(game.spotsLeft)"), systemImage: "person.badge.plus")
                 .font(.subheadline.weight(.bold))
-                .foregroundStyle(Theme.Palette.onAccent)
+                .foregroundStyle(Theme.Palette.accentText)
                 .padding(.horizontal, Theme.Spacing.m)
                 .padding(.vertical, Theme.Spacing.s)
-                .background(Theme.Palette.accentFill, in: .rect(cornerRadius: Theme.Radius.tile))
+                .background(Theme.Palette.chipIdle, in: .capsule)
         } else {
             Text(String(localized: "games.card.full"))
                 .font(.subheadline.weight(.semibold))
