@@ -13,9 +13,9 @@ struct BrandTabItem<ID: Hashable>: Identifiable {
 /// item on an accent pill, and a round button in the middle that opens
 /// something instead of selecting a tab.
 ///
-/// VoiceOver reads the items as tabs, the selected one as selected. At
-/// accessibility text sizes the titles are hidden and shown by the system's
-/// large content viewer on a long press, as the system's own bar does.
+/// VoiceOver reads the items as tabs, the selected one as selected. The bar
+/// is chrome: its text does not grow past the default size, and the system's
+/// large content viewer shows an item on a long press, as on the system's bar.
 struct BrandTabBar<ID: Hashable>: View {
     @Binding var selection: ID
     /// Before the centre button, and after it.
@@ -27,7 +27,6 @@ struct BrandTabBar<ID: Hashable>: View {
     /// The selected item tapped again.
     var onReselect: ((ID) -> Void)?
 
-    @Environment(\.dynamicTypeSize) private var typeSize
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Namespace private var pill
 
@@ -41,11 +40,12 @@ struct BrandTabBar<ID: Hashable>: View {
         .background(Theme.Palette.card, in: .capsule)
         .overlay(Capsule().strokeBorder(Theme.Palette.hairline, lineWidth: 0.5))
         .themeShadow(.floating)
-        .padding(.horizontal, Theme.Spacing.l)
+        .padding(.horizontal, Theme.Spacing.m)
         .padding(.top, Theme.Spacing.xs)
         .padding(.bottom, Theme.Spacing.xs)
-        // The icons grow a little; past that, the large content viewer.
-        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+        // Four words share one line and there is no room for them to grow:
+        // past this size, the large content viewer.
+        .dynamicTypeSize(...DynamicTypeSize.large)
         .accessibilityElement(children: .contain)
         .accessibilityAddTraits(.isTabBar)
     }
@@ -74,15 +74,16 @@ struct BrandTabBar<ID: Hashable>: View {
                                 .offset(x: 6, y: -4)
                         }
                     }
-                if !typeSize.isAccessibilitySize {
-                    Text(item.title)
-                        .font(Theme.Typography.tabLabel)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.7)
-                }
+                // Its own width, so the longest word («Резервации») takes
+                // more of the bar than the short ones instead of shrinking or
+                // touching the pill's edge; the others share what is left.
+                Text(item.title)
+                    .font(Theme.Typography.tabLabel)
+                    .lineLimit(1)
+                    .fixedSize()
+                    .padding(.horizontal, 6)
             }
             .foregroundStyle(selected ? Theme.Palette.onAccent : Color.primary)
-            .padding(.horizontal, Theme.Spacing.s)
             .frame(maxWidth: .infinity, minHeight: 52)
             .background {
                 if selected {
@@ -106,7 +107,8 @@ struct BrandTabBar<ID: Hashable>: View {
                 .frame(minWidth: 52, minHeight: 52)
                 .background(Theme.Palette.inverse, in: .circle)
                 .overlay(Circle().strokeBorder(Theme.Palette.accentFill, lineWidth: 2))
-                .frame(maxWidth: .infinity)
+                // The circle's own width, not an equal share: the words get the rest.
+                .padding(.horizontal, Theme.Spacing.xs)
                 .contentShape(.rect)
         }
         .buttonStyle(.plain)

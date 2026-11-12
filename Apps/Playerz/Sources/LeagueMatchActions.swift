@@ -25,13 +25,13 @@ struct LeagueMatchActions: View {
                 HStack {
                     if theirs {
                         Button(String(localized: "tournaments.propose.accept"), action: accept)
-                            .buttonStyle(.borderedProminent)
+                            .buttonStyle(.brandPrimary(fullWidth: false))
                     }
                     Button(
                         theirs ? String(localized: "tournaments.propose.decline") : String(localized: "tournaments.propose.withdraw"),
                         action: letGo
                     )
-                    .buttonStyle(.bordered)
+                    .buttonStyle(.brandSecondary(fullWidth: false))
                 }
                 .disabled(busy)
             }

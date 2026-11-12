@@ -108,8 +108,6 @@ struct RootView: View {
     @Bindable var session: SessionModel
     @Environment(\.scenePhase) private var scenePhase
     @State private var tab: DebugLaunch.Tab = RootView.firstTab
-    /// «Съобщения» asked for while a sheet was still up: opened once it is gone.
-    @State private var messagesAfterSheet = false
 
     /// `PLAYERZ_TAB=messages` opens the inbox over «Начало» (SessionModel.messagesOpen).
     private static var firstTab: DebugLaunch.Tab {
@@ -150,25 +148,22 @@ struct RootView: View {
                             }
                         }
                         // An invite link opened in the app (#14), once past the gate's steps.
-                        .sheet(item: $session.pendingInvite, onDismiss: openMessagesIfAsked) { invite in
+                        .sheet(item: $session.pendingInvite) { invite in
                             BookingInviteView(token: invite.token, session: session)
                         }
                         // The bell's list (#15), one for every tab's bell.
-                        .sheet(isPresented: $session.notificationsOpen, onDismiss: openMessagesIfAsked) {
+                        .sheet(isPresented: $session.notificationsOpen) {
                             NotificationsView(session: session)
                         }
                         // A tapped push's screen (#15).
-                        .sheet(item: $session.pendingLink, onDismiss: openMessagesIfAsked) { link in
+                        .sheet(item: $session.pendingLink) { link in
                             LinkedSheet(link: link, session: session)
-                        }
-                        // The inbox, from a header's messages button or a link.
-                        .fullScreenCover(isPresented: $session.messagesOpen) {
-                            InboxView(session: session, unread: $session.messagesUnread)
                         }
                 }
             }
         }
-        // One accent for every control that takes the tint.
+        // The accent for text-like controls (links, plain buttons). Fills take
+        // a fill token instead: white on this tint's dark value is 2.2:1.
         .tint(Theme.Palette.accentText)
         // The switches can change while the app is open: read them again
         // whenever it comes back (#16).
@@ -180,12 +175,8 @@ struct RootView: View {
             guard let requested else { return }
             session.requestedTab = nil
             if requested == .messages {
-                // A sheet on show has to leave first: two cannot be presented at once.
-                if session.notificationsOpen || session.pendingLink != nil || session.pendingInvite != nil {
-                    messagesAfterSheet = true
-                } else {
-                    session.messagesOpen = true
-                }
+                // A layer of the shell, so a sheet still closing does not stop it.
+                session.messagesOpen = true
             } else {
                 tab = requested
                 session.messagesOpen = false
@@ -195,11 +186,5 @@ struct RootView: View {
             if tab == .games && !modules.openPlay { tab = .play }
             if !modules.messaging { session.messagesOpen = false }
         }
-    }
-
-    private func openMessagesIfAsked() {
-        guard messagesAfterSheet else { return }
-        messagesAfterSheet = false
-        session.messagesOpen = session.modules.messaging
     }
 }

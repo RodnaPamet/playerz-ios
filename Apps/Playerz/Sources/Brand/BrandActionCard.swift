@@ -22,6 +22,8 @@ struct BrandActionCard: View {
     /// A word on the corner; `String(localized: "brand.comingSoon")` for «Скоро».
     var badge: String?
     var minHeight: CGFloat = 150
+    /// True takes the height offered: two cards in a row end level.
+    var fillsHeight = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
@@ -43,7 +45,7 @@ struct BrandActionCard: View {
         }
         .multilineTextAlignment(.leading)
         .padding(Theme.Spacing.l)
-        .frame(maxWidth: .infinity, minHeight: minHeight, alignment: .topLeading)
+        .frame(maxWidth: .infinity, minHeight: minHeight, maxHeight: fillsHeight ? .infinity : nil, alignment: .topLeading)
         .background { background }
         .overlay(alignment: .topTrailing) {
             if let badge {

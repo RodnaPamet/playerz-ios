@@ -24,7 +24,7 @@ struct GamesView: View {
             .brandPage()
             // Hidden with the system bar, but still what a pushed screen's back button says.
             .navigationTitle(String(localized: "games.title"))
-            .safeAreaInset(edge: .top, spacing: 0) {
+            .brandChipBar {
                 BrandChipRow {
                     BrandChip(String(localized: "games.tab.open"), isSelected: showing == .open) { showing = .open }
                     BrandChip(String(localized: "games.tab.mine"), isSelected: showing == .mine) { showing = .mine }
@@ -37,8 +37,6 @@ struct GamesView: View {
                 } trailing: {
                     if showing == .open { filters }
                 }
-                .padding(.vertical, Theme.Spacing.xs)
-                .background(Theme.Palette.page)
                 .accessibilityElement(children: .contain)
                 .accessibilityLabel(String(localized: "games.tabs"))
             }
@@ -127,8 +125,9 @@ struct GamesView: View {
                             }
                         }
                 }
+                .brandListRow()
                 if model.loadingMore {
-                    ProgressView().frame(maxWidth: .infinity)
+                    ProgressView().frame(maxWidth: .infinity).brandListRow()
                 }
             }
             .refreshable { await model.load(session) }
@@ -183,6 +182,7 @@ struct GamesView: View {
                             .foregroundStyle(request.status == .ACCEPTED ? .green : .secondary)
                     }
                 }
+                .brandListRow()
             }
             .refreshable { await model.loadMine(session) }
         }

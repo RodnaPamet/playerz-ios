@@ -16,61 +16,67 @@ struct ProfileView: View {
     @State private var searchable = true
     @State private var email: [NotificationKind: Bool] = [:]
     @State private var push: [NotificationKind: Bool] = [:]
+    /// Raised on each return to the tab: «Класиране» reads its levels again.
+    @State private var returns = 0
 
     var body: some View {
         NavigationStack {
             ScrollViewReader { proxy in
                 Form {
-                    if let me {
-                        Section {
-                            Text(me.name ?? String(localized: "messages.unnamed")).font(.headline)
-                            Text(me.email).foregroundStyle(.secondary)
-                        }
-                        Section {
-                            Toggle(String(localized: "profile.searchable"), isOn: $searchable)
-                        } footer: {
-                            Text(String(localized: "profile.searchableHint"))
-                        }
-                        // A coach's own area (#20), as the web's «Профил на треньор».
-                        if me.accountKind == "COACH", session.modules.coaches {
+                    Group {
+                        if let me {
                             Section {
-                                NavigationLink(String(localized: "coachProfile.title")) {
-                                    CoachProfileView(session: session)
+                                Text(me.name ?? String(localized: "messages.unnamed")).font(.headline)
+                                Text(me.email).foregroundStyle(.secondary)
+                            }
+                            Section {
+                                Toggle(String(localized: "profile.searchable"), isOn: $searchable)
+                                    .tint(Theme.Palette.controlOn)
+                            } footer: {
+                                Text(String(localized: "profile.searchableHint"))
+                            }
+                            // A coach's own area (#20), as the web's «Профил на треньор».
+                            if me.accountKind == "COACH", session.modules.coaches {
+                                Section {
+                                    NavigationLink(String(localized: "coachProfile.title")) {
+                                        CoachProfileView(session: session)
+                                    }
                                 }
                             }
+                        } else if failed {
+                            Text(String(localized: "profile.failed")).foregroundStyle(.red)
+                        } else {
+                            ProgressView()
                         }
-                    } else if failed {
-                        Text(String(localized: "profile.failed")).foregroundStyle(.red)
-                    } else {
-                        ProgressView()
-                    }
 
-                    // «Класиране» (#18), while the ranking module is on.
-                    if me != nil, session.modules.ranking {
-                        MyRatingsSection(session: session)
-                    }
+                        // «Класиране» (#18), while the ranking module is on.
+                        if me != nil, session.modules.ranking {
+                            MyRatingsSection(session: session, reload: returns)
+                        }
 
-                    if let settings {
-                        emailSection
-                        // On the phone (#529): only once this account has a device registered.
-                        if settings.pushDevices > 0 {
-                            pushSection
+                        if let settings {
+                            emailSection
+                            // On the phone (#529): only once this account has a device registered.
+                            if settings.pushDevices > 0 {
+                                pushSection
+                            }
+                        }
+
+                        if let problem {
+                            Section { Text(problem).foregroundStyle(.red) }
+                        }
+
+                        if me != nil {
+                            AccountDeletionSection(session: session)
+                        }
+
+                        Section {
+                            Button(String(localized: "common.signOut"), role: .destructive) {
+                                Task { await session.signOut() }
+                            }
                         }
                     }
-
-                    if let problem {
-                        Section { Text(problem).foregroundStyle(.red) }
-                    }
-
-                    if me != nil {
-                        AccountDeletionSection(session: session)
-                    }
-
-                    Section {
-                        Button(String(localized: "common.signOut"), role: .destructive) {
-                            Task { await session.signOut() }
-                        }
-                    }
+                    .brandListRow()
                 }
                 .brandPage()
                 // Hidden with the system bar, but still what a pushed screen's back button says.
@@ -91,6 +97,13 @@ struct ProfileView: View {
                 }
                 }
                 .refreshable { await load() }
+                // `task` runs once in the shell: the level, the coach link
+                // and the switches are read again on each return. `load`
+                // never clears what is shown, so the scroll position stays.
+                .onShellTabReturn {
+                    returns += 1
+                    await load()
+                }
                 // Only a change from what the server said is written.
                 .onChange(of: searchable) { _, on in
                     if let me, me.searchable != on { Task { await setSearchable(on) } }
@@ -114,7 +127,7 @@ struct ProfileView: View {
     private var emailSection: some View {
         Section {
             ForEach(kinds, id: \.self) { kind in
-                Toggle(kind.label, isOn: $email[on: kind])
+                Toggle(kind.label, isOn: $email[on: kind]).tint(Theme.Palette.controlOn)
             }
         } header: {
             Text(String(localized: "profile.emails"))
@@ -126,7 +139,7 @@ struct ProfileView: View {
     private var pushSection: some View {
         Section(String(localized: "profile.push")) {
             ForEach(kinds, id: \.self) { kind in
-                Toggle(kind.label, isOn: $push[on: kind])
+                Toggle(kind.label, isOn: $push[on: kind]).tint(Theme.Palette.controlOn)
             }
         }
     }

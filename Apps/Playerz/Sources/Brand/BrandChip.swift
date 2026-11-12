@@ -63,6 +63,20 @@ struct BrandChipRow<Chips: View, Trailing: View>: View {
     }
 }
 
+extension View {
+    /// A chip row pinned under the header band, on the page colour. Before
+    /// `brandHeader`, so the band comes first. The gap above is the same step
+    /// `brandPage()` leaves below (a chip's 44pt target already holds 4pt of
+    /// air on each side of the pill).
+    func brandChipBar<Bar: View>(@ViewBuilder _ bar: () -> Bar) -> some View {
+        safeAreaInset(edge: .top, spacing: 0) {
+            bar()
+                .padding(.top, Theme.Spacing.m)
+                .background(Theme.Palette.page)
+        }
+    }
+}
+
 /// The filter button's face: sliders, and how many filters are on. The label
 /// alone, for a Menu; `BrandFilterButton` is the button.
 struct BrandFilterLabel: View {

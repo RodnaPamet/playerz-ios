@@ -11,6 +11,7 @@ struct VenueListView: View {
     /// Changed to start the stack again from the club list.
     @State private var stackID = 0
     @State private var debugCoach: String? = DebugLaunch.coach
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
         NavigationStack {
@@ -41,12 +42,24 @@ struct VenueListView: View {
                             : String(localized: "venues.empty")
                     )
                 case .loaded:
-                    List(model.rows) { row in
-                        NavigationLink {
-                            VenueDetailView(venueId: row.id, session: session)
-                        } label: {
-                            VenueRow(row: row)
+                    // Cards on the page, not rows in one box: each club is its own.
+                    ScrollView {
+                        LazyVStack(alignment: .leading, spacing: Theme.Spacing.l) {
+                            shortcuts
+                            Text(String(localized: "venues.title"))
+                                .font(Theme.Typography.sectionTitle)
+                                .accessibilityAddTraits(.isHeader)
+                            ForEach(model.rows) { row in
+                                NavigationLink {
+                                    VenueDetailView(venueId: row.id, session: session)
+                                } label: {
+                                    VenueCard(row: row)
+                                }
+                                .buttonStyle(.brandCard)
+                            }
                         }
+                        .padding(.horizontal, Theme.Spacing.l)
+                        .padding(.bottom, Theme.Spacing.l)
                     }
                     .refreshable { await model.load(session) }
                 }
@@ -66,15 +79,13 @@ struct VenueListView: View {
             }
             // Hidden with the system bar, but still what a pushed screen's back button says.
             .navigationTitle(String(localized: "venues.title"))
-            .safeAreaInset(edge: .top, spacing: 0) {
+            .brandChipBar {
                 BrandChipRow {
                     BrandChip(String(localized: "venues.all"), isSelected: model.mode == .all) { show(.all) }
                     BrandChip(String(localized: "venues.nearMe"), systemImage: "location", isSelected: model.mode == .near) {
                         show(.near)
                     }
                 }
-                .padding(.vertical, Theme.Spacing.xs)
-                .background(Theme.Palette.page)
             }
             .brandHeader(.wordmark) {
                 // «Треньори» (#19), while the coaches module is on.
@@ -105,26 +116,104 @@ struct VenueListView: View {
     private func show(_ mode: VenueListModel.Mode) {
         Task { await model.setMode(mode, session: session) }
     }
+
+    /// The two things to do besides booking a court here, each while its
+    /// module is on (#16). Side by side, or one under the other at the text
+    /// sizes where two would squeeze their titles.
+    @ViewBuilder private var shortcuts: some View {
+        if session.modules.openPlay || session.modules.coaches {
+            let layout = typeSize.isAccessibilitySize
+                ? AnyLayout(VStackLayout(spacing: Theme.Spacing.m))
+                : AnyLayout(HStackLayout(alignment: .top, spacing: Theme.Spacing.m))
+            layout {
+                if session.modules.openPlay {
+                    Button {
+                        session.requestedTab = .games
+                    } label: {
+                        BrandActionCard(
+                            title: String(localized: "home.games.title"),
+                            subtitle: String(localized: "home.games.subtitle"),
+                            systemImage: "person.3",
+                            style: .accent,
+                            minHeight: 140,
+                            fillsHeight: true
+                        )
+                    }
+                    .buttonStyle(.brandCard)
+                }
+                if session.modules.coaches {
+                    Button {
+                        showingCoaches = true
+                    } label: {
+                        BrandActionCard(
+                            title: String(localized: "create.lesson.title"),
+                            subtitle: String(localized: "create.lesson.subtitle"),
+                            systemImage: "figure.tennis",
+                            minHeight: 140,
+                            fillsHeight: true
+                        )
+                    }
+                    .buttonStyle(.brandCard)
+                }
+            }
+            // As tall as the taller one, so the pair reads as one row.
+            .fixedSize(horizontal: false, vertical: true)
+        }
+    }
 }
 
-private struct VenueRow: View {
+/// One club: a tile with its initial (no club has a picture yet), its name,
+/// where it is, and the price as a chip.
+private struct VenueCard: View {
     let row: VenueListModel.Row
 
+    /// Grows with the name beside it.
+    @ScaledMetric(relativeTo: .title3) private var tileSide: CGFloat = 60
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(row.name).font(.headline)
+        BrandContentCard {
+            HStack(alignment: .center, spacing: Theme.Spacing.m) {
+                Text(verbatim: row.name.first.map { String($0).uppercased() } ?? "")
+                    .font(.system(.title2, design: .rounded, weight: .heavy))
+                    .foregroundStyle(Theme.Palette.onHeader)
+                    .frame(width: tileSide, height: tileSide)
+                    .background(
+                        LinearGradient(
+                            colors: [Theme.Palette.headerInk, Theme.Palette.headerGlow],
+                            startPoint: .topLeading, endPoint: .bottomTrailing
+                        ),
+                        in: .rect(cornerRadius: Theme.Radius.tile)
+                    )
+                    .accessibilityHidden(true)
+                VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
+                    Text(row.name)
+                        .font(Theme.Typography.cardTitle)
+                        .foregroundStyle(Color.primary)
 
-            // A separate "·" Text is read as its own fragment by VoiceOver and
-            // wraps badly at large sizes. One string instead.
-            Text(placeLine)
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+                    // A separate "·" Text is read as its own fragment by VoiceOver and
+                    // wraps badly at large sizes. One string instead.
+                    Text(placeLine)
+                        .font(Theme.Typography.cardSubtitle)
+                        .foregroundStyle(.secondary)
 
-            if let line = priceLine {
-                Text(line).font(.footnote).foregroundStyle(.secondary)
+                    if let line = priceLine {
+                        Text(line)
+                            .font(.footnote.weight(.semibold))
+                            .foregroundStyle(Color.primary)
+                            .padding(.horizontal, Theme.Spacing.s)
+                            .padding(.vertical, Theme.Spacing.xs)
+                            .background(Theme.Palette.chipIdle, in: .capsule)
+                            .padding(.top, 2)
+                    }
+                }
+                .multilineTextAlignment(.leading)
+                Spacer(minLength: 0)
+                Image(systemName: "chevron.right")
+                    .font(.footnote.weight(.bold))
+                    .foregroundStyle(.tertiary)
+                    .accessibilityHidden(true)
             }
         }
-        .padding(.vertical, 2)
         // One utterance per club. Left alone, VoiceOver reads three fragments
         // and the NavigationLink's own label on top of them.
         .accessibilityElement(children: .combine)

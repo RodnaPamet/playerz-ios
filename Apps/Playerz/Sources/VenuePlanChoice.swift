@@ -28,7 +28,7 @@ struct VenuePlanChoice: View {
                         Text(String(localized: "venue.book"))
                     }
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.brandPrimary(fullWidth: false))
                 .disabled(busySlot != nil)
                 .accessibilityLabel(
                     busySlot == slot.startTs

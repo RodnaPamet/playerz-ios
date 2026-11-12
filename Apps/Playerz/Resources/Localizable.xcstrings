@@ -6649,6 +6649,38 @@
         }
       }
     },
+    "home.games.subtitle": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Включи се в игра със свободни места"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Join a game with free spots"
+          }
+        }
+      }
+    },
+    "home.games.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Открий игри"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Find games"
+          }
+        }
+      }
+    },
     "kind.coach": {
       "localizations": {
         "bg": {

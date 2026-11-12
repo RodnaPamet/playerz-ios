@@ -40,6 +40,7 @@ struct CoachTimeOffView: View {
             Section {
                 DatePicker(String(localized: "coachVenues.timeOff.start"), selection: $start, displayedComponents: .date)
                 Toggle(String(localized: "coachVenues.timeOff.end"), isOn: $hasEnd)
+                    .tint(Theme.Palette.controlOn)
                 if hasEnd {
                     DatePicker(String(localized: "coachVenues.timeOff.end"), selection: $end, in: start..., displayedComponents: .date)
                 }

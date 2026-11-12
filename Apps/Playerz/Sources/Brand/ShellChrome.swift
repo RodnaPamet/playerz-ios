@@ -40,11 +40,30 @@ private struct ShellTabReturn: ViewModifier {
 private struct FloatingTabBarHidden: ViewModifier {
     // Optional: a sheet or a preview has no shell around it.
     @Environment(ShellChrome.self) private var chrome: ShellChrome?
+    @Environment(\.shellTabIsActive) private var active
+    @State private var onScreen = false
+    @State private var holding = false
 
+    // A hide is held only while this screen's tab is the one on show: a tab
+    // left behind stays mounted and gets no `onDisappear`, and its hide would
+    // take the bar from the tab switched to.
     func body(content: Content) -> some View {
         content
-            .onAppear { chrome?.hideBar() }
-            .onDisappear { chrome?.showBar() }
+            .onAppear {
+                onScreen = true
+                hold(active)
+            }
+            .onDisappear {
+                onScreen = false
+                hold(false)
+            }
+            .onChange(of: active) { _, now in hold(onScreen && now) }
+    }
+
+    private func hold(_ wanted: Bool) {
+        guard wanted != holding else { return }
+        holding = wanted
+        if wanted { chrome?.hideBar() } else { chrome?.showBar() }
     }
 }
 

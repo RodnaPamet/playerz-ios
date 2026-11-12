@@ -2,8 +2,8 @@ import PlayerzAPI
 import SwiftUI
 
 /// Съобщения (#484): the caller's conversations, and «Заявки» — first messages
-/// from players they have not played with yet (#375). Opened over the tabs
-/// from a header's messages button (RootView).
+/// from players they have not played with yet (#375). Laid over the tabs
+/// from a header's messages button (PlayerShell).
 struct InboxView: View {
     @Bindable var session: SessionModel
     /// The header button's dot: unread conversations and requests, from the inbox.
@@ -24,7 +24,7 @@ struct InboxView: View {
                 .brandPage()
                 // Hidden with the system bar, but still what a conversation's back button says.
                 .navigationTitle(String(localized: "messages.title"))
-                .safeAreaInset(edge: .top, spacing: 0) {
+                .brandChipBar {
                     BrandChipRow {
                         BrandChip(String(localized: "messages.tab.conversations"), isSelected: tab == .conversations) {
                             tab = .conversations
@@ -33,12 +33,10 @@ struct InboxView: View {
                             tab = .requests
                         }
                     }
-                    .padding(.vertical, Theme.Spacing.xs)
-                    .background(Theme.Palette.page)
                     .accessibilityElement(children: .contain)
                     .accessibilityLabel(String(localized: "messages.tabs"))
                 }
-                // Presented over the tabs: back closes it.
+                // Over the tabs: back closes it (and VoiceOver's scrub, through the header).
                 .brandHeader(.back(String(localized: "messages.title"), action: close)) {
                     BrandHeaderButton(systemImage: "square.and.pencil", label: String(localized: "messages.new")) {
                         searching = true
@@ -58,12 +56,6 @@ struct InboxView: View {
         // Back from a conversation: what was read there is read here too.
         .onChange(of: path) { _, now in
             if now.isEmpty { Task { await load() } }
-        }
-        // A tapped push for a conversation while the inbox is on show.
-        .onChange(of: session.requestedConversation) { _, id in
-            guard let id else { return }
-            session.requestedConversation = nil
-            path = [id]
         }
     }
 
@@ -94,6 +86,7 @@ struct InboxView: View {
                             if item.id == items.last?.id { Task { await loadMore() } }
                         }
                 }
+                .brandListRow()
             }
             .refreshable { await load() }
         }
@@ -136,35 +129,57 @@ struct InboxView: View {
     }
 }
 
-/// One conversation: who, the start of the last message, and what is unread.
+/// One conversation: who, when, the start of the last message, and what is unread.
 private struct ConversationRow: View {
     let item: Components.Schemas.ConversationSummary
 
+    /// Grows with the text beside it.
+    @ScaledMetric(relativeTo: .headline) private var avatarSide: CGFloat = 44
+
     var body: some View {
-        HStack(alignment: .top) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(ConversationText.title(item.counterpart))
-                    .font(item.unreadCount > 0 ? .headline : .body)
-                Text(ConversationText.preview(item.lastMessage))
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(2)
-            }
-            Spacer()
-            VStack(alignment: .trailing, spacing: 4) {
-                Text(item.lastMessageAt, format: .relative(presentation: .named))
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                if item.unreadCount > 0 {
-                    Text("\(item.unreadCount)")
-                        .font(.caption.weight(.bold))
-                        .padding(.horizontal, 6)
-                        .background(.tint, in: .capsule)
-                        .foregroundStyle(.white)
-                        .accessibilityLabel(String(localized: "messages.unread \(item.unreadCount)"))
+        let name = ConversationText.title(item.counterpart)
+        HStack(alignment: .top, spacing: Theme.Spacing.m) {
+            Text(verbatim: name.first.map { String($0).uppercased() } ?? "")
+                .font(.headline)
+                .foregroundStyle(Theme.Palette.accentText)
+                .frame(width: avatarSide, height: avatarSide)
+                .background(Theme.Palette.chipIdle, in: .circle)
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
+                // The time on the name's line, so the preview has the row's width.
+                HStack(alignment: .firstTextBaseline, spacing: Theme.Spacing.s) {
+                    Text(name)
+                        .font(item.unreadCount > 0 ? .headline : .body)
+                        .lineLimit(1)
+                        .layoutPriority(1)
+                    Spacer(minLength: 0)
+                    // Whole, always: a long name gives way, not «предходен м…».
+                    Text(item.lastMessageAt, format: .relative(presentation: .named))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize()
+                        .layoutPriority(2)
+                }
+                HStack(alignment: .top, spacing: Theme.Spacing.s) {
+                    Text(ConversationText.preview(item.lastMessage))
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(2)
+                    Spacer(minLength: 0)
+                    if item.unreadCount > 0 {
+                        Text("\(item.unreadCount)")
+                            .font(Theme.Typography.badge)
+                            .monospacedDigit()
+                            .foregroundStyle(Theme.Palette.onAccent)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(Theme.Palette.accentFill, in: .capsule)
+                            .accessibilityLabel(String(localized: "messages.unread \(item.unreadCount)"))
+                    }
                 }
             }
         }
+        .padding(.vertical, Theme.Spacing.xs)
         .accessibilityElement(children: .combine)
     }
 }

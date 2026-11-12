@@ -64,6 +64,9 @@ struct BrandHeader<Accessory: View, Actions: View>: View {
         .background { BrandHeaderBackdrop().ignoresSafeArea(edges: [.top, .horizontal]) }
         // Dark in both modes, so everything on it resolves its dark values.
         .environment(\.colorScheme, .dark)
+        // The band is chrome: past this size it would take the screen from
+        // the content, and the title is shown by the large content viewer.
+        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
     }
 
     @ViewBuilder private func lead(lines: Int) -> some View {
@@ -95,8 +98,26 @@ struct BrandHeader<Accessory: View, Actions: View>: View {
             .lineLimit(lines)
             .frame(minHeight: Theme.minTarget)
             .accessibilityAddTraits(.isHeader)
+            .accessibilityShowsLargeContentViewer()
     }
+}
 
+/// VoiceOver's two-finger scrub does what the band's back button does: the
+/// system bar that would answer it is hidden, and a first screen with its own
+/// `action` (the inbox) has nothing else to answer it.
+private struct BrandHeaderEscape: ViewModifier {
+    let leading: BrandHeaderLeading
+    @Environment(\.dismiss) private var dismiss
+
+    func body(content: Content) -> some View {
+        if case let .back(_, action) = leading {
+            content.accessibilityAction(.escape) {
+                if let action { action() } else { dismiss() }
+            }
+        } else {
+            content
+        }
+    }
 }
 
 extension View {
@@ -125,6 +146,7 @@ extension View {
             .safeAreaInset(edge: .top, spacing: 0) {
                 BrandHeader(leading, accessory: accessory, actions: actions)
             }
+            .modifier(BrandHeaderEscape(leading: leading))
     }
 }
 

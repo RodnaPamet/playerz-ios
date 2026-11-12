@@ -29,13 +29,11 @@ struct MyBookingsView: View {
                 .brandPage()
                 // Hidden with the system bar, but still what a pushed screen's back button says.
                 .navigationTitle(String(localized: "myBookings.title"))
-                .safeAreaInset(edge: .top, spacing: 0) {
+                .brandChipBar {
                     BrandChipRow {
                         BrandChip(String(localized: "myBookings.upcoming"), isSelected: when == .upcoming) { when = .upcoming }
                         BrandChip(String(localized: "myBookings.past"), isSelected: when == .past) { when = .past }
                     }
-                    .padding(.vertical, Theme.Spacing.xs)
-                    .background(Theme.Palette.page)
                     .accessibilityElement(children: .contain)
                     .accessibilityLabel(String(localized: "myBookings.when"))
                 }
@@ -91,11 +89,13 @@ struct MyBookingsView: View {
             List {
                 if let banner {
                     Section { Text(banner.text).foregroundStyle(banner.isError ? .red : .primary) }
+                        .brandListRow()
                 }
                 // A section per booking, one action per row: several links in
                 // one cell share its tap.
                 ForEach(items, id: \.id) { booking in
                     Section { row(booking) }
+                        .brandListRow()
                         .onAppear {
                             if booking.id == items.last?.id { Task { await loadMore() } }
                         }

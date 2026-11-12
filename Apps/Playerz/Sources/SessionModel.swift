@@ -42,15 +42,14 @@ final class SessionModel {
     /// A screen to open over the tabs: a tapped push (#15).
     var pendingLink: AppLink? = DebugLaunch.link.flatMap(AppLink.init(path:))
     /// A tab a link asked for; RootView switches to it. `.messages` is the
-    /// inbox, which RootView opens over the tabs.
+    /// inbox, which PlayerShell lays over the tabs.
     var requestedTab: DebugLaunch.Tab?
-    /// The inbox, open over the tabs from a header's messages button.
+    /// The inbox, a layer over the tabs (PlayerShell) from a header's messages
+    /// button. A layer, not a cover: every sheet still presents over it.
     var messagesOpen = DebugLaunch.tab == .messages
     /// Unread conversations and requests, for that button's dot: read every
     /// minute by RootView, and by the inbox whenever it loads.
     var messagesUnread = 0
-    /// A conversation to open in the inbox that is already on show.
-    var requestedConversation: String?
     /// A screen of «Начало» asked for from elsewhere («Създай»).
     var homeRequest: HomeScreen?
 
@@ -83,11 +82,7 @@ final class SessionModel {
         case .bookings: requestedTab = .bookings
         case .messages: if modules.messaging { requestedTab = .messages }
         case .games: if modules.openPlay { requestedTab = .games }
-        case let .conversation(id):
-            guard modules.messaging else { return }
-            // Over an open inbox a second sheet cannot be presented from under
-            // it; the inbox opens the conversation itself.
-            if messagesOpen { requestedConversation = id } else { pendingLink = link }
+        case .conversation: if modules.messaging { pendingLink = link }
         case .booking: pendingLink = link
         }
     }

@@ -122,11 +122,11 @@ struct ConversationView: View {
                     Button(String(localized: "messages.accept")) {
                         Task { await model.answer(accept: true, session) }
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.brandPrimary(fullWidth: false))
                     Button(String(localized: "messages.decline")) {
                         Task { await model.answer(accept: false, session) }
                     }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(.brandSecondary(fullWidth: false))
                 }
             case .pending:
                 Text(String(localized: "messages.notice.pending \(name)")).font(.footnote)

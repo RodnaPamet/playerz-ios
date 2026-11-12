@@ -24,6 +24,9 @@ enum Theme {
         static var onAccent: Color { Color(light: 0xFFFFFF, dark: 0x0B0B12) }
         /// Accent-coloured text and icons on `page` or `card`; also the app's tint.
         static var accentText: Color { Color(light: 0x6D3FE8, dark: 0xB3A0FF) }
+        /// A switch that is ON: its knob is white in both modes, so the dark
+        /// value stays deep (white on it is 4.9:1), unlike `accentText`.
+        static var controlOn: Color { Color(light: 0x6D3FE8, dark: 0x7A52F0) }
 
         static var chipIdle: Color { Color(light: 0xE8E8EE, dark: 0x262633) }
         static var chipSelected: Color { accentFill }
@@ -116,11 +119,22 @@ extension View {
     }
 
     /// The page colour behind a whole screen: a List or Form loses its own
-    /// background, and a spinner or an empty state is stretched to fill.
+    /// background and its tall first gap, so the first card starts one step
+    /// under the band or the chips on every screen; a spinner or an empty
+    /// state is stretched to fill.
     func brandPage() -> some View {
         frame(maxWidth: .infinity, maxHeight: .infinity)
             .scrollContentBackground(.hidden)
+            .contentMargins(.top, Theme.Spacing.m, for: .scrollContent)
             .background(Theme.Palette.page.ignoresSafeArea())
+    }
+
+    /// A List's or Form's rows on the card token, with the token's hairline
+    /// between them. On the rows (or a Group or Section of them), not on the
+    /// List: the system's grey is otherwise a second card colour in dark mode.
+    func brandListRow() -> some View {
+        listRowBackground(Theme.Palette.card)
+            .listRowSeparatorTint(Theme.Palette.hairline)
     }
 }
 
@@ -129,6 +143,7 @@ extension View {
         ("page", Theme.Palette.page), ("card", Theme.Palette.card),
         ("headerInk", Theme.Palette.headerInk), ("headerGlow", Theme.Palette.headerGlow),
         ("accentFill", Theme.Palette.accentFill), ("accentText", Theme.Palette.accentText),
+        ("controlOn", Theme.Palette.controlOn),
         ("chipIdle", Theme.Palette.chipIdle), ("inverse", Theme.Palette.inverse),
         ("sheetSurface", Theme.Palette.sheetSurface), ("sheetRow", Theme.Palette.sheetRow),
         ("hairline", Theme.Palette.hairline), ("badge", Theme.Palette.badge),
