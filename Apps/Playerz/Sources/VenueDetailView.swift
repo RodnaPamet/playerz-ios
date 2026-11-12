@@ -9,6 +9,7 @@ struct VenueDetailView: View {
     @State private var conversation: OpenedConversation?
     @State private var writeProblem: String?
     @State private var showingWriteProblem = false
+    @State private var showingBookings = false
     /// The coaches teaching here (#19), while the coaches module is on.
     @State private var coaches: [Components.Schemas.PublicCoach] = []
 
@@ -18,36 +19,55 @@ struct VenueDetailView: View {
             case .loading:
                 ProgressView(String(localized: "common.loading"))
             case .failed:
-                ContentUnavailableView {
-                    Text(String(localized: "venue.failed"))
-                } actions: {
+                BrandEmptyState(systemImage: "wifi.exclamationmark", title: String(localized: "venue.failed")) {
                     Button(String(localized: "venues.retry")) {
                         Task { await model.load(session, venueId: venueId) }
                     }
+                    .buttonStyle(.brandSecondary(fullWidth: false))
                 }
             case .loaded:
                 content
             }
         }
+        .brandPage()
+        // Hidden with the system bar; still what VoiceOver calls the screen.
         .navigationTitle(model.venue?.name ?? "")
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
+        .navigationDestination(isPresented: $showingBookings) {
+            if let slug = model.venue?.clubSlug {
+                BookingsView(slug: slug, session: session)
+            }
+        }
+        // The days stay under the header while a day's hours load, so the
+        // strip keeps its place instead of going away with the list.
+        .brandChipBar {
+            if model.days.count > 1 {
+                BrandChipRow {
+                    ForEach(model.days) { day in
+                        BrandChip(
+                            day.label(timeZone: model.timezone, today: String(localized: "venue.today")),
+                            isSelected: day.apiDate == model.selectedDate
+                        ) {
+                            Task { await model.select(session, venueId: venueId, day: day) }
+                        }
+                    }
+                }
+                .accessibilityElement(children: .contain)
+                .accessibilityLabel(String(localized: "venue.dayPicker"))
+            }
+        }
+        .brandHeader(.back(model.venue?.name ?? "")) {
             // The CLUB's slug: `/t/{slug}/bookings` is the club's namespace, and
             // a venue's slug matches it only when the club named it so.
-            if let slug = model.venue?.clubSlug {
-                ToolbarItem(placement: .topBarTrailing) {
-                    NavigationLink(String(localized: "bookings.title")) {
-                        BookingsView(slug: slug, session: session)
-                    }
+            if model.venue?.clubSlug != nil {
+                BrandHeaderButton(systemImage: "calendar", label: String(localized: "bookings.title")) {
+                    showingBookings = true
                 }
             }
             // «Пиши на клуба» (#484): the club's conversation, by the club's slug;
             // not while the server has messaging off (#16).
             if session.modules.messaging, let club = model.venue?.clubSlug {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(String(localized: "messages.writeToClub"), systemImage: "bubble.left") {
-                        Task { await writeToClub(club) }
-                    }
+                BrandHeaderButton(systemImage: "bubble.left", label: String(localized: "messages.writeToClub")) {
+                    Task { await writeToClub(club) }
                 }
             }
         }
@@ -97,104 +117,81 @@ struct VenueDetailView: View {
     @ViewBuilder
     private var content: some View {
         List {
-            // «Обект на …», to the club's page, as on the web (#17).
-            if let slug = model.venue?.clubSlug, let name = model.clubName {
+            if let venue = model.venue {
                 Section {
-                    NavigationLink(String(localized: "venue.club \(name)")) {
-                        ClubView(slug: slug, session: session)
-                    }
+                    VenueHero(venue: venue, serverURL: session.serverURL)
+                }
+                // The card is its own surface: no row box around it.
+                .listRowInsets(EdgeInsets())
+                .listRowBackground(Color.clear)
+            }
+            Group {
+                sections
+            }
+            .brandListRow()
+        }
+    }
+
+    @ViewBuilder
+    private var sections: some View {
+        // «Обект на …», to the club's page, as on the web (#17).
+        if let slug = model.venue?.clubSlug, let name = model.clubName {
+            Section {
+                NavigationLink(String(localized: "venue.club \(name)")) {
+                    ClubView(slug: slug, session: session)
                 }
             }
-            if model.days.count > 1 {
-                Section {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 8) {
-                            ForEach(model.days) { day in
-                                Button {
-                                    Task {
-                                        await model.select(session, venueId: venueId, day: day)
-                                    }
-                                } label: {
-                                    Text(day.label(timeZone: model.timezone, today: String(localized: "venue.today")))
-                                        .font(.subheadline)
-                                        .padding(.horizontal, 14)
-                                        // 44pt is Apple's minimum tappable
-                                        // height. The capsule was ~28pt tall,
-                                        // which is a hard target for anyone
-                                        // with a tremor and fails the guideline
-                                        // outright.
-                                        .frame(minWidth: 44, minHeight: 44)
-                                        .background(
-                                            day.apiDate == model.selectedDate
-                                                ? Color.accentColor.opacity(0.18)
-                                                : Color.clear,
-                                            in: Capsule()
-                                        )
-                                        // The padded frame, not just the glyph,
-                                        // takes the tap.
-                                        .contentShape(Capsule())
-                                }
-                                .buttonStyle(.plain)
-                                .accessibilityAddTraits(
-                                    day.apiDate == model.selectedDate ? [.isSelected] : []
+        }
+
+        if let banner = model.banner {
+            Section {
+                Text(banner)
+                    // Colour alone must not carry the meaning — the words
+                    // already say which outcome it is.
+                    .foregroundStyle(model.bannerIsError ? .red : .green)
+            }
+        }
+
+        if model.showsAnyForecast {
+            Section { WeatherAttribution() }
+        }
+
+        // The plan (#25), where the venue has one: time first, then a court.
+        if let plan = model.plan {
+            VenuePlanSection(drawing: plan, courts: model.courts, busySlot: model.bookingSlot, book: book)
+        }
+
+        ForEach(model.courts, id: \.resourceId) { court in
+            Section {
+                if court.bookable.isEmpty {
+                    Text(String(localized: "venue.noSlots"))
+                        .foregroundStyle(.secondary)
+                } else {
+                    ForEach(court.bookable, id: \.startTs) { slot in
+                        SlotRow(
+                            slot: slot,
+                            currency: court.currency,
+                            busy: model.bookingSlot == slot.startTs,
+                            disabled: model.bookingSlot != nil
+                        ) {
+                            Task {
+                                await model.book(
+                                    session,
+                                    venueId: venueId,
+                                    resourceId: court.resourceId,
+                                    slot: slot
                                 )
                             }
                         }
-                        .padding(.vertical, 2)
                     }
                 }
+            } header: {
+                CourtHeader(court: court, forecast: model.forecast(for: court))
             }
+        }
 
-            if let banner = model.banner {
-                Section {
-                    Text(banner)
-                        // Colour alone must not carry the meaning — the words
-                        // already say which outcome it is.
-                        .foregroundStyle(model.bannerIsError ? .red : .green)
-                }
-            }
-
-            if model.showsAnyForecast {
-                Section { WeatherAttribution() }
-            }
-
-            // The plan (#25), where the venue has one: time first, then a court.
-            if let plan = model.plan {
-                VenuePlanSection(drawing: plan, courts: model.courts, busySlot: model.bookingSlot, book: book)
-            }
-
-            ForEach(model.courts, id: \.resourceId) { court in
-                Section {
-                    if court.bookable.isEmpty {
-                        Text(String(localized: "venue.noSlots"))
-                            .foregroundStyle(.secondary)
-                    } else {
-                        ForEach(court.bookable, id: \.startTs) { slot in
-                            SlotRow(
-                                slot: slot,
-                                currency: court.currency,
-                                busy: model.bookingSlot == slot.startTs,
-                                disabled: model.bookingSlot != nil
-                            ) {
-                                Task {
-                                    await model.book(
-                                        session,
-                                        venueId: venueId,
-                                        resourceId: court.resourceId,
-                                        slot: slot
-                                    )
-                                }
-                            }
-                        }
-                    }
-                } header: {
-                    CourtHeader(court: court, forecast: model.forecast(for: court))
-                }
-            }
-
-            if !coaches.isEmpty {
-                VenueCoachesSection(coaches: coaches, venueId: venueId, session: session)
-            }
+        if !coaches.isEmpty {
+            VenueCoachesSection(coaches: coaches, venueId: venueId, session: session)
         }
     }
 
@@ -215,6 +212,59 @@ struct VenueDetailView: View {
             writeProblem = failure.text
             showingWriteProblem = true
         }
+    }
+}
+
+/// The top of a venue's screen: its cover (the club's photo, or the drawn
+/// band), then what the server says of it. Only what `GET /venues/{id}`
+/// carries: no opening hours line (free-form JSON) and no amenities.
+private struct VenueHero: View {
+    let venue: Components.Schemas.VenueDetail
+    let serverURL: String
+
+    var body: some View {
+        BrandCoverCard(coverHeight: 170) {
+            VenueCover(photo: venue.cover, seed: venue.id, serverURL: serverURL, pixelWidth: 1280)
+        } logo: {
+            VenueLogoTile(name: venue.name)
+        } content: {
+            VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
+                Text(venue.name)
+                    .font(Theme.Typography.cardTitle)
+                    .accessibilityAddTraits(.isHeader)
+                Label(place, systemImage: "mappin.and.ellipse")
+                    .font(Theme.Typography.cardSubtitle)
+                    .foregroundStyle(.secondary)
+                ChipFlow {
+                    if let cents = venue.fromPriceCents {
+                        VenueFactChip(text: VenueFacts.price(fromCents: cents), prominent: true)
+                    }
+                    if let rating {
+                        VenueFactChip(text: rating.shown, systemImage: "star.fill")
+                            .accessibilityElement(children: .ignore)
+                            .accessibilityLabel(rating.spoken)
+                    }
+                    ForEach(VenueFacts.sports(venue.sports), id: \.self) { sport in
+                        VenueFactChip(text: sport)
+                    }
+                }
+                .padding(.top, Theme.Spacing.xs)
+                if let description = venue.description, !description.isEmpty {
+                    Text(description)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .padding(.top, Theme.Spacing.xs)
+                }
+            }
+        }
+    }
+
+    private var rating: (shown: String, spoken: String)? {
+        VenueFacts.rating(venue.avgRating, count: venue.reviewCount)
+    }
+
+    private var place: String {
+        [venue.addressLine, venue.city].filter { !$0.isEmpty }.joined(separator: ", ")
     }
 }
 

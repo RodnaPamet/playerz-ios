@@ -52,6 +52,8 @@ enum DebugLaunch {
     /// `PLAYERZ_CREATE=1`: the «Създай» sheet on show, for a screenshot.
     static var create: Bool { env["PLAYERZ_CREATE"] == "1" }
     static var coach: String? { env["PLAYERZ_COACH"] }
+    /// «Начало» scrolled to its clubs (`PLAYERZ_HOME=clubs`) or with «Филтри» open (`=filters`).
+    static var home: String? { env["PLAYERZ_HOME"] }
     static var coachBook: Int? { env["PLAYERZ_COACH_BOOK"].flatMap(Int.init) }
     static var profile: Profile? { env["PLAYERZ_PROFILE"].flatMap(Profile.init(rawValue:)) }
     /// `PLAYERZ_EMPTY_END=1`: a scrolling empty state opens at its end, to
@@ -80,6 +82,7 @@ enum DebugLaunch {
     static let coaches = false
     static let create = false
     static let coach: String? = nil
+    static let home: String? = nil
     static let coachBook: Int? = nil
     static let profile: Profile? = nil
     static let emptyStateEnd = false

@@ -17,66 +17,73 @@ struct ClubView: View {
         Group {
             if let club {
                 List {
-                    if let description = club.description, !description.isEmpty {
-                        Section { Text(description) }
+                    Section {
+                        ClubHero(club: club, serverURL: session.serverURL)
                     }
-                    if let phone = club.phone, let call = URL(string: "tel:\(phone.filter { !$0.isWhitespace })") {
-                        Section(String(localized: "club.contactLabel")) {
-                            Link(String(localized: "club.phone \(phone)"), destination: call)
-                        }
-                    }
-                    // «Класиране» (#18), while the ranking module is on.
-                    if session.modules.ranking {
-                        Section {
-                            NavigationLink(String(localized: "club.leaderboard.title")) {
-                                ClubLeaderboardView(slug: slug, session: session)
+                    // The card is its own surface: no row box around it.
+                    .listRowInsets(EdgeInsets())
+                    .listRowBackground(Color.clear)
+                    Group {
+                        if let phone = club.phone, let call = URL(string: "tel:\(phone.filter { !$0.isWhitespace })") {
+                            Section(String(localized: "club.contactLabel")) {
+                                Link(String(localized: "club.phone \(phone)"), destination: call)
                             }
                         }
-                    }
-                    if session.modules.ranking, !tournaments.isEmpty {
-                        Section(String(localized: "games.tab.tournaments")) {
-                            ForEach(tournaments, id: \.id) { tournament in
-                                NavigationLink {
-                                    TournamentDetailView(id: tournament.id, session: session)
-                                } label: {
-                                    TournamentRow(tournament: tournament, entry: nil)
+                        // «Класиране» (#18), while the ranking module is on.
+                        if session.modules.ranking {
+                            Section {
+                                NavigationLink(String(localized: "club.leaderboard.title")) {
+                                    ClubLeaderboardView(slug: slug, session: session)
                                 }
                             }
                         }
-                    }
-                    Section {
-                        if club.venues.isEmpty {
-                            ContentUnavailableView(
-                                String(localized: "club.noVenues.title"),
-                                systemImage: "sportscourt",
-                                description: Text(String(localized: "club.noVenues.description"))
-                            )
-                        }
-                        ForEach(club.venues, id: \.id) { venue in
-                            NavigationLink {
-                                VenueDetailView(venueId: venue.id, session: session)
-                            } label: {
-                                ClubVenueRow(venue: venue)
+                        if session.modules.ranking, !tournaments.isEmpty {
+                            Section(String(localized: "games.tab.tournaments")) {
+                                ForEach(tournaments, id: \.id) { tournament in
+                                    NavigationLink {
+                                        TournamentDetailView(id: tournament.id, session: session)
+                                    } label: {
+                                        TournamentRow(tournament: tournament, entry: nil)
+                                    }
+                                }
                             }
                         }
-                    } header: {
-                        Text(String(localized: "club.venuesTitle"))
-                    } footer: {
-                        Text(String(localized: "club.venuesCount \(club.venues.count)"))
+                        Section {
+                            if club.venues.isEmpty {
+                                ContentUnavailableView(
+                                    String(localized: "club.noVenues.title"),
+                                    systemImage: "sportscourt",
+                                    description: Text(String(localized: "club.noVenues.description"))
+                                )
+                            }
+                            ForEach(club.venues, id: \.id) { venue in
+                                NavigationLink {
+                                    VenueDetailView(venueId: venue.id, session: session)
+                                } label: {
+                                    ClubVenueRow(venue: venue)
+                                }
+                            }
+                        } header: {
+                            Text(String(localized: "club.venuesTitle"))
+                        } footer: {
+                            Text(String(localized: "club.venuesCount \(club.venues.count)"))
+                        }
                     }
+                    .brandListRow()
                 }
             } else if failed {
-                ContentUnavailableView {
-                    Text(String(localized: "club.failed"))
-                } actions: {
+                BrandEmptyState(systemImage: "wifi.exclamationmark", title: String(localized: "club.failed")) {
                     Button(String(localized: "venues.retry"), action: retry)
+                        .buttonStyle(.brandSecondary(fullWidth: false))
                 }
             } else {
                 ProgressView()
             }
         }
+        .brandPage()
+        // Hidden with the system bar; still what VoiceOver calls the screen.
         .navigationTitle(club?.name ?? "")
-        .navigationBarTitleDisplayMode(.inline)
+        .brandHeader(.back(club?.name ?? ""))
         .task { await load() }
     }
 
@@ -98,6 +105,33 @@ struct ClubView: View {
         if session.modules.ranking,
            let listed = try? await client.listClubPublicTournaments(path: .init(slug: slug)).ok.body.json.data.items {
             tournaments = listed
+        }
+    }
+}
+
+/// The top of a club's page: its cover and logo when the club has uploaded
+/// them (else the drawn band and its initial), its name, what it says of itself.
+private struct ClubHero: View {
+    let club: Components.Schemas.ClubPublic
+    let serverURL: String
+
+    var body: some View {
+        BrandCoverCard(coverHeight: 170) {
+            VenueCover(photo: club.cover, seed: club.id, serverURL: serverURL, pixelWidth: 1280)
+        } logo: {
+            VenueLogoTile(name: club.name, logoURL: club.logoUrl.flatMap { mediaURL($0, serverURL: serverURL) })
+        } content: {
+            VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
+                Text(club.name)
+                    .font(Theme.Typography.cardTitle)
+                    .accessibilityAddTraits(.isHeader)
+                if let description = club.description, !description.isEmpty {
+                    // The club's own line breaks are kept (#530).
+                    Text(description)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+            }
         }
     }
 }
