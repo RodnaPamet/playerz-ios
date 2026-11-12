@@ -22,8 +22,17 @@ struct GameCard: View {
             header
             Divider().overlay(Theme.Palette.hairline)
             ViewThatFits(in: .horizontal) {
-                HStack(alignment: .firstTextBaseline, spacing: Theme.Spacing.s) { whenParts }
-                VStack(alignment: .leading, spacing: 2) { whenParts }
+                HStack(alignment: .firstTextBaseline, spacing: Theme.Spacing.s) {
+                    Text("\(day) | \(hours)").font(Theme.Typography.rowTitle)
+                    durationText
+                }
+                // At the large sizes the day and the hours each get a line,
+                // rather than «сб, 14.11 |» breaking mid-range.
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(day).font(Theme.Typography.rowTitle)
+                    Text(hours).font(Theme.Typography.rowTitle)
+                    durationText
+                }
             }
             GameCourtView(
                 seats: GameSeats(game: game, server: server),
@@ -101,9 +110,10 @@ struct GameCard: View {
         }
     }
 
-    @ViewBuilder private var whenParts: some View {
-        Text("\(GameText.day(game.startTs, timezone: game.timezone)) | \(GameText.hours(game.startTs, game.endTs, timezone: game.timezone))")
-            .font(Theme.Typography.rowTitle)
+    private var day: String { GameText.day(game.startTs, timezone: game.timezone) }
+    private var hours: String { GameText.hours(game.startTs, game.endTs, timezone: game.timezone) }
+
+    private var durationText: some View {
         Text(GameText.duration(game.startTs, game.endTs))
             .font(.subheadline)
             .foregroundStyle(.secondary)

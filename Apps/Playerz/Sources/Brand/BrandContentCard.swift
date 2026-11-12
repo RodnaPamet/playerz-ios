@@ -27,6 +27,9 @@ struct BrandContentCard<Content: View>: View {
 /// `content` starts below the logo.
 struct BrandCoverCard<Cover: View, Logo: View, Content: View>: View {
     var coverHeight: CGFloat
+    /// What the cover shows, for VoiceOver (a photo's alt text); nil hides a
+    /// cover that is only decoration.
+    var coverLabel: String?
     let cover: Cover
     let logo: Logo
     let content: Content
@@ -39,11 +42,13 @@ struct BrandCoverCard<Cover: View, Logo: View, Content: View>: View {
 
     init(
         coverHeight: CGFloat = 160,
+        coverLabel: String? = nil,
         @ViewBuilder cover: () -> Cover,
         @ViewBuilder logo: () -> Logo,
         @ViewBuilder content: () -> Content
     ) {
         self.coverHeight = coverHeight
+        self.coverLabel = coverLabel
         self.cover = cover()
         self.logo = logo()
         self.content = content()
@@ -54,7 +59,10 @@ struct BrandCoverCard<Cover: View, Logo: View, Content: View>: View {
             cover
                 .frame(maxWidth: .infinity, minHeight: coverHeight, maxHeight: coverHeight)
                 .clipped()
-                .accessibilityHidden(true)
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(coverLabel ?? "")
+                .accessibilityAddTraits(.isImage)
+                .accessibilityHidden(coverLabel?.isEmpty ?? true)
             content
                 .padding(.horizontal, Theme.Spacing.l)
                 .padding(.bottom, Theme.Spacing.l)
