@@ -34,7 +34,10 @@ struct BookingDetailSummary: View {
                     }
                 }
             }
-            LabeledContent(String(localized: "myBookings.detail.status"), value: BookingCancel.status(booking.status))
+            LabeledContent(
+                String(localized: "myBookings.detail.status"),
+                value: BookingCancel.status(booking.status, isMatch: booking.tournamentMatch != nil)
+            )
         }
     }
 

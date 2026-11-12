@@ -1173,6 +1173,22 @@
         }
       }
     },
+    "bookings.status.proposedMatch": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Предложен час"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Proposed time"
+          }
+        }
+      }
+    },
     "bookings.title": {
       "localizations": {
         "bg": {
@@ -9117,6 +9133,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Lesson"
+          }
+        }
+      }
+    },
+    "myBookings.match.draw %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Схема: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Draw: %@"
           }
         }
       }

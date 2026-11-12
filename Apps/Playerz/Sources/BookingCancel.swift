@@ -56,4 +56,10 @@ enum BookingCancel {
         let known: Set<String> = ["PENDING", "CONFIRMED", "CANCELLED", "COMPLETED", "NO_SHOW"]
         return known.contains(raw) ? localized(key: "bookings.status.\(raw)") : raw
     }
+
+    /// A tournament match's booking held while the other side decides
+    /// (projectZ#685) is a proposed time, not a booking awaiting the club.
+    static func status(_ raw: String, isMatch: Bool) -> String {
+        isMatch && raw == "PENDING" ? String(localized: "bookings.status.proposedMatch") : status(raw)
+    }
 }

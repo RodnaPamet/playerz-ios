@@ -27,7 +27,7 @@ struct HomeNextBookingCard: View {
                         .font(Theme.Typography.cardSubtitle)
                         .foregroundStyle(.secondary)
                     // A held, unpaid booking is the one that needs a tap.
-                    Text(BookingCancel.status(booking.status))
+                    Text(BookingCancel.status(booking.status, isMatch: booking.tournamentMatch != nil))
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }

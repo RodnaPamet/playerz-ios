@@ -66,6 +66,20 @@ struct BookingDetailView: View {
 
     @ViewBuilder private func sections(_ booking: Components.Schemas.MyBookingDetail) -> some View {
         BookingDetailSummary(booking: booking)
+        // A tournament match (projectZ#685): the draw, where a proposed time is
+        // answered and the other matches are.
+        if let match = booking.tournamentMatch {
+            Section {
+                NavigationLink {
+                    TournamentDrawView(
+                        id: match.tournamentId, timezone: booking.venue.timezone,
+                        venueId: booking.venue.id, session: session
+                    )
+                } label: {
+                    Label(String(localized: "myBookings.match.draw \(match.tournamentName)"), systemImage: "trophy")
+                }
+            }
+        }
         BookingDetailPlace(booking: booking, session: session)
         if booking.status != "CANCELLED" {
             Section {
@@ -74,7 +88,8 @@ struct BookingDetailView: View {
                 } label: {
                     LabeledContent(String(localized: "myBookings.detail.players"), value: "\(booking.players.count)")
                 }
-                if session.modules.openPlay, booking.status == "CONFIRMED", booking.endTs > .now {
+                if session.modules.openPlay, booking.status == "CONFIRMED", booking.endTs > .now,
+                   booking.tournamentMatch == nil {
                     NavigationLink(String(localized: "bookingGame.link")) {
                         BookingGameView(bookingId: booking.id, session: session)
                     }
