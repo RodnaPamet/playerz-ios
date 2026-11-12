@@ -1,7 +1,8 @@
 import Foundation
 
 /// Where a DEBUG launch opens, from environment variables, so a screen can be
-/// looked at on the simulator without driving taps:
+/// looked at on the simulator without driving taps (an id route also takes
+/// `first` or `last`, of those listed):
 ///
 ///     SIMCTL_CHILD_PLAYERZ_SERVER_URL=http://localhost:3100/api/v1 \
 ///     SIMCTL_CHILD_PLAYERZ_EMAIL=… SIMCTL_CHILD_PLAYERZ_PASSWORD=… \
@@ -70,6 +71,13 @@ enum DebugLaunch {
     static var bookingsPast: Bool { env["PLAYERZ_BOOKINGS"] == "past" }
     /// `PLAYERZ_BOOKINGS=cancelled`: Резервации opened on «Отменени» (#58).
     static var bookingsCancelled: Bool { env["PLAYERZ_BOOKINGS"] == "cancelled" }
+    /// `PLAYERZ_OPEN=<what>`: a sheet or a form on the screen opened, for a
+    /// screenshot. `invite` (a booking's players), `report` (a conversation),
+    /// `review` (a played booking), `search` (the inbox, with `PLAYERZ_SEARCH`
+    /// typed in), `card` (that search's first player), `bookings` (a venue's
+    /// club bookings). Nothing is sent.
+    static var open: String? { env["PLAYERZ_OPEN"] }
+    static var search: String? { env["PLAYERZ_SEARCH"] }
     #else
     static let credentials: (email: String, password: String)? = nil
     static let tab: Tab? = nil
@@ -100,5 +108,29 @@ enum DebugLaunch {
     static let emptyStateEnd = false
     static let bookingsPast = false
     static let bookingsCancelled = false
+    static let open: String? = nil
+    static let search: String? = nil
     #endif
+
+    /// An id from the environment, or nil for `first` or `last`: that one is
+    /// picked from the list once it has loaded (`pick`), so a screenshot of a
+    /// booking or a conversation needs no id looked up by hand.
+    static func listed(_ id: String?) -> String? {
+        id == "first" || id == "last" ? nil : id
+    }
+
+    @MainActor private static var picked: Set<String> = []
+
+    /// The first or last of `ids` when the route `name`'s value asks for it,
+    /// once per route, so going back does not reopen it.
+    @MainActor static func pick(_ name: String, _ value: String?, from ids: [String]) -> String? {
+        guard !picked.contains(name) else { return nil }
+        let id: String? = switch value {
+        case "first": ids.first
+        case "last": ids.last
+        default: nil
+        }
+        if id != nil { picked.insert(name) }
+        return id
+    }
 }

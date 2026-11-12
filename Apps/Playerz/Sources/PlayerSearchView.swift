@@ -7,48 +7,60 @@ struct PlayerSearchView: View {
     @Bindable var session: SessionModel
     let opened: (String) -> Void
 
-    @State private var query = ""
+    /// A DEBUG launch can type a name in (`PLAYERZ_SEARCH`).
+    @State private var query = DebugLaunch.search ?? ""
     @State private var results: [Components.Schemas.PlayerCard] = []
     @State private var searched = false
     @State private var failed = false
-    @Environment(\.dismiss) private var dismiss
+    /// A DEBUG launch can open the first result's card (`PLAYERZ_OPEN=card`).
+    @State private var debugCard: String?
 
     /// The server searches from this many letters on.
     private let minLetters = 2
 
     var body: some View {
         NavigationStack {
-            List {
-                if query.count < minLetters {
-                    Text(String(localized: "messages.search.hint \(minLetters)")).foregroundStyle(.secondary)
-                } else if failed {
-                    Text(String(localized: "messages.search.failed")).foregroundStyle(.red)
-                } else if searched && results.isEmpty {
-                    ContentUnavailableView(
-                        String(localized: "messages.search.none"),
-                        systemImage: "person.fill.questionmark",
-                        description: Text(String(localized: "messages.search.noneHint"))
-                    )
+            content
+                .brandPage()
+                // Hidden with the system bar; still what VoiceOver calls the screen.
+                .navigationTitle(String(localized: "messages.new"))
+                // The field under the band: `searchable` lives in the system bar this hides.
+                .brandChipBar { PlayerSearchField(query: $query) }
+                // The sheet's first screen: the band's back button closes it.
+                .brandHeader(.back(String(localized: "messages.new")))
+                .task(id: query) { await search() }
+                .navigationDestination(item: $debugCard) { id in
+                    PlayerCardView(userId: id, session: session, opened: opened)
                 }
-                ForEach(results, id: \.userId) { card in
-                    NavigationLink {
-                        PlayerCardView(userId: card.userId, session: session, opened: opened)
-                    } label: {
-                        VStack(alignment: .leading) {
-                            Text(card.name ?? String(localized: "messages.unnamed"))
-                            Text(levels(card)).font(.caption).foregroundStyle(.secondary)
+        }
+    }
+
+    @ViewBuilder private var content: some View {
+        if query.count < minLetters {
+            BrandEmptyState(systemImage: "magnifyingglass", title: String(localized: "messages.search.hint \(minLetters)"))
+        } else if failed {
+            BrandEmptyState(systemImage: "wifi.exclamationmark", title: String(localized: "messages.search.failed"))
+        } else if searched && results.isEmpty {
+            BrandEmptyState(
+                systemImage: "person.fill.questionmark",
+                title: String(localized: "messages.search.none"),
+                message: String(localized: "messages.search.noneHint")
+            )
+        } else {
+            List(results, id: \.userId) { card in
+                NavigationLink {
+                    PlayerCardView(userId: card.userId, session: session, opened: opened)
+                } label: {
+                    HStack(spacing: Theme.Spacing.m) {
+                        BrandAvatar(name: card.name, url: session.mediaURL(card.avatarUrl))
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(card.name ?? String(localized: "messages.unnamed")).font(Theme.Typography.rowTitle)
+                            Text(levels(card)).font(.subheadline).foregroundStyle(.secondary)
                         }
                     }
+                    .padding(.vertical, Theme.Spacing.xs)
                 }
-            }
-            .navigationTitle(String(localized: "messages.new"))
-            .navigationBarTitleDisplayMode(.inline)
-            .searchable(text: $query, prompt: String(localized: "messages.search.placeholder"))
-            .task(id: query) { await search() }
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(String(localized: "messages.cancel")) { dismiss() }
-                }
+                .brandListRow()
             }
         }
     }
@@ -70,10 +82,48 @@ struct PlayerSearchView: View {
         do {
             results = try await client.searchPlayers(query: .init(q: q)).ok.body.json.data
             failed = false
+            if DebugLaunch.open == "card",
+               let id = DebugLaunch.pick("card", "first", from: results.map(\.userId)) { debugCard = id }
         } catch {
             if !Task.isCancelled { failed = true }
         }
         searched = true
+    }
+}
+
+/// The name to search for, on the page under the band: a rounded field with
+/// a magnifier, and a clear button once something is typed.
+private struct PlayerSearchField: View {
+    @Binding var query: String
+
+    var body: some View {
+        HStack(spacing: Theme.Spacing.s) {
+            Image(systemName: "magnifyingglass")
+                .foregroundStyle(.secondary)
+                .accessibilityHidden(true)
+            TextField(String(localized: "messages.search.placeholder"), text: $query)
+                .textContentType(.name)
+                .autocorrectionDisabled()
+                .submitLabel(.search)
+                .frame(minHeight: Theme.minTarget)
+            if !query.isEmpty {
+                Button {
+                    query = ""
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundStyle(.secondary)
+                        .frame(minWidth: Theme.minTarget, minHeight: Theme.minTarget)
+                        .contentShape(.rect)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(String(localized: "messages.search.clear"))
+            }
+        }
+        .padding(.leading, Theme.Spacing.l)
+        .padding(.trailing, query.isEmpty ? Theme.Spacing.l : Theme.Spacing.xs)
+        .background(Theme.Palette.card, in: .capsule)
+        .overlay(Capsule().strokeBorder(Theme.Palette.hairline))
+        .padding(.horizontal, Theme.Spacing.l)
     }
 }
 
@@ -88,33 +138,56 @@ struct PlayerCardView: View {
     @State private var problem: String?
 
     var body: some View {
-        List {
+        Group {
             if let card {
-                Section {
-                    Text(card.name ?? String(localized: "messages.unnamed")).font(.title2.weight(.semibold))
-                }
-                Section(String(localized: "messages.card.sports")) {
-                    if card.sports.isEmpty {
-                        Text(String(localized: "messages.card.noSports")).foregroundStyle(.secondary)
+                List {
+                    Group {
+                        Section {
+                            HStack(spacing: Theme.Spacing.m) {
+                                BrandAvatar(name: card.name, url: session.mediaURL(card.avatarUrl), side: 64)
+                                Text(name(card))
+                                    .font(Theme.Typography.cardTitle)
+                                    .accessibilityAddTraits(.isHeader)
+                            }
+                            .padding(.vertical, Theme.Spacing.xs)
+                        }
+                        Section(String(localized: "messages.card.sports")) {
+                            if card.sports.isEmpty {
+                                Text(String(localized: "messages.card.noSports")).foregroundStyle(.secondary)
+                            }
+                            ForEach(card.sports, id: \.sport) { s in
+                                LabeledContent(GameText.sport(s.sport), value: "\(s.level)")
+                            }
+                        }
+                        if let problem {
+                            Section { Text(problem).foregroundStyle(Theme.Palette.danger) }
+                        }
                     }
-                    ForEach(card.sports, id: \.sport) { s in
-                        LabeledContent(GameText.sport(s.sport), value: "\(s.level)")
+                    .brandListRow()
+                    // The card's one action: the accent pill, on the page.
+                    Section {
+                        Button(String(localized: "messages.write")) { Task { await write() } }
+                            .buttonStyle(.brandPrimary)
+                            .disabled(busy)
                     }
-                }
-                Section {
-                    if let problem { Text(problem).foregroundStyle(.red) }
-                    Button(String(localized: "messages.write")) { Task { await write() } }
-                        .disabled(busy)
+                    .listPillRow()
                 }
             } else {
                 ProgressView()
             }
         }
-        .navigationBarTitleDisplayMode(.inline)
+        .brandPage()
+        // Hidden with the system bar; still what VoiceOver calls the screen.
+        .navigationTitle(card.map(name) ?? "")
+        .brandHeader(.back(card.map(name) ?? ""))
         .task {
             guard let client = await session.client() else { return }
             card = try? await client.getPlayerCard(path: .init(id: userId)).ok.body.json.data
         }
+    }
+
+    private func name(_ card: Components.Schemas.PlayerCard) -> String {
+        card.name ?? String(localized: "messages.unnamed")
     }
 
     private func write() async {

@@ -45,7 +45,7 @@ struct BookingResultSection: View {
                         Button(String(localized: "myBookings.result.reject"), role: .destructive, action: reject)
                             .disabled(busy)
                             // On the button, not the Section: a Section's modifiers apply to each row.
-                            .sheet(isPresented: $rejecting) {
+                            .brandSheet(isPresented: $rejecting, detents: [.medium, .large]) {
                                 RejectResultSheet(send: sendReject)
                             }
                     }

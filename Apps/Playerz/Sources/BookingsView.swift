@@ -13,39 +13,44 @@ struct BookingsView: View {
             case .loading:
                 ProgressView(String(localized: "common.loading"))
             case .failed:
-                ContentUnavailableView {
-                    Text(String(localized: "bookings.failed"))
-                } actions: {
+                BrandEmptyState(systemImage: "wifi.exclamationmark", title: String(localized: "bookings.failed")) {
                     Button(String(localized: "venues.retry")) {
                         Task { await model.load(session, slug: slug) }
                     }
+                    .buttonStyle(.brandSecondary(fullWidth: false))
                 }
             case .loaded where model.bookings.isEmpty:
-                ContentUnavailableView(String(localized: "bookings.empty"), systemImage: "calendar")
+                BrandEmptyState(systemImage: "calendar", title: String(localized: "bookings.empty"))
             case .loaded:
                 List {
-                    if let banner = model.banner {
-                        Section { Text(banner).foregroundStyle(model.bannerIsError ? .red : .primary) }
-                    }
-                    // A section per booking, one action per row: several links in
-                    // one cell share its tap.
-                    ForEach(model.bookings, id: \.id) { booking in
-                        Section {
-                            BookingRow(
-                            booking: booking,
-                            session: session,
-                            busy: model.cancelling == booking.id,
-                            disabled: model.cancelling != nil
-                        ) { pendingCancel = booking }
+                    Group {
+                        if let banner = model.banner {
+                            Section {
+                                Text(banner).foregroundStyle(model.bannerIsError ? Theme.Palette.danger : Color.primary)
+                            }
+                        }
+                        // A section per booking, one action per row: several links in
+                        // one cell share its tap.
+                        ForEach(model.bookings, id: \.id) { booking in
+                            Section {
+                                BookingRow(
+                                    booking: booking,
+                                    session: session,
+                                    busy: model.cancelling == booking.id,
+                                    disabled: model.cancelling != nil
+                                ) { pendingCancel = booking }
+                            }
                         }
                     }
+                    .brandListRow()
                 }
                 .refreshable { await model.load(session, slug: slug) }
             }
         }
+        .brandPage()
+        // Hidden with the system bar; still what VoiceOver calls the screen.
         .navigationTitle(String(localized: "bookings.title"))
-        .navigationBarTitleDisplayMode(.inline)
-
+        .brandHeader(.back(String(localized: "bookings.title")))
         .task { await model.load(session, slug: slug) }
         .onChange(of: model.banner) { _, banner in
             guard let banner else { return }
@@ -83,11 +88,11 @@ private struct BookingRow: View {
     // and buttons would share its tap.
     @ViewBuilder var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(when).font(.headline)
+            Text(when).font(Theme.Typography.rowTitle)
             HStack {
-                Text(BookingCancel.status(booking.status)).font(.caption).foregroundStyle(.secondary)
+                Text(BookingCancel.status(booking.status)).font(.subheadline).foregroundStyle(.secondary)
                 Spacer()
-                Text(amount).font(.subheadline)
+                Text(amount).font(.subheadline.weight(.semibold))
             }
         }
         // The description is one element; the button stays its own, so it
@@ -103,6 +108,7 @@ private struct BookingRow: View {
                 }
             }
             .buttonStyle(.borderless)
+            .foregroundStyle(Theme.Palette.danger)
             .disabled(disabled)
             // Several bookings mean several identical "Откажи" buttons, and
             // this one is destructive and not undoable — cancelling twice

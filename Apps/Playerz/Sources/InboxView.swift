@@ -13,8 +13,9 @@ struct InboxView: View {
     @State private var items: [Components.Schemas.ConversationSummary] = []
     @State private var nextCursor: String?
     @State private var phase: Phase = .loading
-    @State private var path: [String] = DebugLaunch.conversation.map { [$0] } ?? []
-    @State private var searching = false
+    @State private var path: [String] = DebugLaunch.listed(DebugLaunch.conversation).map { [$0] } ?? []
+    /// A DEBUG launch can open «Ново съобщение» (`PLAYERZ_OPEN=search` or `card`).
+    @State private var searching = DebugLaunch.open == "search" || DebugLaunch.open == "card"
 
     enum Phase { case loading, loaded, failed }
 
@@ -122,6 +123,8 @@ struct InboxView: View {
             items = page.items
             nextCursor = page.nextCursor
             phase = .loaded
+            // A DEBUG launch's `first` or `last` conversation listed, once.
+            if let id = DebugLaunch.pick("conversation", DebugLaunch.conversation, from: items.map(\.id)) { path = [id] }
         } catch {
             phase = items.isEmpty ? .failed : .loaded
         }

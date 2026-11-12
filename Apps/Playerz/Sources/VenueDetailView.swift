@@ -9,7 +9,8 @@ struct VenueDetailView: View {
     @State private var conversation: OpenedConversation?
     @State private var writeProblem: String?
     @State private var showingWriteProblem = false
-    @State private var showingBookings = false
+    /// A DEBUG launch can open the club's bookings (`PLAYERZ_OPEN=bookings`).
+    @State private var showingBookings = DebugLaunch.open == "bookings"
     /// The heart (projectZ#672); nil until read.
     @State private var favourite: Bool?
     /// The name is on the cover card; the header carries it only once the card is scrolled away (#55).

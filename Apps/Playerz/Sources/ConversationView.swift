@@ -21,20 +21,25 @@ struct ConversationView: View {
             if let conversation = model.conversation {
                 thread(conversation)
             } else if model.failed {
-                ContentUnavailableView {
-                    Text(String(localized: "messages.conversationFailed"))
-                } actions: {
+                BrandEmptyState(systemImage: "wifi.exclamationmark", title: String(localized: "messages.conversationFailed")) {
                     Button(String(localized: "venues.retry")) { Task { await model.load(session) } }
+                        .buttonStyle(.brandSecondary(fullWidth: false))
                 }
             } else {
                 ProgressView(String(localized: "common.loading"))
             }
         }
-        .navigationTitle(model.conversation.map { ConversationText.title($0.counterpart) } ?? "")
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar { menu }
+        .brandPage()
+        // Hidden with the system bar; still what VoiceOver calls the screen.
+        .navigationTitle(title)
+        // Pushed, it goes back; first in a sheet (ConversationSheet), it closes it.
+        .brandHeader(.back(title)) { menu }
+        // The bottom of this screen is the composer.
+        .floatingTabBarHidden()
         .task {
             await model.load(session)
+            // A DEBUG launch can look at the report sheet (`PLAYERZ_OPEN=report`).
+            if DebugLaunch.open == "report", model.conversation != nil { reporting = .conversation }
             await model.poll(session)
         }
         .onChange(of: model.problem) { _, text in
@@ -53,6 +58,8 @@ struct ConversationView: View {
         } message: { _ in
             Text(String(localized: "messages.retractBody"))
         }
+        // ReportSheet brings its own dark sheet look: it is presented from a
+        // coach's screen too.
         .sheet(item: $reporting) { what in
             ReportSheet(title: String(localized: "messages.report")) { reason, details in
                 await model.report(what, reason: reason, details: details, session)
@@ -62,21 +69,26 @@ struct ConversationView: View {
         }
     }
 
+    private var title: String {
+        model.conversation.map { ConversationText.title($0.counterpart) } ?? ""
+    }
+
     // ─── The thread ───────────────────────────────────────────────────
 
     private func thread(_ conversation: Components.Schemas.Conversation) -> some View {
         ScrollViewReader { proxy in
             ScrollView {
-                LazyVStack(spacing: 8) {
+                LazyVStack(spacing: Theme.Spacing.s) {
                     if model.olderCursor != nil {
                         Button(String(localized: "messages.older")) {
                             Task { await model.loadOlder(session) }
                         }
-                        .buttonStyle(.bordered)
+                        .buttonStyle(.brandSecondary(fullWidth: false))
                     }
                     if model.messages.isEmpty {
                         Text(String(localized: "messages.none"))
                             .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.center)
                             .padding(.top, 40)
                     }
                     ForEach(model.messages, id: \.id) { message in
@@ -85,13 +97,14 @@ struct ConversationView: View {
                             .contextMenu { messageActions(message) }
                     }
                 }
-                .padding()
+                .padding(.horizontal, Theme.Spacing.l)
+                .padding(.bottom, Theme.Spacing.l)
             }
             .defaultScrollAnchor(.bottom)
             .onChange(of: model.messages.last?.id) { _, last in
                 if let last { withAnimation { proxy.scrollTo(last, anchor: .bottom) } }
             }
-            .safeAreaInset(edge: .bottom) { footer(conversation) }
+            .safeAreaInset(edge: .bottom, spacing: 0) { footer(conversation) }
         }
     }
 
@@ -111,9 +124,9 @@ struct ConversationView: View {
     /// The state's note, the request's answer, and the composer when it may send.
     @ViewBuilder private func footer(_ conversation: Components.Schemas.Conversation) -> some View {
         let name = ConversationText.title(conversation.counterpart)
-        VStack(spacing: 8) {
+        VStack(spacing: Theme.Spacing.s) {
             if let problem = model.problem {
-                Text(problem).font(.footnote).foregroundStyle(.red)
+                Text(problem).font(.footnote).foregroundStyle(Theme.Palette.danger)
             }
             switch conversation.state {
             case .request:
@@ -147,42 +160,63 @@ struct ConversationView: View {
             }
         }
         .foregroundStyle(.primary)
-        .padding()
-        .background(.bar)
+        .multilineTextAlignment(.center)
+        .padding(.horizontal, Theme.Spacing.l)
+        .padding(.vertical, Theme.Spacing.m)
+        .background(Theme.Palette.page.ignoresSafeArea())
+        .overlay(alignment: .top) { Divider().overlay(Theme.Palette.hairline) }
     }
 
     private var composer: some View {
-        HStack(alignment: .bottom) {
+        HStack(alignment: .bottom, spacing: Theme.Spacing.s) {
             TextField(String(localized: "messages.placeholder"), text: $draft, axis: .vertical)
                 .lineLimit(1...5)
-                .textFieldStyle(.roundedBorder)
-            Button(String(localized: "messages.send"), systemImage: "arrow.up.circle.fill") {
+                .multilineTextAlignment(.leading)
+                .padding(.horizontal, Theme.Spacing.l)
+                .padding(.vertical, Theme.Spacing.m)
+                .frame(minHeight: Theme.minTarget)
+                .background(Theme.Palette.card, in: .rect(cornerRadius: Theme.Radius.row))
+                .overlay(RoundedRectangle(cornerRadius: Theme.Radius.row).strokeBorder(Theme.Palette.hairline))
+            Button {
                 Task {
                     if await model.send(draft, session) { draft = "" }
                 }
+            } label: {
+                Image(systemName: "arrow.up")
+                    .font(.body.weight(.bold))
+                    .foregroundStyle(Theme.Palette.onAccent)
+                    .frame(width: sendDiameter, height: sendDiameter)
+                    .background(Theme.Palette.accentFill, in: .circle)
             }
-            .labelStyle(.iconOnly)
-            .font(.title2)
-            .disabled(model.sending || draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-                      || draft.count > model.maxLength)
+            .buttonStyle(.plain)
+            .opacity(canSend ? 1 : 0.45)
+            .disabled(!canSend)
+            .accessibilityLabel(String(localized: "messages.send"))
         }
     }
 
-    @ToolbarContentBuilder private var menu: some ToolbarContent {
+    /// Grows with the text, to a point: at the largest sizes the field needs the width.
+    @ScaledMetric(relativeTo: .body) private var sendSide: CGFloat = 44
+    private var sendDiameter: CGFloat { min(sendSide, 66) }
+
+    private var canSend: Bool {
+        !model.sending && !draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            && draft.count <= model.maxLength
+    }
+
+    @ViewBuilder private var menu: some View {
         if let conversation = model.conversation {
-            ToolbarItem(placement: .topBarTrailing) {
-                Menu(String(localized: "messages.more"), systemImage: "ellipsis.circle") {
-                    // A game chat is reported, not blocked (#376).
-                    if conversation.kind == .player, conversation.state != .closed {
-                        Button(conversation.blockedByMe
-                               ? String(localized: "messages.unblock")
-                               : String(localized: "messages.block")) {
-                            Task { await model.setBlocked(!conversation.blockedByMe, session) }
-                        }
+            HeaderMenuButton(label: String(localized: "messages.more")) {
+                // A game chat is reported, not blocked (#376).
+                if conversation.kind == .player, conversation.state != .closed {
+                    Button(conversation.blockedByMe
+                           ? String(localized: "messages.unblock")
+                           : String(localized: "messages.block")) {
+                        Task { await model.setBlocked(!conversation.blockedByMe, session) }
                     }
-                    Button(String(localized: "messages.report"), role: .destructive) {
-                        reporting = .conversation
-                    }
+                }
+                Button(String(localized: "messages.report"), role: .destructive) {
+                    reporting = .conversation
                 }
             }
         }
@@ -203,12 +237,16 @@ private struct MessageBubble: View {
                 }
                 Text(message.deleted ? String(localized: "messages.retracted") : (message.body ?? ""))
                     .italic(message.deleted)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 8)
-                    .background(
-                        message.mine ? AnyShapeStyle(.tint.opacity(0.2)) : AnyShapeStyle(.fill.tertiary),
-                        in: .rect(cornerRadius: 14)
-                    )
+                    .foregroundStyle(message.mine && !message.deleted ? Theme.Palette.onAccent : Color.primary)
+                    .padding(.horizontal, Theme.Spacing.m + 2)
+                    .padding(.vertical, Theme.Spacing.s + 2)
+                    .background(bubble, in: .rect(cornerRadius: Theme.Radius.row))
+                    .overlay {
+                        // Someone else's on the card colour: the hairline keeps its edge in dark mode.
+                        if !message.mine {
+                            RoundedRectangle(cornerRadius: Theme.Radius.row).strokeBorder(Theme.Palette.hairline, lineWidth: 0.5)
+                        }
+                    }
                 Text(message.createdAt, format: .dateTime.hour().minute())
                     .font(.caption2)
                     .foregroundStyle(.secondary)
@@ -216,6 +254,12 @@ private struct MessageBubble: View {
             if !message.mine { Spacer(minLength: 40) }
         }
         .accessibilityElement(children: .combine)
+    }
+
+    /// Mine in the accent; a retracted one of mine greyed, as a note.
+    private var bubble: Color {
+        if message.mine { return message.deleted ? Theme.Palette.chipIdle : Theme.Palette.accentFill }
+        return Theme.Palette.card
     }
 
     private var sender: String {

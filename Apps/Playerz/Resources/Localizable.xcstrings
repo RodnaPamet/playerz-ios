@@ -7561,22 +7561,6 @@
         }
       }
     },
-    "messages.close": {
-      "localizations": {
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Затвори"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Close"
-          }
-        }
-      }
-    },
     "messages.conversationFailed": {
       "localizations": {
         "bg": {
@@ -8309,6 +8293,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Message deleted"
+          }
+        }
+      }
+    },
+    "messages.search.clear": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изчисти търсенето"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear search"
           }
         }
       }
@@ -9293,6 +9293,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "The link works until the game starts. Anyone who opens it and signs in is added while there is room."
+          }
+        }
+      }
+    },
+    "myBookings.players.linkTitle": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Връзка за покана"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invite link"
           }
         }
       }

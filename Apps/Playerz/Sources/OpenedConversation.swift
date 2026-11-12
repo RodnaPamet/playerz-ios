@@ -7,19 +7,15 @@ struct OpenedConversation: Identifiable, Hashable {
     let id: String
 }
 
+/// The conversation's header band closes the sheet: its back button
+/// dismisses a stack's first screen, so no «Затвори» of its own.
 struct ConversationSheet: View {
     let opened: OpenedConversation
     @Bindable var session: SessionModel
-    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         NavigationStack {
             ConversationView(conversationId: opened.id, session: session)
-                .toolbar {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button(String(localized: "messages.close")) { dismiss() }
-                    }
-                }
         }
     }
 }
