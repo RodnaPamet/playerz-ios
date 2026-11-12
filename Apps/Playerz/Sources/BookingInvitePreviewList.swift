@@ -27,7 +27,7 @@ struct BookingInvitePreviewList: View {
                     LabeledContent(String(localized: "bookingInvite.when")) {
                         Text(GameText.when(preview.startTs, timezone: preview.venue.timezone))
                     }
-                    LabeledContent(String(localized: "bookingInvite.where"), value: "\(preview.venue.name), \(preview.venue.city)")
+                    LabeledContent(String(localized: "bookingInvite.where"), value: "\(preview.venue.name), \(CityText.shown(preview.venue.cityNames))")
                     LabeledContent(courtLabel, value: preview.resource.name)
                 } footer: {
                     Text(String(localized: "bookingInvite.spotsLeft \(preview.spotsLeft)"))
