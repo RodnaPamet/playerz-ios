@@ -53,7 +53,7 @@ struct StatsLevelCard: View {
         VStack(alignment: .leading, spacing: Theme.Spacing.m) {
             HStack(alignment: .firstTextBaseline, spacing: Theme.Spacing.s) {
                 Text(StatsText.level(rating.level))
-                    .font(.system(.largeTitle, design: .rounded, weight: .heavy))
+                    .font(Theme.Typography.display(56, relativeTo: .largeTitle))
                     .monospacedDigit()
                 if rating.provisional {
                     BrandBadge(String(localized: "stats.level.provisional"), style: .neutral)
@@ -253,7 +253,7 @@ struct StatsFigure: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
             Text(value)
-                .font(.system(.title, design: .rounded, weight: .heavy))
+                .font(Theme.Typography.display(40, relativeTo: .title))
                 .monospacedDigit()
                 .foregroundStyle(tint)
                 .lineLimit(1)
@@ -571,7 +571,7 @@ struct StatsMilestones: View {
                         .foregroundStyle(Theme.Palette.accentText)
                         .accessibilityHidden(true)
                     Text(face.value)
-                        .font(.system(.title2, design: .rounded, weight: .heavy))
+                        .font(Theme.Typography.display(32, relativeTo: .title2))
                         .lineLimit(1)
                         .minimumScaleFactor(0.6)
                     Text(face.title).font(.footnote.weight(.semibold))
@@ -634,7 +634,7 @@ struct StatsSurveyCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.m) {
             Text(String(localized: again ? "survey.card.again" : "survey.card.title"))
-                .font(.system(.title2, design: .rounded, weight: .heavy))
+                .font(Theme.Typography.display(32, relativeTo: .title2))
             Text(String(localized: "survey.card.subtitle \(questions)"))
                 .font(.subheadline.weight(.semibold))
             Button(action: start) {

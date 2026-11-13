@@ -9,37 +9,40 @@ enum Theme {
     /// that is dark in both (the header band, a dark sheet).
     enum Palette {
         /// The page behind cards and lists.
-        static var page: Color { Color(light: 0xF4F4F7, dark: 0x0B0B12) }
+        static var page: Color { Color(light: 0xF4F4F7, dark: 0x120A28) }
         /// A card, a list row, the floating bar.
-        static var card: Color { Color(light: 0xFFFFFF, dark: 0x181822) }
+        static var card: Color { Color(light: 0xFFFFFF, dark: 0x1F1244) }
 
         /// The header band, dark in both modes; `headerGlow` is the purple it fades to.
-        static var headerInk: Color { Color(hex: 0x0B0B12) }
-        static var headerGlow: Color { Color(hex: 0x2B1A66) }
+        static var headerInk: Color { Color(hex: 0x0E0624) }
+        static var headerGlow: Color { Color(hex: 0x3A1C99) }
         static var onHeader: Color { .white }
 
-        /// THE accent: the web's purple. White text on it is 5.9:1; the dark
-        /// value is lighter, so its text is the ink (7.3:1), not white (3.1:1).
-        static var accentFill: Color { Color(light: 0x6D3FE8, dark: 0xA48CFF) }
-        static var onAccent: Color { Color(light: 0xFFFFFF, dark: 0x0B0B12) }
+        /// THE accent: the web's purple in light mode; in dark mode yellow on
+        /// purple (owner 2026-11-13: "purple, yellow and white for the dark
+        /// theme"), and on every surface that is dark in both modes (the
+        /// header band, dark sheets). White on the purple is 5.9:1; the deep
+        /// purple ink on the yellow is 13:1.
+        static var accentFill: Color { Color(light: 0x6D3FE8, dark: 0xFFD23F) }
+        static var onAccent: Color { Color(light: 0xFFFFFF, dark: 0x1A0B3D) }
         /// Accent-coloured text and icons on `page` or `card`; also the app's tint.
-        static var accentText: Color { Color(light: 0x6D3FE8, dark: 0xB3A0FF) }
+        static var accentText: Color { Color(light: 0x6D3FE8, dark: 0xFFD86A) }
         /// A switch that is ON: its knob is white in both modes, so the dark
         /// value stays deep (white on it is 4.9:1), unlike `accentText`.
         static var controlOn: Color { Color(light: 0x6D3FE8, dark: 0x7A52F0) }
 
-        static var chipIdle: Color { Color(light: 0xE8E8EE, dark: 0x262633) }
+        static var chipIdle: Color { Color(light: 0xE8E8EE, dark: 0x2D1C5C) }
         static var chipSelected: Color { accentFill }
 
         /// The strongest contrast with the page: the bar's round centre button.
         static var inverse: Color { Color(light: 0x0B0B12, dark: 0xF4F4F7) }
-        static var onInverse: Color { Color(light: 0xFFFFFF, dark: 0x0B0B12) }
+        static var onInverse: Color { Color(light: 0xFFFFFF, dark: 0x120A28) }
 
         /// A dark bottom sheet and a row in it, dark in both modes.
-        static var sheetSurface: Color { Color(hex: 0x14141D) }
-        static var sheetRow: Color { Color(hex: 0x20202C) }
+        static var sheetSurface: Color { Color(hex: 0x170C36) }
+        static var sheetRow: Color { Color(hex: 0x261752) }
 
-        static var hairline: Color { Color(light: 0xE2E2E8, dark: 0x2C2C3A) }
+        static var hairline: Color { Color(light: 0xE2E2E8, dark: 0x3A2A72) }
         /// A count or an unread dot; white on it is 4.8:1.
         static var badge: Color { Color(hex: 0xD92D3A) }
         static var onBadge: Color { .white }
@@ -81,10 +84,22 @@ enum Theme {
 
     /// Text styles, all on the system's Dynamic Type styles: none has a fixed size.
     enum Typography {
-        static var wordmark: Font { .system(.title, design: .rounded, weight: .heavy) }
-        static var headerTitle: Font { .title3.weight(.bold) }
-        static var sectionTitle: Font { .title3.weight(.bold) }
-        static var cardTitle: Font { .title3.weight(.bold) }
+        /// The athletic headline face (owner 2026-11-13, "more sports
+        /// feeling", Nike / Under Armour / On): Sofia Sans Extra Condensed,
+        /// black italic, scaling with Dynamic Type from `style`.
+        static func display(_ size: CGFloat, relativeTo style: Font.TextStyle) -> Font {
+            .custom("SofiaSansExtraCondensedItalic-BlackItalic", size: size, relativeTo: style)
+        }
+
+        /// The same family upright, for numbers that line up (scores, times).
+        static func displayUpright(_ size: CGFloat, relativeTo style: Font.TextStyle) -> Font {
+            .custom("SofiaSansExtraCondensed-ExtraBold", size: size, relativeTo: style)
+        }
+
+        static var wordmark: Font { display(40, relativeTo: .title) }
+        static var headerTitle: Font { display(30, relativeTo: .title2) }
+        static var sectionTitle: Font { display(28, relativeTo: .title2) }
+        static var cardTitle: Font { display(30, relativeTo: .title2) }
         static var cardSubtitle: Font { .subheadline }
         static var rowTitle: Font { .headline }
         static var chip: Font { .subheadline.weight(.semibold) }

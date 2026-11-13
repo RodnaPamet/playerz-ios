@@ -97,6 +97,8 @@ struct BrandHeader<Accessory: View, Actions: View>: View {
         if !title.isEmpty {
             Text(title)
                 .font(Theme.Typography.headerTitle)
+                // Capitals, as a sports page sets its headlines.
+                .textCase(.uppercase)
                 .foregroundStyle(Theme.Palette.onHeader)
                 .lineLimit(lines)
                 .frame(minHeight: Theme.minTarget)
