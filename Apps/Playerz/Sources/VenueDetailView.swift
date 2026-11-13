@@ -58,7 +58,7 @@ struct VenueDetailView: View {
             }
         }
         .navigationDestination(item: $openedPlace) { route in
-            PlaceHoursView(model: model, session: session, venueId: venueId, resourceId: route.id)
+            PlaceHoursView(model: model, session: session, venueId: venueId, resourceIds: pickerOrder, start: route.id)
         }
         .onChange(of: model.summaryOpen) { _, open in
             // The offer a summary held back (here or on a place's screen),
@@ -286,6 +286,13 @@ struct VenueDetailView: View {
         if !coaches.isEmpty {
             VenueCoachesSection(coaches: coaches, venueId: venueId, session: session)
         }
+    }
+
+    /// The places of the club's grid, in its order: what a place's screen swipes through.
+    private var pickerOrder: [String] {
+        model.courts
+            .filter { court in !(model.plan?.courts.contains { $0.id == court.resourceId } ?? false) }
+            .map(\.resourceId)
     }
 
     private func offerPushIfUndecided() {
