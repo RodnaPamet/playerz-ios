@@ -80,7 +80,11 @@ struct BrandActionCard: View {
     @ViewBuilder private var background: some View {
         switch style {
         case .accent:
-            Theme.Palette.accentFill
+            // The sunset of an action, at a slant across the tile.
+            LinearGradient(
+                colors: [Theme.Palette.accentFill, Theme.Palette.accentFillEnd],
+                startPoint: .topLeading, endPoint: .bottomTrailing
+            )
         case .dark:
             LinearGradient(
                 colors: [Theme.Palette.sheetRow, Theme.Palette.sheetSurface],

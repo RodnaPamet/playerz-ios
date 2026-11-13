@@ -28,13 +28,22 @@ enum Theme {
         static var onHeader: Color { .white }
 
         /// THE action colour: the web's purple in light mode; in dark mode a
-        /// dark gold, "like the golden hour sun light" (owner 2026-11-13, on
-        /// "purple, yellow and white for the dark theme"), and on every
-        /// surface that is dark in both modes (the header band, dark sheets).
-        /// White on the purple is 5.9:1; the deep purple ink on the gold is
-        /// 8.0:1. The draft's lavender carries everything chosen
+        /// deep gold that runs into rose on an action (`actionFill`, owner
+        /// 2026-11-13: "even darker gold, mixed with pink like the sunset"),
+        /// and on every surface that is dark in both modes (the header band,
+        /// dark sheets). White on the purple is 5.9:1; the deep purple ink on
+        /// the gold is 6.2:1. The draft's lavender carries everything chosen
         /// (`accentText`, `selectedFill`).
-        static var accentFill: Color { Color(light: 0x6D3FE8, dark: 0xDDA13F) }
+        static var accentFill: Color { Color(light: 0x6D3FE8, dark: 0xC98A2E) }
+        /// The far end of an action's sunset (owner 2026-11-13: "even darker
+        /// gold, mixed with pink like the sunset"): rose in dark mode, where an
+        /// action fill runs from `accentFill` to this; the same purple in light.
+        /// The deep ink on it is 5.3:1.
+        static var accentFillEnd: Color { Color(light: 0x6D3FE8, dark: 0xD9667A) }
+        /// An action's fill: deep gold into rose, leading to trailing.
+        static var actionFill: LinearGradient {
+            LinearGradient(colors: [accentFill, accentFillEnd], startPoint: .leading, endPoint: .trailing)
+        }
         static var onAccent: Color { Color(light: 0xFFFFFF, dark: 0x1A0B3D) }
         /// Accent-coloured text and icons on `page` or `card`, and what is
         /// chosen; also the app's tint. The draft's lavender in dark mode

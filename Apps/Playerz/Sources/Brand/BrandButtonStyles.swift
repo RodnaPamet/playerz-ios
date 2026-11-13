@@ -47,7 +47,7 @@ private struct BrandPillButton: View {
             .frame(maxWidth: fullWidth ? .infinity : nil, minHeight: 50)
             .background {
                 if filled {
-                    Capsule().fill(Theme.Palette.accentFill)
+                    Capsule().fill(Theme.Palette.actionFill)
                 } else {
                     Capsule().strokeBorder(Theme.Palette.accentText, lineWidth: 1.5)
                 }

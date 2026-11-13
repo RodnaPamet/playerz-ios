@@ -18,6 +18,6 @@ struct VenueFactChip: View {
         .foregroundStyle(prominent ? Theme.Palette.onAccent : Color.primary)
         .padding(.horizontal, Theme.Spacing.m)
         .padding(.vertical, 6)
-        .background(prominent ? Theme.Palette.accentFill : Theme.Palette.chipIdle, in: .capsule)
+        .background(prominent ? AnyShapeStyle(Theme.Palette.actionFill) : AnyShapeStyle(Theme.Palette.chipIdle), in: .capsule)
     }
 }
