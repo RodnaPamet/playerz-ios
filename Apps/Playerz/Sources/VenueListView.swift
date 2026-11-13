@@ -289,18 +289,8 @@ private struct VenueCard: View {
                     .font(Theme.Typography.cardSubtitle)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
-                ChipFlow {
-                    if let priceLine {
-                        VenueFactChip(text: priceLine, prominent: row.fromPriceCents != nil)
-                    }
-                    if let rating {
-                        VenueFactChip(text: rating.shown, systemImage: "star.fill")
-                    }
-                    ForEach(VenueFacts.sports(row.sports), id: \.self) { sport in
-                        VenueFactChip(text: sport)
-                    }
-                }
-                .padding(.top, Theme.Spacing.xs)
+                VenueCardTags(price: priceLine, pricePlain: row.fromPriceCents == nil, rating: rating, sports: row.sports)
+                    .padding(.top, Theme.Spacing.xs)
             }
             .multilineTextAlignment(.leading)
         }

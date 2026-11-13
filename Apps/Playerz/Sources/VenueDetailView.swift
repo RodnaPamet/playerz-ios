@@ -352,19 +352,11 @@ private struct VenueHero: View {
                 Label(place, systemImage: "mappin.and.ellipse")
                     .font(Theme.Typography.cardSubtitle)
                     .foregroundStyle(.secondary)
-                ChipFlow {
-                    if let cents = venue.fromPriceCents {
-                        VenueFactChip(text: VenueFacts.price(fromCents: cents, currency: venue.currency), prominent: true)
-                    }
-                    if let rating {
-                        VenueFactChip(text: rating.shown, systemImage: "star.fill")
-                            .accessibilityElement(children: .ignore)
-                            .accessibilityLabel(rating.spoken)
-                    }
-                    ForEach(VenueFacts.sports(venue.sports), id: \.self) { sport in
-                        VenueFactChip(text: sport)
-                    }
-                }
+                VenueCardTags(
+                    price: venue.fromPriceCents.map { VenueFacts.price(fromCents: $0, currency: venue.currency) },
+                    rating: rating,
+                    sports: venue.sports
+                )
                 .padding(.top, Theme.Spacing.xs)
                 if let description = venue.description, !description.isEmpty {
                     Text(description)
