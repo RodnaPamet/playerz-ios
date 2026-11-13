@@ -16989,6 +16989,70 @@
         }
       }
     },
+    "venue.court.free %lld": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld свободни"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld free"
+          }
+        }
+      }
+    },
+    "venue.court.none": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Няма свободни"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing free"
+          }
+        }
+      }
+    },
+    "venue.courts.choose": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Избери корт"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose a court"
+          }
+        }
+      }
+    },
+    "venue.courts.others": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Други кортове"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Other courts"
+          }
+        }
+      }
+    },
     "venue.dayPicker": {
       "localizations": {
         "bg": {

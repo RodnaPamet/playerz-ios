@@ -15,6 +15,9 @@ struct VenueDetailView: View {
     @State private var favourite: Bool?
     /// The name is on the cover card; the header carries it only once the card is scrolled away (#55).
     @State private var heroShown = true
+    /// The court whose times show (owner 2026-11-13): chosen on the plan or
+    /// the picker; the first with a free time until then.
+    @State private var selectedCourt: String?
     /// The coaches teaching here (#19), while the coaches module is on.
     @State private var coaches: [Components.Schemas.PublicCoach] = []
 
@@ -101,6 +104,10 @@ struct VenueDetailView: View {
             await model.load(session, venueId: venueId)
             await loadCoaches()
         }
+        // A new day, or the first read: keep the court chosen while it is there.
+        .onChange(of: model.courts.map(\.resourceId) + model.courts.map { "\($0.bookable.count)" }, initial: true) {
+            selectedCourt = VenueCourtPicker.initial(model.courts, keeping: selectedCourt)
+        }
         .onChange(of: model.banner) { _, banner in
             // A banner appearing mid-list is invisible to VoiceOver: focus does
             // not move, and the user is told nothing about the booking they
@@ -131,6 +138,7 @@ struct VenueDetailView: View {
 
     @ViewBuilder
     private var content: some View {
+        ScrollViewReader { proxy in
         List {
             if let venue = model.venue {
                 Section {
@@ -153,6 +161,11 @@ struct VenueDetailView: View {
                 sections
             }
             .brandListRow()
+        }
+        // DEBUG only (`PLAYERZ_VENUE_AT=courts`): the picker on top, for a screenshot.
+        .task(id: model.courts.count) {
+            if let at = DebugLaunch.venueAt, !model.courts.isEmpty { proxy.scrollTo(at, anchor: .top) }
+        }
         }
     }
 
@@ -180,12 +193,25 @@ struct VenueDetailView: View {
             Section { WeatherAttribution() }
         }
 
-        // The plan (#25), where the venue has one: time first, then a court.
+        // A court is chosen on a drawing first; the times below are that
+        // court's only (owner 2026-11-13). The club's plan (#25) where it has
+        // one, time first; otherwise the courts drawn side by side.
         if let plan = model.plan {
-            VenuePlanSection(drawing: plan, courts: model.courts, busySlot: model.bookingSlot, book: book)
+            VenuePlanSection(drawing: plan, courts: model.courts, busySlot: model.bookingSlot, book: book, picked: $selectedCourt)
+        }
+        let offPlan = model.courts.filter { court in !(model.plan?.courts.contains { $0.id == court.resourceId } ?? false) }
+        if !offPlan.isEmpty, model.courts.count > 1 {
+            Section {
+                VenueCourtPicker(courts: offPlan, selected: $selectedCourt)
+                    .listRowInsets(EdgeInsets(top: 12, leading: 12, bottom: 12, trailing: 12))
+                    .listRowBackground(Color.clear)
+            } header: {
+                Text(String(localized: model.plan == nil ? "venue.courts.choose" : "venue.courts.others"))
+            }
+            .id("courts")
         }
 
-        ForEach(model.courts, id: \.resourceId) { court in
+        ForEach(model.courts.filter { $0.resourceId == selectedCourt }, id: \.resourceId) { court in
             Section {
                 if court.bookable.isEmpty {
                     Text(String(localized: "venue.noSlots"))
