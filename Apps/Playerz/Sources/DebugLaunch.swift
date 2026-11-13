@@ -18,7 +18,8 @@ enum DebugLaunch {
     /// Профил's deletion section (#9): `delete` scrolls to it, `confirm` also
     /// opens the confirmation. Nothing here deletes: the word is still typed.
     /// `ratings` opens «Класиране».
-    enum Profile: String { case delete, confirm, coach, ratings }
+    /// `settings` opens «Настройки», behind the gear (#95).
+    enum Profile: String { case delete, confirm, coach, ratings, settings }
 
     #if DEBUG
     private static let env = ProcessInfo.processInfo.environment
@@ -73,6 +74,13 @@ enum DebugLaunch {
     /// `PLAYERZ_CHOOSE_LANGUAGE=en|bg`: chosen three seconds after launch, as
     /// the picker in «Профил» chooses it, to see the switch happen.
     static var chooseLanguage: String? { env["PLAYERZ_CHOOSE_LANGUAGE"] }
+    /// Профил (#95): «Мачове» (`PLAYERZ_STATS=matches`), a sport
+    /// (`PLAYERZ_STATS_SPORT=TENNIS`), the questionnaire open (`PLAYERZ_SURVEY=1`).
+    static var statsMatches: Bool { env["PLAYERZ_STATS"] == "matches" }
+    static var statsSport: String? { env["PLAYERZ_STATS_SPORT"] }
+    static var survey: Bool { env["PLAYERZ_SURVEY"] == "1" }
+    /// «Прогрес» scrolled to a section (`PLAYERZ_STATS_AT=performance|standing|sets|partners|rivals|activity`).
+    static var statsAt: String? { env["PLAYERZ_STATS_AT"] }
     /// `PLAYERZ_BOOKINGS=past`: Резервации opened on «Минали».
     static var bookingsPast: Bool { env["PLAYERZ_BOOKINGS"] == "past" }
     /// `PLAYERZ_BOOKINGS=cancelled`: Резервации opened on «Отменени» (#58).
@@ -113,6 +121,10 @@ enum DebugLaunch {
     static let profile: Profile? = nil
     static let scrollEnd = false
     static let chooseLanguage: String? = nil
+    static let statsMatches = false
+    static let statsSport: String? = nil
+    static let survey = false
+    static let statsAt: String? = nil
     static let emptyStateEnd = false
     static let bookingsPast = false
     static let bookingsCancelled = false
