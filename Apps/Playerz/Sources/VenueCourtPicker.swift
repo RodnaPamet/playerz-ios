@@ -55,6 +55,9 @@ struct VenueCourtPicker: View {
                 Text(court.name)
                     .font(.subheadline.weight(.bold))
                     .lineLimit(2)
+                    // A long one-word name («Колоездене») shrinks a little
+                    // rather than break mid-word.
+                    .minimumScaleFactor(0.7)
                     .fixedSize(horizontal: false, vertical: true)
                 Text(PlaceText.roof(PlaceWord.of(court.sport), indoor: court.isIndoor))
                     .font(.caption)

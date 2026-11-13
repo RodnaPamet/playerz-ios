@@ -6,20 +6,80 @@ import SwiftUI
 /// to the summary and reservation screen»). The days as on the club's page,
 /// the hours to pick, and the bar to the summary. The picks are the venue's,
 /// so hours picked on another place stay picked.
+///
+/// A swipe left or right moves to the next or the previous place of the
+/// club's grid, in its order (owner 2026-11-13: "swipable right and left to
+/// the next sport within this list").
 struct PlaceHoursView: View {
     let model: VenueDetailModel
     let session: SessionModel
     let venueId: String
-    let resourceId: String
+    /// The places the swipe moves through: the club's grid, in its order.
+    let resourceIds: [String]
 
+    @State private var current: String
     @State private var reviewing = DebugLaunch.review
 
+    init(model: VenueDetailModel, session: SessionModel, venueId: String, resourceIds: [String], start: String) {
+        self.model = model
+        self.session = session
+        self.venueId = venueId
+        self.resourceIds = resourceIds.contains(start) ? resourceIds : [start]
+        _current = State(initialValue: start)
+    }
+
     private var court: VenueDetailModel.Court? {
-        model.courts.first { $0.resourceId == resourceId }
+        model.courts.first { $0.resourceId == current }
     }
 
     var body: some View {
-        List {
+        TabView(selection: $current) {
+            ForEach(resourceIds, id: \.self) { id in
+                page(id).tag(id)
+            }
+        }
+        .tabViewStyle(.page(indexDisplayMode: .never))
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            if !model.picks.isEmpty {
+                PicksBar(
+                    count: model.picks.count,
+                    totalCents: model.picksTotalCents,
+                    currency: model.picks.first?.currency ?? "EUR",
+                    next: { reviewing = true },
+                    clear: { model.clearPicks() }
+                )
+            }
+        }
+        .sheet(isPresented: $reviewing) {
+            ReservationSheet(model: model, session: session, venueId: venueId, venueName: model.venue?.name ?? "")
+                .outsideShellBar()
+        }
+        .brandPage()
+        .navigationTitle(court?.name ?? "")
+        .brandChipBar {
+            if model.days.count > 1 {
+                BrandChipRow {
+                    ForEach(model.days) { day in
+                        BrandChip(
+                            GameText.filterDay(day, zone: model.timezone),
+                            isSelected: day.apiDate == model.selectedDate
+                        ) {
+                            Task { await model.select(session, venueId: venueId, day: day) }
+                        }
+                    }
+                }
+                .accessibilityElement(children: .contain)
+                .accessibilityLabel(String(localized: "venue.dayPicker"))
+            }
+        }
+        .brandHeader(.back(court.map { ReservationSheet.place($0.name, sport: $0.sport) } ?? ""))
+    }
+
+
+    /// One place's page: its sport's banner and its hours.
+    private func page(_ id: String) -> some View {
+        let place = model.courts.first { $0.resourceId == id }
+        return List {
             if let banner = model.banner {
                 Section {
                     Text(banner)
@@ -27,7 +87,7 @@ struct PlaceHoursView: View {
                 }
                 .brandListRow()
             }
-            if let court {
+            if let court = place {
                 Section {
                     if court.bookable.isEmpty {
                         Text(String(localized: "venue.noSlots")).foregroundStyle(.secondary)
@@ -63,39 +123,5 @@ struct PlaceHoursView: View {
                     .listRowBackground(Color.clear)
             }
         }
-        .safeAreaInset(edge: .bottom, spacing: 0) {
-            if !model.picks.isEmpty {
-                PicksBar(
-                    count: model.picks.count,
-                    totalCents: model.picksTotalCents,
-                    currency: model.picks.first?.currency ?? "EUR",
-                    next: { reviewing = true },
-                    clear: { model.clearPicks() }
-                )
-            }
-        }
-        .sheet(isPresented: $reviewing) {
-            ReservationSheet(model: model, session: session, venueId: venueId, venueName: model.venue?.name ?? "")
-                .outsideShellBar()
-        }
-        .brandPage()
-        .navigationTitle(court?.name ?? "")
-        .brandChipBar {
-            if model.days.count > 1 {
-                BrandChipRow {
-                    ForEach(model.days) { day in
-                        BrandChip(
-                            GameText.filterDay(day, zone: model.timezone),
-                            isSelected: day.apiDate == model.selectedDate
-                        ) {
-                            Task { await model.select(session, venueId: venueId, day: day) }
-                        }
-                    }
-                }
-                .accessibilityElement(children: .contain)
-                .accessibilityLabel(String(localized: "venue.dayPicker"))
-            }
-        }
-        .brandHeader(.back(court.map { ReservationSheet.place($0.name, sport: $0.sport) } ?? ""))
     }
 }
