@@ -300,27 +300,34 @@ struct VenueListView: View {
                 .buttonStyle(.brandCard)
             }
             .task(id: "\(model.mode)|\(model.filters)|\(model.rows.count)") { await model.loadMap(session) }
+        case .loaded where typeSize.isAccessibilitySize:
+            // At the largest text a card is taller than the screen: one under
+            // another, as before, rather than sideways.
+            ForEach(model.rows) { row in clubCard(row) }
         case .loaded:
-            ForEach(model.rows) { row in
-                NavigationLink {
-                    VenueDetailView(venueId: row.id, session: session)
-                } label: {
-                    VenueCard(row: row, serverURL: session.serverURL)
-                }
-                .buttonStyle(.brandCard)
-                // Outside the link, so a tap on the heart is not a tap on the card.
-                .overlay(alignment: .topTrailing) {
-                    FavouriteHeart(isOn: model.favouriteIds.contains(row.id)) {
-                        Task { await model.toggleFavourite(row.id, session: session) }
-                    }
-                    .padding(Theme.Spacing.m)
-                }
-                .onAppear {
-                    if row.id == model.rows.last?.id { Task { await model.loadMore(session) } }
-                    // Read ahead, so the club opens at once (owner 2026-11-13).
-                    Task { await VenueDetailCache.shared.prefetch(session, venueId: row.id) }
-                }
+            ClubCarousel(rows: model.rows) { row in clubCard(row) }
+        }
+    }
+
+    /// One club's card: it opens the club; the heart is its own button.
+    private func clubCard(_ row: VenueListModel.Row) -> some View {
+        NavigationLink {
+            VenueDetailView(venueId: row.id, session: session)
+        } label: {
+            VenueCard(row: row, serverURL: session.serverURL)
+        }
+        .buttonStyle(.brandCard)
+        // Outside the link, so a tap on the heart is not a tap on the card.
+        .overlay(alignment: .topTrailing) {
+            FavouriteHeart(isOn: model.favouriteIds.contains(row.id)) {
+                Task { await model.toggleFavourite(row.id, session: session) }
             }
+            .padding(Theme.Spacing.m)
+        }
+        .onAppear {
+            if row.id == model.rows.last?.id { Task { await model.loadMore(session) } }
+            // Read ahead, so the club opens at once (owner 2026-11-13).
+            Task { await VenueDetailCache.shared.prefetch(session, venueId: row.id) }
         }
     }
 
@@ -397,3 +404,49 @@ private struct VenueCard: View {
         return VenueFacts.price(fromCents: cents, currency: row.currency)
     }
 }
+
+/// The clubs side by side, one card a swipe (owner 2026-11-13: "make this
+/// club section swipable right and left"), with the next card's edge in view
+/// so the swipe is found, and a dot per club under them.
+private struct ClubCarousel<Card: View>: View {
+    let rows: [VenueListModel.Row]
+    @ViewBuilder let card: (VenueListModel.Row) -> Card
+
+    @State private var current: String?
+
+    var body: some View {
+        VStack(spacing: Theme.Spacing.s) {
+            ScrollView(.horizontal) {
+                LazyHStack(alignment: .top, spacing: Theme.Spacing.m) {
+                    ForEach(rows) { row in
+                        card(row)
+                            // The page's width, less a peek of the next card.
+                            .containerRelativeFrame(.horizontal) { width, _ in
+                                rows.count > 1 ? width - Theme.Spacing.xl * 2 : width
+                            }
+                            .id(row.id)
+                    }
+                }
+                .scrollTargetLayout()
+            }
+            .scrollTargetBehavior(.viewAligned)
+            .scrollPosition(id: $current)
+            .scrollIndicators(.hidden)
+            .contentMargins(.horizontal, Theme.Spacing.l, for: .scrollContent)
+            // The page's own side margin is already around this section.
+            .padding(.horizontal, -Theme.Spacing.l)
+
+            if rows.count > 1 {
+                HStack(spacing: 6) {
+                    ForEach(rows.prefix(12)) { row in
+                        Circle()
+                            .fill(row.id == (current ?? rows.first?.id) ? Theme.Palette.accentText : Theme.Palette.hairline)
+                            .frame(width: 7, height: 7)
+                    }
+                }
+                .accessibilityHidden(true)
+            }
+        }
+    }
+}
+
