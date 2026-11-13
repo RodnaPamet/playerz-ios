@@ -34,6 +34,15 @@ targets:
         # Xcode injects it only when it generates the Info.plist, and this
         # target supplies one, so it has to be stated.
         CFBundleIconName: AppIcon
+        # By reference, not by value: XcodeGen otherwise writes the numbers
+        # into Info.plist as literals, and the TestFlight workflow's
+        # CURRENT_PROJECT_VERSION never reaches the bundle (its first archive
+        # came out as build "1", which the bundle check refused).
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        # Xcode adds this only to a plist it generates itself; this target
+        # supplies its own (agrent-ios found it missing from an archive).
+        LSRequiresIPhoneOS: true
         CFBundleDevelopmentRegion: bg
         CFBundleLocalizations: [bg, en]
         UILaunchScreen: {}
