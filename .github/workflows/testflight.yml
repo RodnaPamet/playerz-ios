@@ -210,6 +210,26 @@ jobs:
             exit 1
           fi
 
+      # The public TestFlight link (owner 2026-11-13): the build goes to the
+      # external group «Публичен линк» and to Beta App Review. A problem here
+      # leaves the upload and the internal groups as they are.
+      - name: Give the build to the public link
+        if: success()
+        continue-on-error: true
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          APP_ID: "6834197478"
+          BUILD_NUMBER: ${{ steps.version.outputs.build }}
+          WHATS_NEW: ${{ github.event.workflow_run.head_commit.message }}
+        run: |
+          if python3 "$GITHUB_WORKSPACE/.github/scripts/distribute-external.py"; then
+            echo "Build ${{ steps.version.outputs.build }} is on the public TestFlight link (after Beta App Review)." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "**Build ${{ steps.version.outputs.build }} did not reach the public TestFlight link** — see the step log." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
       - name: Remove the API key
         if: always()
         run: rm -rf "$RUNNER_TEMP/asc"
