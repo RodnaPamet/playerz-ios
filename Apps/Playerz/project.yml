@@ -79,8 +79,8 @@ targets:
         # The app's iOS OAuth client in the Google Cloud project (docs/
         # oauth-setup.md §5 in projectZ): the `aud` the server checks the ID
         # token against (GOOGLE_IOS_CLIENT_ID). Not a secret: an iOS client
-        # has none, and its ID is in every build. Empty → no Google button.
-        PLAYERZ_GOOGLE_CLIENT_ID: ""
+        # has none, and its ID is in every build. Empty → no Google button (owner created it 2026-11-13).
+        PLAYERZ_GOOGLE_CLIENT_ID: 880736019978-q0kun58arhssj19ihmmsesmeau2hflbf.apps.googleusercontent.com
       # Per configuration, because the APNs environment is. See the comments in
       # the two files: the entitlement and PushRegistrar.environment must agree,
       # and both now derive from the build configuration rather than from
