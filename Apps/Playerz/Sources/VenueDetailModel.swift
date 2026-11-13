@@ -24,6 +24,9 @@ final class VenueDetailModel {
         let maxMinutes: Int
         /// The free hours: on the hour, an hour long (owner 2026-11-13).
         let bookable: [Components.Schemas.AvailabilitySlot]
+        /// Every hour still to come, the taken ones too (`available` false),
+        /// for the grid that labels them.
+        let hours: [Components.Schemas.AvailabilitySlot]
     }
 
     /// An hour picked for the summary (owner 2026-11-13: selectable first,
@@ -175,6 +178,7 @@ final class VenueDetailModel {
                 days = VenueDay.upcoming(inTimeZone: availability.timezone)
                 selectedDate = days.first?.apiDate
             }
+            let zone = TimeZone(identifier: availability.timezone) ?? .current
             courts = availability.resources.map { slots in
                 Court(
                     resourceId: slots.resourceId,
@@ -186,12 +190,11 @@ final class VenueDetailModel {
                     // outdoor court. Defaulting to indoor suppresses the line.
                     isIndoor: indoorById[slots.resourceId] ?? true,
                     maxMinutes: slots.maxBookingMinutes,
-                    bookable: HourlySlots.hourly(
-                        slots.slots,
-                        timezone: TimeZone(identifier: availability.timezone) ?? .current
-                    )
+                    bookable: HourlySlots.hourly(slots.slots, timezone: zone),
+                    hours: HourlySlots.hourly(slots.slots, timezone: zone, includeTaken: true)
                 )
             }
+            dropGonePicks()
             phase = .loaded
 
             await loadPlan(client, venueId: venueId)
@@ -242,6 +245,24 @@ final class VenueDetailModel {
     }
 
     func clearPicks() { picks = [] }
+
+    /// A picked hour someone else took meanwhile leaves the picks, and the
+    /// banner says so (the design draft: "refresh if a selected time becomes
+    /// unavailable").
+    private func dropGonePicks() {
+        let gone = HourlySlots.gone(
+            picks.map { .init(resourceId: $0.resourceId, start: $0.start, end: $0.end, priceCents: $0.priceCents) },
+            read: Dictionary(uniqueKeysWithValues: courts.map { ($0.resourceId, $0.hours) }),
+            free: Dictionary(uniqueKeysWithValues: courts.map { ($0.resourceId, $0.bookable) })
+        )
+        guard !gone.isEmpty else {
+            if banner == String(localized: "reserve.pickGone") { banner = nil }
+            return
+        }
+        picks.removeAll { pick in gone.contains { $0.resourceId == pick.resourceId && $0.start == pick.start } }
+        banner = String(localized: "reserve.pickGone")
+        bannerIsError = true
+    }
 
     var picksTotalCents: Int { picks.reduce(0) { $0 + $1.priceCents } }
 
