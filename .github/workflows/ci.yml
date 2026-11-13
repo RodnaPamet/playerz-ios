@@ -57,11 +57,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # The Xcode TestFlight archives with (testflight.yml): the newest on the
+      # runner. An older one reports Sendable errors the archive never sees.
       - name: Select Xcode
         run: |
-          sudo xcode-select -s /Applications/Xcode_26.app/Contents/Developer || \
-            sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
-          echo "DEVELOPER_DIR=$(xcode-select -p)" >> "$GITHUB_ENV"
+          NEWEST=$(ls -d /Applications/Xcode_*.app 2>/dev/null | sort -V | tail -1)
+          [ -n "$NEWEST" ] || NEWEST=/Applications/Xcode.app
+          echo "DEVELOPER_DIR=$NEWEST/Contents/Developer" >> "$GITHUB_ENV"
+          echo "Selected: $NEWEST"
 
       - name: Install XcodeGen
         run: brew install xcodegen
