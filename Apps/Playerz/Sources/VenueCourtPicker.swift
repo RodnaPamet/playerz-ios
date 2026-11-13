@@ -11,6 +11,10 @@ import SwiftUI
 struct VenueCourtPicker: View {
     let courts: [VenueDetailModel.Court]
     @Binding var selected: String?
+    /// The place tapped: its hours open on their own screen (owner
+    /// 2026-11-13: «once I click this nothing happens — it has to take me to
+    /// the slot picking screen»).
+    var open: (String) -> Void = { _ in }
     @Environment(\.dynamicTypeSize) private var typeSize
 
     /// Three across for a big club, two for a small one, one at the
@@ -33,6 +37,7 @@ struct VenueCourtPicker: View {
         let free = court.bookable.count
         return Button {
             selected = court.resourceId
+            open(court.resourceId)
         } label: {
             VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                 SportPitchView(sport: court.sport)

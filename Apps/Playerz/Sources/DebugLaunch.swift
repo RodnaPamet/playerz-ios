@@ -91,6 +91,8 @@ enum DebugLaunch {
     static var pick: Int? { env["PLAYERZ_PICK"].flatMap(Int.init) }
     static var review: Bool { env["PLAYERZ_REVIEW"] == "1" }
     static var reserve: Bool { env["PLAYERZ_RESERVE"] == "1" }
+    /// A venue's place opened on its own hours (`PLAYERZ_PLACE=first`).
+    static var place: String? { env["PLAYERZ_PLACE"] }
     /// `PLAYERZ_BOOKINGS=past`: Резервации opened on «Минали».
     static var bookingsPast: Bool { env["PLAYERZ_BOOKINGS"] == "past" }
     /// `PLAYERZ_BOOKINGS=cancelled`: Резервации opened on «Отменени» (#58).
@@ -140,6 +142,7 @@ enum DebugLaunch {
     static let pick: Int? = nil
     static let review = false
     static let reserve = false
+    static let place: String? = nil
     static let emptyStateEnd = false
     static let bookingsPast = false
     static let bookingsCancelled = false
