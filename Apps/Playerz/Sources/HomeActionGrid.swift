@@ -9,8 +9,8 @@ struct HomeActionGrid: View {
 
     let modules: Modules
     /// The sport whose photo is behind «Резервирай корт»: the one the clubs
-    /// are narrowed to, else padel.
-    var heroSport = "PADEL"
+    /// are narrowed to; with none, every sport's photo in turn.
+    var heroSport: String?
     let run: (Action) -> Void
 
     @Environment(\.dynamicTypeSize) private var typeSize
@@ -36,7 +36,7 @@ struct HomeActionGrid: View {
                 title: title(action),
                 subtitle: subtitle(action),
                 systemImage: symbol(action),
-                style: action == .createGame ? .accent : action == .court ? .sport(heroSport) : .dark,
+                style: action == .createGame ? .accent : action == .court ? heroStyle : .dark,
                 // The booking leads over its photo; the rest are compact (the design draft).
                 minHeight: action == .court ? 210 : 124,
                 fillsHeight: true
@@ -44,6 +44,12 @@ struct HomeActionGrid: View {
             .clipShape(.rect(cornerRadius: Theme.Radius.card))
         }
         .buttonStyle(.brandCard)
+    }
+
+    private var heroStyle: BrandActionCardStyle {
+        if let heroSport { return .sport(heroSport) }
+        // Padel first, as before the slideshow; then the rest in the server's order.
+        return .slideshow(["PADEL"] + Sports.known.filter { $0 != "PADEL" })
     }
 
     // MARK: Pure parts

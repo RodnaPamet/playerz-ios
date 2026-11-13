@@ -10,6 +10,8 @@ enum BrandActionCardStyle {
     /// A sport's banner photo (SportBackdrop) under the draft's ink scrim:
     /// the hero of a sports page.
     case sport(String)
+    /// Every sport's photo in turn (SportSlideshow), under the same scrim.
+    case slideshow([String])
 }
 
 /// A large rounded tile for the home grid: an icon square, a title, a line
@@ -100,6 +102,8 @@ struct BrandActionCard: View {
                 .accessibilityHidden(true)
         case let .sport(sport):
             SportBackdrop(sport: sport)
+        case let .slideshow(sports):
+            SportSlideshow(sports: sports)
         }
     }
 }
