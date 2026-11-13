@@ -23,6 +23,10 @@ struct PlayerShell: View {
     @State private var chrome = ShellChrome()
     @State private var keyboardUp = false
     @State private var barHeight: CGFloat = 0
+    /// Bumped when a tab's button is tapped: that tab starts again from its
+    /// first page (owner 2026-11-14: "clicking a bottom bar menu button
+    /// should take the user to the respective page - home included").
+    @State private var roots: [DebugLaunch.Tab: Int] = [:]
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
@@ -31,6 +35,7 @@ struct PlayerShell: View {
             ForEach(tabs, id: \.self) { item in
                 if item == tab || mounted.contains(item) {
                     screen(item)
+                        .id(roots[item, default: 0])
                         .opacity(item == tab ? 1 : 0)
                         .allowsHitTesting(item == tab)
                         .accessibilityHidden(item != tab || session.messagesOpen)
@@ -88,7 +93,13 @@ struct PlayerShell: View {
 
     private var bar: some View {
         BrandTabBar(
-            selection: $tab,
+            // A tap on a tab's button, the one on screen or another: that
+            // tab on its first page. Links and «Създай» set `tab` directly,
+            // so the screen they ask for is kept.
+            selection: Binding(get: { tab }, set: { new in
+                roots[new, default: 0] += 1
+                tab = new
+            }),
             leading: [BrandTabItem(id: .play, title: String(localized: "tab.home"), systemImage: "house")]
                 + (session.modules.openPlay
                     ? [BrandTabItem(id: .games, title: String(localized: "tab.explore"), systemImage: "magnifyingglass")]
@@ -98,7 +109,8 @@ struct PlayerShell: View {
                 BrandTabItem(id: .profile, title: String(localized: "tab.profile"), systemImage: "person.crop.circle"),
             ],
             centerLabel: String(localized: "tab.create"),
-            onCenter: { creating = true }
+            onCenter: { creating = true },
+            onReselect: { item in roots[item, default: 0] += 1 }
         )
     }
 
