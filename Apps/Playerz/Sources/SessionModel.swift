@@ -97,7 +97,7 @@ final class SessionModel {
     /// A screen of «Начало» asked for from elsewhere («Създай»).
     var homeRequest: HomeScreen?
 
-    enum HomeScreen { case clubs, coaches }
+    enum HomeScreen { case clubs, coaches, newGame }
 
     /// «Начало» on its club list, or on «Треньори».
     func showHome(_ screen: HomeScreen) {

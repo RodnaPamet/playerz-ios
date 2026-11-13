@@ -106,8 +106,8 @@ struct PlayerShell: View {
         creating = false
         switch choice {
         case .court: session.showHome(.clubs)
-        // A game is opened from a booking («Търся играчи»), so that is where this goes.
-        case .game: tab = .bookings
+        // A new game in one flow (owner 2026-11-13), from «Начало».
+        case .game: session.showHome(.newGame)
         case .lesson: session.showHome(.coaches)
         }
     }

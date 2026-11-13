@@ -91,6 +91,9 @@ enum DebugLaunch {
     static var pick: Int? { env["PLAYERZ_PICK"].flatMap(Int.init) }
     static var review: Bool { env["PLAYERZ_REVIEW"] == "1" }
     static var reserve: Bool { env["PLAYERZ_RESERVE"] == "1" }
+    /// «Нова игра» walked on to its first club's hours (`PLAYERZ_NEWGAME=hours`),
+    /// or on to the players with `PLAYERZ_PICK` hours picked (`=details`).
+    static var newGame: String? { env["PLAYERZ_NEWGAME"] }
     /// «Начало» with the clubs narrowed to a sport (`PLAYERZ_SPORT=TENNIS`).
     static var sport: String? { env["PLAYERZ_SPORT"] }
     /// A venue's place opened on its own hours (`PLAYERZ_PLACE=first`).
@@ -146,6 +149,7 @@ enum DebugLaunch {
     static let reserve = false
     static let place: String? = nil
     static let sport: String? = nil
+    static let newGame: String? = nil
     static let emptyStateEnd = false
     static let bookingsPast = false
     static let bookingsCancelled = false
