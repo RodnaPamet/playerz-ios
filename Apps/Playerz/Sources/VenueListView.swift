@@ -11,6 +11,10 @@ struct VenueListView: View {
     /// «Треньори» on show: from the header's pill, «Създай», or a DEBUG launch.
     @State private var showingCoaches = DebugLaunch.coaches
     @State private var showingTournaments = false
+    /// The clubs on a map instead of the list (owner 2026-11-13).
+    @State private var showingMap = DebugLaunch.home == "map"
+    /// The slider's value while it moves; read on release.
+    @State private var draftRadius: Double?
     /// «Създай игра» in one flow (owner 2026-11-13).
     @State private var showingNewGame = DebugLaunch.home == "newGame"
     @State private var filtering = DebugLaunch.home == "filters"
@@ -18,7 +22,7 @@ struct VenueListView: View {
     @State private var stackID = 0
     @State private var debugCoach: String? = DebugLaunch.coach
     /// «Резервирай корт» asked for the clubs: scroll there once the page is up.
-    @State private var clubsWanted = DebugLaunch.home == "clubs"
+    @State private var clubsWanted = ["clubs", "map", "near"].contains(DebugLaunch.home ?? "")
     /// The soonest upcoming booking; nil with none, or while unread.
     @State private var nextBooking: Components.Schemas.MyBooking?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -168,16 +172,63 @@ struct VenueListView: View {
                     .font(Theme.Typography.sectionTitle)
                     .accessibilityAddTraits(.isHeader)
                 Spacer(minLength: Theme.Spacing.s)
-                // At the largest text the button would cover most of the chip row.
-                if typeSize.isAccessibilitySize { filterButton }
+                // At the largest text the buttons would cover most of the chip row.
+                if typeSize.isAccessibilitySize { mapButton; filterButton }
             }
             BrandChipRow {
                 filterChips
             } trailing: {
-                if !typeSize.isAccessibilitySize { filterButton }
+                if !typeSize.isAccessibilitySize {
+                    HStack(spacing: 0) { mapButton; filterButton }
+                }
             }
             // The row brings its own side margin; the page has one already.
             .padding(.horizontal, -Theme.Spacing.l)
+            if model.mode == .near { radiusSlider }
+        }
+    }
+
+    /// «Карта» / «Списък»: the same clubs, on a map or as cards.
+    private var mapButton: some View {
+        Button {
+            showingMap.toggle()
+        } label: {
+            Image(systemName: showingMap ? "list.bullet" : "map")
+                .font(.title3.weight(.semibold))
+                .foregroundStyle(showingMap ? Theme.Palette.accentText : Color.primary)
+                .frame(minWidth: Theme.minTarget, minHeight: Theme.minTarget)
+                .contentShape(.rect)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(String(localized: showingMap ? "venues.list" : "venues.map"))
+    }
+
+    /// «В радиус 25 км», 1–100 (owner 2026-11-13): the list follows on release.
+    private var radiusSlider: some View {
+        let shown = Int((draftRadius ?? Double(model.radiusKm)).rounded())
+        return VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
+            Text(String(localized: "venues.radius \(shown)"))
+                .font(.subheadline.weight(.semibold))
+                .monospacedDigit()
+            Slider(
+                value: Binding(get: { draftRadius ?? Double(model.radiusKm) }, set: { draftRadius = $0 }),
+                in: 1...100,
+                step: 1
+            ) {
+                Text(String(localized: "venues.radius \(shown)"))
+            } minimumValueLabel: {
+                Text(verbatim: "1")
+            } maximumValueLabel: {
+                Text(verbatim: "100")
+            } onEditingChanged: { editing in
+                guard !editing, let km = draftRadius else { return }
+                Task {
+                    await model.setRadius(Int(km.rounded()), session: session)
+                    draftRadius = nil
+                }
+            }
+            .tint(Theme.Palette.accentText)
+            .accessibilityValue(String(localized: "venues.radius \(shown)"))
         }
     }
 
@@ -239,6 +290,16 @@ struct VenueListView: View {
             .inline()
         case .loaded where model.rows.isEmpty:
             BrandEmptyState(systemImage: "figure.tennis", title: emptyTitle).inline()
+        case .loaded where showingMap:
+            ClubsMapView(rows: model.mapRows) { row in
+                NavigationLink {
+                    VenueDetailView(venueId: row.id, session: session)
+                } label: {
+                    VenueCard(row: row, serverURL: session.serverURL)
+                }
+                .buttonStyle(.brandCard)
+            }
+            .task(id: "\(model.mode)|\(model.filters)|\(model.rows.count)") { await model.loadMap(session) }
         case .loaded:
             ForEach(model.rows) { row in
                 NavigationLink {
@@ -264,7 +325,7 @@ struct VenueListView: View {
     private var emptyTitle: String {
         if model.mode == .favourites { return String(localized: "favourites.empty") }
         if model.activeFilterCount > 0 { return String(localized: "venues.noMatch") }
-        return model.mode == .near ? String(localized: "venues.noneNearby") : String(localized: "venues.empty")
+        return model.mode == .near ? String(localized: "venues.noneNearby \(model.radiusKm)") : String(localized: "venues.empty")
     }
 }
 

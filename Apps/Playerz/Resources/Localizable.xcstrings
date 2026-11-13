@@ -18843,6 +18843,24 @@
         }
       }
     },
+    "venues.list": {
+      "comment": "«Клубове»: turns the map back into the list.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Списък"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "List"
+          }
+        }
+      }
+    },
     "venues.locating": {
       "localizations": {
         "bg": {
@@ -18855,6 +18873,60 @@
           "stringUnit": {
             "state": "translated",
             "value": "Finding your location…"
+          }
+        }
+      }
+    },
+    "venues.map": {
+      "comment": "«Клубове»: turns the list into the clubs map.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Карта"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Map"
+          }
+        }
+      }
+    },
+    "venues.map.hint": {
+      "comment": "Under the clubs map, before a pin is tapped.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Докоснете клуб на картата."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tap a club on the map."
+          }
+        }
+      }
+    },
+    "venues.map.label %lld": {
+      "comment": "VoiceOver: the clubs map and how many pins it has.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Карта на клубовете, %lld клуба"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clubs map, %lld clubs"
           }
         }
       }
@@ -18923,18 +18995,38 @@
         }
       }
     },
-    "venues.noneNearby": {
+    "venues.noneNearby %lld": {
+      "comment": "«Близо до мен» found nothing within the chosen distance.",
+      "extractionState": "manual",
       "localizations": {
         "bg": {
           "stringUnit": {
             "state": "translated",
-            "value": "Няма клубове в радиус от 50 км."
+            "value": "Няма клубове в радиус от %lld км."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "No clubs within 50 km."
+            "value": "No clubs within %lld km."
+          }
+        }
+      }
+    },
+    "venues.radius %lld": {
+      "comment": "«Близо до мен»: the distance slider's label.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "В радиус %lld км"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Within %lld km"
           }
         }
       }

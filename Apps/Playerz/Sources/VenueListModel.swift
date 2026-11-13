@@ -42,11 +42,26 @@ final class VenueListModel {
         /// Nil for a club with no photo.
         let cover: Components.Schemas.VenuePhoto?
         let clubLogoUrl: String?
+        /// Its pin on the clubs map (projectZ#697).
+        let lat: Double
+        let lng: Double
     }
+
+    /// «Близо до мен»'s reach, 1–100 km (owner 2026-11-13), remembered.
+    private(set) var radiusKm: Int = {
+        let saved = UserDefaults.standard.integer(forKey: "venues.radiusKm")
+        return (1...100).contains(saved) ? saved : 25
+    }()
+
+    /// The clubs on the map: every bookable one (`GET /venues/map`) under the
+    /// filters in «Всички»; the list's own rows near me or among favourites.
+    private(set) var mapRows: [Row] = []
+    private(set) var mapLoading = false
 
     private(set) var phase: Phase = .loading
     private(set) var rows: [Row] = []
-    private(set) var mode: Mode = .all
+    /// DEBUG only: `PLAYERZ_HOME=near` opens on «Близо до мен», for a screenshot.
+    private(set) var mode: Mode = DebugLaunch.home == "near" ? .near : .all
     private(set) var filters = VenueFilters(sport: DebugLaunch.sport)
     /// The cities and sports to offer in the filter: the server's venue
     /// facets (projectZ#667), so every option finds at least one club.
@@ -123,10 +138,8 @@ final class VenueListModel {
                         query: .init(
                             lat: here.latitude,
                             lng: here.longitude,
-                            // Named radiusKm, not radius, and silently clamped
-                            // to 50 rather than rejected — so asking for more
-                            // would quietly mean 50 anyway.
-                            radiusKm: 50,
+                            // The slider's 1–100 km; the server clamps at 100.
+                            radiusKm: Double(radiusKm),
                             sport: filters.sport,
                             city: filters.city,
                             indoor: filters.indoor
@@ -202,7 +215,34 @@ final class VenueListModel {
             id: venue.id, name: venue.name, city: CityText.shown(venue.cityNames), country: venue.country,
             fromPriceCents: venue.fromPriceCents, currency: venue.currency, distanceKm: distanceKm,
             sports: venue.sports, avgRating: venue.avgRating, reviewCount: venue.reviewCount,
-            cover: venue.cover, clubLogoUrl: venue.clubLogoUrl
+            cover: venue.cover, clubLogoUrl: venue.clubLogoUrl,
+            lat: venue.lat, lng: venue.lng
         )
+    }
+
+    /// A new reach, from the slider: kept, and the list read again.
+    func setRadius(_ km: Int, session: SessionModel) async {
+        let km = min(max(km, 1), 100)
+        guard km != radiusKm else { return }
+        radiusKm = km
+        UserDefaults.standard.set(km, forKey: "venues.radiusKm")
+        if mode == .near { await load(session, quiet: true) }
+    }
+
+    /// The map's clubs for what is on: «Всички» reads every bookable club
+    /// under the filters; near me and favourites show the list's own rows.
+    func loadMap(_ session: SessionModel) async {
+        guard mode == .all else {
+            mapRows = rows
+            return
+        }
+        guard let client = await session.client() else { return }
+        mapLoading = true
+        defer { mapLoading = false }
+        if let data = try? await client.listVenuesForMap(
+            query: .init(sport: filters.sport, city: filters.city, indoor: filters.indoor)
+        ).ok.body.json.data {
+            mapRows = data.venues.map { Self.row($0) }
+        }
     }
 }
