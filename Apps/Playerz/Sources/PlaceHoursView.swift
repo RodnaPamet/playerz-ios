@@ -20,21 +20,27 @@ struct PlaceHoursView: View {
 
     var body: some View {
         List {
+            if let banner = model.banner {
+                Section {
+                    Text(banner)
+                        .foregroundStyle(model.bannerIsError ? Theme.Palette.danger : Theme.Palette.success)
+                }
+                .brandListRow()
+            }
             if let court {
                 Section {
                     if court.bookable.isEmpty {
                         Text(String(localized: "venue.noSlots")).foregroundStyle(.secondary)
-                    } else {
-                        ForEach(court.bookable, id: \.startTs) { slot in
-                            SlotRow(
-                                slot: slot,
-                                currency: court.currency,
-                                timezone: model.timezone,
-                                picked: model.isPicked(court, slot)
-                            ) {
-                                model.toggle(court, slot)
-                            }
-                        }
+                    }
+                    // The hours as a grid by part of the day (the design draft).
+                    if !court.hours.isEmpty {
+                        HourGrid(
+                            court: court, timezone: model.timezone,
+                            isPicked: { model.isPicked(court, $0) },
+                            toggle: { model.toggle(court, $0) }
+                        )
+                        .listRowInsets(EdgeInsets())
+                        .listRowBackground(Color.clear)
                     }
                 } header: {
                     // The place's sport in its photo (owner 2026-11-13: "use

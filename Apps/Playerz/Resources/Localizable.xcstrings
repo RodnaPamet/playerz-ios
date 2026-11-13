@@ -7241,6 +7241,96 @@
         }
       }
     },
+    "hours.afternoon": {
+      "comment": "Hours grid group: hours starting 12:00–17:00.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Следобед"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Afternoon"
+          }
+        }
+      }
+    },
+    "hours.evening": {
+      "comment": "Hours grid group: hours starting from 17:00.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вечер"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Evening"
+          }
+        }
+      }
+    },
+    "hours.morning": {
+      "comment": "Hours grid group: hours starting before 12:00.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сутрин"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Morning"
+          }
+        }
+      }
+    },
+    "hours.taken": {
+      "comment": "An hour in the grid that someone has booked.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Заето"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Taken"
+          }
+        }
+      }
+    },
+    "hours.taken.spoken %@": {
+      "comment": "VoiceOver: a taken hour, e.g. «17:00 – 18:00, заето».",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, заето"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, taken"
+          }
+        }
+      }
+    },
     "kind.coach": {
       "localizations": {
         "bg": {
@@ -13053,6 +13143,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Payment"
+          }
+        }
+      }
+    },
+    "reserve.pickGone": {
+      "comment": "Banner after a refresh: one of the picked hours is no longer free.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Избран час вече е зает и е махнат от избраните."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A picked hour was taken meanwhile and has been removed from your picks."
           }
         }
       }

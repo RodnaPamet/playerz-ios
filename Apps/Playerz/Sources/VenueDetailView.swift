@@ -266,19 +266,17 @@ struct VenueDetailView: View {
                 if court.bookable.isEmpty {
                     Text(String(localized: "venue.noSlots"))
                         .foregroundStyle(.secondary)
-                } else {
-                    // Hours are picked here and reserved together from the
-                    // summary (owner 2026-11-13).
-                    ForEach(court.bookable, id: \.startTs) { slot in
-                        SlotRow(
-                            slot: slot,
-                            currency: court.currency,
-                            timezone: model.timezone,
-                            picked: model.isPicked(court, slot)
-                        ) {
-                            model.toggle(court, slot)
-                        }
-                    }
+                }
+                // Hours are picked here and reserved together from the
+                // summary (owner 2026-11-13), on the grid (the design draft).
+                if !court.hours.isEmpty {
+                    HourGrid(
+                        court: court, timezone: model.timezone,
+                        isPicked: { model.isPicked(court, $0) },
+                        toggle: { model.toggle(court, $0) }
+                    )
+                    .listRowInsets(EdgeInsets())
+                    .listRowBackground(Color.clear)
                 }
             } header: {
                 CourtHeader(court: court, forecast: model.forecast(for: court))
@@ -425,54 +423,5 @@ private struct CourtHeader: View {
                 Text(forecast).foregroundStyle(.secondary)
             }
         }
-    }
-}
-
-/// One free hour: «18:00 – 19:00», its price, and whether it is picked.
-/// The whole row picks it, or puts it back.
-struct SlotRow: View {
-    let slot: Components.Schemas.AvailabilitySlot
-    let currency: String
-    let timezone: String
-    let picked: Bool
-    let toggle: () -> Void
-
-    @Environment(\.dynamicTypeSize) private var typeSize
-
-    var body: some View {
-        Button(action: toggle) {
-            // At accessibility sizes the hours and the price cannot share a
-            // line without truncating one of them.
-            let layout = typeSize.isAccessibilitySize
-                ? AnyLayout(VStackLayout(alignment: .leading, spacing: 8))
-                : AnyLayout(HStackLayout())
-            layout {
-                Text(hours)
-                    .font(Theme.Typography.displayUpright(22, relativeTo: .body))
-                    .monospacedDigit()
-                if !typeSize.isAccessibilitySize { Spacer() }
-                Text(price).foregroundStyle(.secondary)
-                Image(systemName: picked ? "checkmark.circle.fill" : "circle")
-                    .font(.title3)
-                    .foregroundStyle(picked ? Theme.Palette.accentText : Color.secondary)
-                    .accessibilityHidden(true)
-            }
-            .frame(minHeight: Theme.minTarget)
-            .contentShape(.rect)
-        }
-        .buttonStyle(.plain)
-        .listRowBackground(picked ? Theme.Palette.selectedFill : Theme.Palette.card)
-        .accessibilityLabel(String(localized: "venue.hour.spoken \(hours) \(price)"))
-        .accessibilityAddTraits(picked ? .isSelected : [])
-    }
-
-    private var hours: String {
-        let style = Date.FormatStyle(timeZone: TimeZone(identifier: timezone) ?? .current)
-            .hour(.twoDigits(amPM: .omitted)).minute()
-        return "\(slot.startTs.formatted(style)) – \(slot.endTs.formatted(style))"
-    }
-
-    private var price: String {
-        (Decimal(slot.priceCents) / 100).formatted(.currency(code: currency))
     }
 }
