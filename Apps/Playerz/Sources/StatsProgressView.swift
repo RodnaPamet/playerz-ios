@@ -34,6 +34,19 @@ struct StatsProgressView: View {
     @ViewBuilder private var content: some View {
         let stats = model.stats
         VStack(alignment: .leading, spacing: Theme.Spacing.xl) {
+            // The sport on show in its photo (owner 2026-11-13: "highlight
+            // each selected sport page"), with the level on it.
+            if let sport = model.shownSport {
+                SportBanner(sport: sport, title: GameText.sport(sport)) {
+                    if let rating = stats?.rating {
+                        Text(StatsText.level(rating.level))
+                            .font(Theme.Typography.displayUpright(34, relativeTo: .title))
+                            .monospacedDigit()
+                            .accessibilityLabel(String(localized: "stats.level.title"))
+                            .accessibilityValue(StatsText.level(rating.level))
+                    }
+                }
+            }
             if model.offersSurvey, let survey = model.survey {
                 StatsSurveyCard(questions: survey.questions.count, again: stats?.rating?.declaredLevel != nil) {
                     openSurvey(survey)

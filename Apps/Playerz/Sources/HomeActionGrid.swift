@@ -8,6 +8,9 @@ struct HomeActionGrid: View {
     enum Action: Hashable { case court, createGame, findGames, lesson, tournaments }
 
     let modules: Modules
+    /// The sport whose photo is behind «Резервирай корт»: the one the clubs
+    /// are narrowed to, else padel.
+    var heroSport = "PADEL"
     let run: (Action) -> Void
 
     @Environment(\.dynamicTypeSize) private var typeSize
@@ -33,8 +36,9 @@ struct HomeActionGrid: View {
                 title: title(action),
                 subtitle: subtitle(action),
                 systemImage: symbol(action),
-                style: action == .createGame ? .accent : action == .court ? .pitch("PADEL") : .dark,
-                minHeight: action == .court ? 190 : 140,
+                style: action == .createGame ? .accent : action == .court ? .sport(heroSport) : .dark,
+                // The booking leads over its photo; the rest are compact (the design draft).
+                minHeight: action == .court ? 210 : 124,
                 fillsHeight: true
             )
             .clipShape(.rect(cornerRadius: Theme.Radius.card))

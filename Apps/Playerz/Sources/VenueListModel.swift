@@ -47,7 +47,7 @@ final class VenueListModel {
     private(set) var phase: Phase = .loading
     private(set) var rows: [Row] = []
     private(set) var mode: Mode = .all
-    private(set) var filters = VenueFilters()
+    private(set) var filters = VenueFilters(sport: DebugLaunch.sport)
     /// The cities and sports to offer in the filter: the server's venue
     /// facets (projectZ#667), so every option finds at least one club.
     private(set) var cities: [CityChoice] = []

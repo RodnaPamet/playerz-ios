@@ -7,9 +7,9 @@ enum BrandActionCardStyle {
     case dark
     /// A photo under a scrim that keeps the white text readable.
     case photo(Image)
-    /// A sport's surface (SportPitch), leaning, under the same scrim: the
-    /// campaign banner of a sports page.
-    case pitch(String)
+    /// A sport's banner photo (SportBackdrop) under the draft's ink scrim:
+    /// the hero of a sports page.
+    case sport(String)
 }
 
 /// A large rounded tile for the home grid: an icon square, a title, a line
@@ -57,7 +57,7 @@ struct BrandActionCard: View {
             }
         }
         .clipShape(.rect(cornerRadius: Theme.Radius.card))
-        .overlay(RoundedRectangle(cornerRadius: Theme.Radius.card).strokeBorder(.white.opacity(isAccent ? 0 : 0.08)))
+        .overlay(RoundedRectangle(cornerRadius: Theme.Radius.card).strokeBorder(isAccent ? .clear : Theme.Palette.photoEdge))
         // The dark and photo tiles are dark in both modes: the accent on them
         // takes its dark value.
         .environment(\.colorScheme, isAccent ? systemScheme : .dark)
@@ -72,8 +72,10 @@ struct BrandActionCard: View {
     }
 
     private var titleColor: Color { isAccent ? Theme.Palette.onAccent : .white }
-    private var iconFill: Color { isAccent ? Theme.Palette.headerInk : Theme.Palette.accentFill }
-    private var iconColor: Color { isAccent ? .white : Theme.Palette.onAccent }
+    /// The draft's quiet icons: lavender on a violet square, except on the
+    /// one accent tile.
+    private var iconFill: Color { isAccent ? Theme.Palette.headerInk : Theme.Palette.selectedFill }
+    private var iconColor: Color { isAccent ? .white : Theme.Palette.accentText }
 
     @ViewBuilder private var background: some View {
         switch style {
@@ -81,7 +83,7 @@ struct BrandActionCard: View {
             Theme.Palette.accentFill
         case .dark:
             LinearGradient(
-                colors: [Theme.Palette.sheetRow, Theme.Palette.headerInk],
+                colors: [Theme.Palette.sheetRow, Theme.Palette.sheetSurface],
                 startPoint: .topTrailing, endPoint: .bottomLeading
             )
         case let .photo(image):
@@ -92,20 +94,8 @@ struct BrandActionCard: View {
                     colors: [.black.opacity(0.25), .black.opacity(0.75)], startPoint: .top, endPoint: .bottom
                 ))
                 .accessibilityHidden(true)
-        case let .pitch(sport):
-            Color.black
-                .overlay {
-                    SportPitchView(sport: sport, rounded: false)
-                        .scaleEffect(1.5)
-                        .rotationEffect(.degrees(-12))
-                        .offset(x: 70)
-                }
-                .overlay(LinearGradient(
-                    colors: [.black.opacity(0.78), .black.opacity(0.35), .black.opacity(0.1)],
-                    startPoint: .leading, endPoint: .trailing
-                ))
-                .clipped()
-                .accessibilityHidden(true)
+        case let .sport(sport):
+            SportBackdrop(sport: sport)
         }
     }
 }

@@ -47,7 +47,7 @@ struct VenueCourtPicker: View {
                         if isSelected {
                             Image(systemName: "checkmark.circle.fill")
                                 .font(.title3)
-                                .foregroundStyle(Theme.Palette.onHeader, Theme.Palette.accentFill)
+                                .foregroundStyle(Theme.Palette.onAccent, Theme.Palette.accentText)
                                 .padding(4)
                                 .accessibilityHidden(true)
                         }
@@ -65,10 +65,10 @@ struct VenueCourtPicker: View {
             }
             .padding(Theme.Spacing.s)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Theme.Palette.card, in: .rect(cornerRadius: Theme.Radius.tile + 4))
+            .background(isSelected ? Theme.Palette.selectedFill : Theme.Palette.card, in: .rect(cornerRadius: Theme.Radius.row))
             .overlay(
-                RoundedRectangle(cornerRadius: Theme.Radius.tile + 4)
-                    .strokeBorder(isSelected ? Theme.Palette.accentFill : Theme.Palette.hairline, lineWidth: isSelected ? 2.5 : 1)
+                RoundedRectangle(cornerRadius: Theme.Radius.row)
+                    .strokeBorder(isSelected ? Theme.Palette.accentText : Theme.Palette.hairline, lineWidth: isSelected ? 2 : 1)
             )
             .contentShape(.rect)
         }

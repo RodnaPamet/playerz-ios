@@ -2,8 +2,9 @@ import PlayerzAPI
 import SwiftUI
 
 /// A venue's or a club's cover: the club's own photo when the server has one
-/// (#366), else a drawn band with a court on it. Never a stock picture: a
-/// photo that is not the club's would say something untrue about it.
+/// (#366), else its sport's banner photo (SportArt, owner 2026-11-13), else a
+/// drawn band. The sport's photo is category art, never passed off as the
+/// club's: it is decoration, and the club's own photo always replaces it.
 ///
 /// It fills whatever frame it is given and clips itself.
 struct VenueCover: View {
@@ -14,7 +15,7 @@ struct VenueCover: View {
     let serverURL: String
     /// The width in pixels to ask for: 640 fills a list card, 1280 a screen's top.
     var pixelWidth = 640
-    /// The club's sport: without a photo, its surface is the cover (SportPitch).
+    /// The club's sport: without a photo, its banner photo is the cover.
     var sport: String?
 
     var body: some View {
@@ -44,20 +45,10 @@ struct VenueCover: View {
         }
     }
 
-    /// The sport's own surface, leaning as the band does, darker at the foot
-    /// where the club's tile sits on it.
+    /// The sport's banner photo, darker at the foot where the club's tile
+    /// sits on it; the drawn surface for a sport without one.
     private func pitch(_ sport: String) -> some View {
-        let lean = Self.lean(seed)
-        return Color.clear
-            .overlay {
-                SportPitchView(sport: sport, rounded: false)
-                    .scaleEffect(1.35)
-                    .rotationEffect(.degrees(lean.tilt))
-            }
-            .overlay {
-                LinearGradient(colors: [.clear, .black.opacity(0.35)], startPoint: .center, endPoint: .bottom)
-            }
-            .clipped()
+        SportBackdrop(sport: sport, scrim: 0.25)
     }
 
     private var band: some View {
@@ -68,7 +59,7 @@ struct VenueCover: View {
         )
         .overlay {
             RadialGradient(
-                colors: [Theme.Palette.accentFill.opacity(0.55), .clear],
+                colors: [Theme.Palette.accentText.opacity(0.4), .clear],
                 center: lean.glow, startRadius: 0, endRadius: 220
             )
         }

@@ -29,7 +29,7 @@ struct VenueListView: View {
             ScrollViewReader { proxy in
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: Theme.Spacing.l) {
-                        HomeActionGrid(modules: session.modules, run: run)
+                        HomeActionGrid(modules: session.modules, heroSport: model.filters.sport ?? "PADEL", run: run)
                         if let nextBooking {
                             NavigationLink {
                                 BookingDetailView(bookingId: nextBooking.id, session: session)
@@ -40,6 +40,13 @@ struct VenueListView: View {
                         }
                         clubsHeader
                             .id(Self.clubsAnchor)
+                        if let sport = model.filters.sport {
+                            SportBanner(
+                                sport: sport,
+                                title: GameText.sport(sport),
+                                subtitle: String(localized: "venues.sportBanner \(PlaceText.plural(PlaceWord.of(sport)))")
+                            )
+                        }
                         clubs
                     }
                     .padding(.horizontal, Theme.Spacing.l)

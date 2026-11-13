@@ -37,15 +37,18 @@ struct PlaceHoursView: View {
                         }
                     }
                 } header: {
-                    HStack(spacing: Theme.Spacing.s) {
-                        SportPitchView(sport: court.sport)
-                            .frame(width: 56, height: 36)
-                        Text(PlaceText.roof(PlaceWord.of(court.sport), indoor: court.isIndoor))
-                        if let forecast = model.forecast(for: court) {
-                            Spacer()
-                            Text(forecast)
-                        }
+                    // The place's sport in its photo (owner 2026-11-13: "use
+                    // the pictures to highlight each selected sport page").
+                    SportBanner(
+                        sport: court.sport,
+                        title: court.name,
+                        subtitle: PlaceText.roof(PlaceWord.of(court.sport), indoor: court.isIndoor)
+                    ) {
+                        if let forecast = model.forecast(for: court) { Text(forecast) }
                     }
+                    .textCase(nil)
+                    .padding(.horizontal, -Theme.Spacing.l)
+                    .padding(.bottom, Theme.Spacing.s)
                 }
                 .brandListRow()
             } else if model.phase == .loading {

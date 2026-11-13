@@ -246,15 +246,16 @@ struct PicksBar: View {
                     .frame(width: Theme.minTarget, height: Theme.minTarget)
             }
             .buttonStyle(.plain)
-            .foregroundStyle(Theme.Palette.onInverse)
+            .foregroundStyle(.secondary)
             .accessibilityLabel(String(localized: "reserve.clear"))
             VStack(alignment: .leading, spacing: 0) {
                 Text(String(localized: "reserve.bar.hours \(count)"))
                     .font(.footnote.weight(.semibold))
+                    .foregroundStyle(.secondary)
                 Text(ReservationSheet.money(totalCents, currency))
-                    .font(Theme.Typography.display(24, relativeTo: .title3))
+                    .font(Theme.Typography.displayUpright(24, relativeTo: .title3))
+                    .monospacedDigit()
             }
-            .foregroundStyle(Theme.Palette.onInverse)
             .accessibilityElement(children: .combine)
             Spacer()
             Button(action: next) {
@@ -268,7 +269,9 @@ struct PicksBar: View {
         .padding(.leading, Theme.Spacing.xs)
         .padding(.trailing, Theme.Spacing.m)
         .padding(.vertical, Theme.Spacing.s)
-        .background(Theme.Palette.inverse, in: .capsule)
+        // The draft's dock: the card surface with its hairline, not a slab of white.
+        .background(Theme.Palette.card, in: .rect(cornerRadius: Theme.Radius.card))
+        .overlay(RoundedRectangle(cornerRadius: Theme.Radius.card).strokeBorder(Theme.Palette.hairline))
         .themeShadow(.floating)
         .padding(.horizontal, Theme.Spacing.l)
         .padding(.bottom, Theme.Spacing.s)
