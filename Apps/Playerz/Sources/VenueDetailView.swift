@@ -18,6 +18,8 @@ struct VenueDetailView: View {
     /// The court whose times show (owner 2026-11-13): chosen on the plan or
     /// the picker; the first with a free time until then.
     @State private var selectedCourt: String?
+    /// The summary of the hours picked (owner 2026-11-13).
+    @State private var reviewing = false
     /// The coaches teaching here (#19), while the coaches module is on.
     @State private var coaches: [Components.Schemas.PublicCoach] = []
 
@@ -36,6 +38,25 @@ struct VenueDetailView: View {
             case .loaded:
                 content
             }
+        }
+        // The hours picked, above the tab bar, until they are reserved.
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            if !model.picks.isEmpty {
+                PicksBar(
+                    count: model.picks.count,
+                    totalCents: model.picksTotalCents,
+                    currency: model.picks.first?.currency ?? "EUR",
+                    next: { reviewing = true },
+                    clear: { model.clearPicks() }
+                )
+            }
+        }
+        .sheet(isPresented: $reviewing, onDismiss: {
+            // The offer the summary held back, now that it has closed.
+            if model.lastBookingSucceeded { offerPushIfUndecided() }
+        }) {
+            ReservationSheet(model: model, session: session, venueId: venueId, venueName: model.venue?.name ?? "")
+                .outsideShellBar()
         }
         .brandPage()
         // Hidden with the system bar; still what VoiceOver calls the screen.
@@ -103,6 +124,11 @@ struct VenueDetailView: View {
         .task {
             await model.load(session, venueId: venueId)
             await loadCoaches()
+            // DEBUG only: hours picked and the summary open, for a screenshot.
+            if let count = DebugLaunch.pick, let court = model.courts.first(where: { !$0.bookable.isEmpty }) {
+                for slot in court.bookable.prefix(count) { model.toggle(court, slot) }
+                reviewing = DebugLaunch.review
+            }
         }
         // A new day, or the first read: keep the court chosen while it is there.
         .onChange(of: model.courts.map(\.resourceId) + model.courts.map { "\($0.bookable.count)" }, initial: true) {
@@ -118,11 +144,10 @@ struct VenueDetailView: View {
         .onChange(of: model.lastBookingSucceeded) { _, booked in
             // Only after a booking, and only once: iOS grants exactly one
             // system prompt, so it is spent at the moment the offer is
-            // concrete rather than on a cold launch.
-            guard booked else { return }
-            Task {
-                if await !PushRegistrar.shared.alreadyDecided() { offerPush = true }
-            }
+            // concrete rather than on a cold launch. Not while the summary is
+            // open: an alert here would close it over its payment step.
+            guard booked, !reviewing else { return }
+            offerPushIfUndecided()
         }
         .alert(String(localized: "push.askTitle"), isPresented: $offerPush) {
             Button(String(localized: "push.allow")) {
@@ -197,7 +222,7 @@ struct VenueDetailView: View {
         // court's only (owner 2026-11-13). The club's plan (#25) where it has
         // one, time first; otherwise the courts drawn side by side.
         if let plan = model.plan {
-            VenuePlanSection(drawing: plan, courts: model.courts, busySlot: model.bookingSlot, book: book, picked: $selectedCourt)
+            VenuePlanSection(drawing: plan, courts: model.courts, busySlot: nil, book: book, picked: $selectedCourt)
         }
         let offPlan = model.courts.filter { court in !(model.plan?.courts.contains { $0.id == court.resourceId } ?? false) }
         if !offPlan.isEmpty, model.courts.count > 1 {
@@ -221,21 +246,16 @@ struct VenueDetailView: View {
                     Text(String(localized: "venue.noSlots"))
                         .foregroundStyle(.secondary)
                 } else {
+                    // Hours are picked here and reserved together from the
+                    // summary (owner 2026-11-13).
                     ForEach(court.bookable, id: \.startTs) { slot in
                         SlotRow(
                             slot: slot,
                             currency: court.currency,
-                            busy: model.bookingSlot == slot.startTs,
-                            disabled: model.bookingSlot != nil
+                            timezone: model.timezone,
+                            picked: model.isPicked(court, slot)
                         ) {
-                            Task {
-                                await model.book(
-                                    session,
-                                    venueId: venueId,
-                                    resourceId: court.resourceId,
-                                    slot: slot
-                                )
-                            }
+                            model.toggle(court, slot)
                         }
                     }
                 }
@@ -249,9 +269,16 @@ struct VenueDetailView: View {
         }
     }
 
+    private func offerPushIfUndecided() {
+        Task {
+            if await !PushRegistrar.shared.alreadyDecided() { offerPush = true }
+        }
+    }
+
     /// A court booked from the plan (#25), as a slot is from the list.
     private func book(_ court: VenueDetailModel.Court, _ slot: Components.Schemas.AvailabilitySlot) {
-        Task { await model.book(session, venueId: venueId, resourceId: court.resourceId, slot: slot) }
+        // Picked, as from the list: the summary reserves them together.
+        model.toggle(court, slot)
     }
 
     private func loadCoaches() async {
@@ -380,55 +407,48 @@ private struct CourtHeader: View {
     }
 }
 
+/// One free hour: «18:00 – 19:00», its price, and whether it is picked.
+/// The whole row picks it, or puts it back.
 private struct SlotRow: View {
     let slot: Components.Schemas.AvailabilitySlot
     let currency: String
-    let busy: Bool
-    let disabled: Bool
-    let book: () -> Void
+    let timezone: String
+    let picked: Bool
+    let toggle: () -> Void
 
     @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
-        // At accessibility sizes the time, the price and the button cannot
-        // share a line without truncating one of them.
-        let layout = typeSize.isAccessibilitySize
-            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 8))
-            : AnyLayout(HStackLayout())
-
-        layout {
-            Text(time)
-            if !typeSize.isAccessibilitySize { Spacer() }
-            Text(price).foregroundStyle(.secondary)
-
-            Button(action: book) {
-                if busy {
-                    ProgressView()
-                } else {
-                    Text(String(localized: "venue.book"))
-                }
+        Button(action: toggle) {
+            // At accessibility sizes the hours and the price cannot share a
+            // line without truncating one of them.
+            let layout = typeSize.isAccessibilitySize
+                ? AnyLayout(VStackLayout(alignment: .leading, spacing: 8))
+                : AnyLayout(HStackLayout())
+            layout {
+                Text(hours)
+                    .font(Theme.Typography.displayUpright(22, relativeTo: .body))
+                    .monospacedDigit()
+                if !typeSize.isAccessibilitySize { Spacer() }
+                Text(price).foregroundStyle(.secondary)
+                Image(systemName: picked ? "checkmark.circle.fill" : "circle")
+                    .font(.title3)
+                    .foregroundStyle(picked ? Theme.Palette.accentText : Color.secondary)
+                    .accessibilityHidden(true)
             }
-            .buttonStyle(.borderless)
-            .disabled(disabled)
-            // ═══ WITHOUT THIS, EVERY SLOT IS "Резервирай" ═══
-            //
-            // A court with twelve free hours renders twelve buttons with the
-            // same label. VoiceOver reads the time as a SEPARATE element, so
-            // nothing ties the two together and choosing an hour means
-            // counting swipes.
-            //
-            // A ProgressView also has no label, so the busy state announced an
-            // unlabelled button — the worst moment to lose the name.
-            .accessibilityLabel(
-                busy
-                    ? String(localized: "venue.booking")
-                    : String(format: String(localized: "a11y.bookSlot"), time, price)
-            )
+            .frame(minHeight: Theme.minTarget)
+            .contentShape(.rect)
         }
+        .buttonStyle(.plain)
+        .listRowBackground(picked ? Theme.Palette.accentFill.opacity(0.14) : Theme.Palette.card)
+        .accessibilityLabel(String(localized: "venue.hour.spoken \(hours) \(price)"))
+        .accessibilityAddTraits(picked ? .isSelected : [])
     }
 
-    private var time: String {
-        slot.startTs.formatted(date: .omitted, time: .shortened)
+    private var hours: String {
+        let style = Date.FormatStyle(timeZone: TimeZone(identifier: timezone) ?? .current)
+            .hour(.twoDigits(amPM: .omitted)).minute()
+        return "\(slot.startTs.formatted(style)) – \(slot.endTs.formatted(style))"
     }
 
     private var price: String {

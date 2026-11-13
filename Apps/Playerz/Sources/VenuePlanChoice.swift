@@ -25,7 +25,7 @@ struct VenuePlanChoice: View {
                     if busySlot == slot.startTs {
                         ProgressView()
                     } else {
-                        Text(String(localized: "venue.book"))
+                        Text(String(localized: "venuePlan.pick"))
                     }
                 }
                 .buttonStyle(.brandPrimary(fullWidth: false))
@@ -33,7 +33,7 @@ struct VenuePlanChoice: View {
                 .accessibilityLabel(
                     busySlot == slot.startTs
                         ? String(localized: "venue.booking")
-                        : String(localized: "venuePlan.book \(court.name) \(time) \(price)")
+                        : String(localized: "venuePlan.pickSpoken \(court.name) \(time) \(price)")
                 )
             }
         } else {

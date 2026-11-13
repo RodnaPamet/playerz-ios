@@ -20,8 +20,40 @@ final class VenueDetailModel {
         let sport: String
         let currency: String
         let isIndoor: Bool
+        /// Its longest booking, so hours back to back join up to it.
+        let maxMinutes: Int
+        /// The free hours: on the hour, an hour long (owner 2026-11-13).
         let bookable: [Components.Schemas.AvailabilitySlot]
     }
+
+    /// An hour picked for the summary (owner 2026-11-13: selectable first,
+    /// then reserved, more than one at a time).
+    struct Pick: Hashable, Identifiable {
+        let resourceId: String
+        let placeName: String
+        let sport: String
+        let currency: String
+        let start: Date
+        let end: Date
+        let priceCents: Int
+        var id: String { "\(resourceId)@\(start.timeIntervalSince1970)" }
+    }
+
+    /// What became of one booking the summary asked for.
+    struct Outcome: Identifiable {
+        let block: HourlySlots.Block
+        let placeName: String
+        let sport: String
+        let currency: String
+        /// The booking made, or nil.
+        let booking: Components.Schemas.Booking?
+        /// Why not, in the user's words.
+        let problem: String?
+        var id: String { "\(block.resourceId)@\(block.start.timeIntervalSince1970)" }
+    }
+
+    /// The hours picked, kept across days until reserved or cleared.
+    private(set) var picks: [Pick] = []
 
     private(set) var phase: Phase = .loading
     private(set) var venue: Components.Schemas.VenueDetail?
@@ -34,7 +66,6 @@ final class VenueDetailModel {
     private var planRead = false
     private(set) var banner: String?
     private(set) var bannerIsError = false
-    private(set) var bookingSlot: Date?
     /// Flips true once a booking is confirmed, so the view can offer push.
     private(set) var lastBookingSucceeded = false
 
@@ -143,7 +174,11 @@ final class VenueDetailModel {
                     // "unknown" must not render a forecast as if it were an
                     // outdoor court. Defaulting to indoor suppresses the line.
                     isIndoor: indoorById[slots.resourceId] ?? true,
-                    bookable: slots.slots.filter(\.available)
+                    maxMinutes: slots.maxBookingMinutes,
+                    bookable: HourlySlots.hourly(
+                        slots.slots,
+                        timezone: TimeZone(identifier: availability.timezone) ?? .current
+                    )
                 )
             }
             phase = .loaded
@@ -176,65 +211,105 @@ final class VenueDetailModel {
         }
     }
 
-    func book(
-        _ session: SessionModel,
-        venueId: String,
-        resourceId: String,
-        slot: Components.Schemas.AvailabilitySlot
-    ) async {
-        // The CLUB's slug: `/t/{slug}/bookings` is the club's namespace, and a
-        // venue's own slug is unique only within its club (playerz-ios#2).
-        guard let client = await session.client(), let slug = venue?.clubSlug else { return }
+    // MARK: - Picking hours, then reserving them
 
-        bookingSlot = slot.startTs
-        banner = nil
-        // The app books from the slot itself, so one tap is both of the web's
-        // steps: a slot picked, and the confirm sheet opened (#17).
-        session.send(.slotPicked, venueId: venueId)
+    func isPicked(_ court: Court, _ slot: Components.Schemas.AvailabilitySlot) -> Bool {
+        picks.contains { $0.resourceId == court.resourceId && $0.start == slot.startTs }
+    }
+
+    /// Picks the hour, or puts it back.
+    func toggle(_ court: Court, _ slot: Components.Schemas.AvailabilitySlot) {
+        if let index = picks.firstIndex(where: { $0.resourceId == court.resourceId && $0.start == slot.startTs }) {
+            picks.remove(at: index)
+        } else {
+            picks.append(Pick(
+                resourceId: court.resourceId, placeName: court.name, sport: court.sport,
+                currency: court.currency, start: slot.startTs, end: slot.endTs, priceCents: slot.priceCents
+            ))
+            picks.sort { ($0.start, $0.placeName) < ($1.start, $1.placeName) }
+        }
+    }
+
+    func clearPicks() { picks = [] }
+
+    var picksTotalCents: Int { picks.reduce(0) { $0 + $1.priceCents } }
+
+    /// The bookings the picks make: hours back to back on a place joined.
+    var blocks: [HourlySlots.Block] {
+        let longest = Dictionary(uniqueKeysWithValues: courts.map { ($0.resourceId, $0.maxMinutes) })
+        return HourlySlots.blocks(
+            picks.map { .init(resourceId: $0.resourceId, start: $0.start, end: $0.end, priceCents: $0.priceCents) },
+            maxMinutes: { longest[$0] }
+        )
+        .sorted { $0.start < $1.start }
+    }
+
+    /// The pick that names a block's place.
+    func pick(for block: HourlySlots.Block) -> Pick? {
+        picks.first { $0.resourceId == block.resourceId }
+    }
+
+    /// Books every block, one after another, and says what became of each.
+    /// The hours that were booked leave the picks; the rest stay, to try again.
+    func reserve(_ session: SessionModel, venueId: String) async -> [Outcome] {
+        guard let client = await session.client(), let slug = venue?.clubSlug else { return [] }
         session.send(.sheetOpened, venueId: venueId)
-        defer { bookingSlot = nil }
+        var outcomes: [Outcome] = []
+        for block in blocks {
+            let named = pick(for: block)
+            let made = await create(client, session: session, slug: slug, block: block)
+            outcomes.append(Outcome(
+                block: block, placeName: named?.placeName ?? "", sport: named?.sport ?? "",
+                currency: named?.currency ?? "EUR", booking: made.booking, problem: made.problem
+            ))
+            if made.booking != nil {
+                picks.removeAll { $0.resourceId == block.resourceId && $0.start >= block.start && $0.start < block.end }
+                lastBookingSucceeded = true
+            }
+        }
+        await load(session, venueId: venueId)
+        return outcomes
+    }
 
+    private func create(
+        _ client: Client, session: SessionModel, slug: String, block: HourlySlots.Block
+    ) async -> (booking: Components.Schemas.Booking?, problem: String?) {
+        let response: Operations.createBooking.Output
         do {
-            let response = try await client.createBooking(
+            response = try await client.createBooking(
                 .init(
                     path: .init(slug: slug),
-                    headers: .init(
-                        Idempotency_hyphen_Key: idempotencyKey(
-                            resourceId: resourceId,
-                            startTs: slot.startTs
-                        )
-                    ),
-                    body: .json(
-                        .init(resourceId: resourceId, startTs: slot.startTs, endTs: slot.endTs)
-                    )
+                    // One key per block (place, start, end): a retry of the
+                    // same block replays its booking; another block gets its own.
+                    headers: .init(Idempotency_hyphen_Key: idempotencyKey(
+                        resourceId: "\(block.resourceId)~\(block.end.timeIntervalSince1970)", startTs: block.start
+                    )),
+                    body: .json(.init(resourceId: block.resourceId, startTs: block.start, endTs: block.end))
                 )
             )
-
-            switch response {
-            case .ok, .created:
-                bannerIsError = false
-                banner = String(localized: "venue.booked")
-                lastBookingSucceeded = true
-                // Re-read rather than mutating locally: the slot that was just
-                // taken is not the only thing that changed if somebody else
-                // booked an overlapping one in the meantime.
-                await load(session, venueId: venueId)
-            case .conflict:
-                bannerIsError = true
-                banner = String(localized: "venue.slotTaken")
-                await load(session, venueId: venueId)
-            default:
-                let code = apiErrorCode(response)
-                session.notice(refusal: code)
-                bannerIsError = true
-                banner =
-                    code == "PHONE_REQUIRED"
-                    ? String(localized: "phone.required.title")
-                    : String(localized: "venue.bookFailed")
-            }
         } catch {
-            bannerIsError = true
-            banner = String(localized: "venue.bookFailed")
+            return (nil, String(localized: "venue.bookFailed"))
+        }
+        switch response {
+        case let .ok(ok): return ((try? ok.body.json.data), nil)
+        case let .created(created): return ((try? created.body.json.data), nil)
+        case .conflict:
+            let error = apiError(response)
+            if error?.code == "BOOKING_LIMIT_REACHED", let limit = apiErrorDetail(error, "limit") {
+                return (nil, String(localized: "reserve.limit \(limit)"))
+            }
+            return (nil, String(localized: "venue.slotTaken"))
+        default:
+            let code = apiErrorCode(response)
+            session.notice(refusal: code)
+            if code == "SLOT_NOT_BOOKABLE" { return (nil, String(localized: "reserve.notBookable")) }
+            return (nil, code == "PHONE_REQUIRED"
+                ? String(localized: "phone.required.title")
+                // Three no-shows block online booking at the club; the server
+                // says so in the player's own language, with whom to call.
+                : code == "NO_SHOW_BLOCKED"
+                    ? (apiError(response)?.message ?? String(localized: "venue.bookFailed"))
+                    : String(localized: "venue.bookFailed"))
         }
     }
 }
