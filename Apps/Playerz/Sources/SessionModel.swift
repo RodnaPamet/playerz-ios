@@ -73,6 +73,18 @@ final class SessionModel {
     /// The conversation on screen, if one is: a push for it needs no second
     /// copy over it (#56), its screen polls for the new message itself.
     var conversationOnScreen: String?
+    /// The app's language (AppLanguageChoice): Bulgarian unless chosen.
+    private(set) var language: AppLanguage.Code = AppLanguageChoice.current
+
+    /// A language chosen in «Профил»: the texts change at once, and the
+    /// account follows (its emails and pushes).
+    func chooseLanguage(_ code: AppLanguage.Code) async {
+        guard code != language else { return }
+        AppLanguageChoice.apply(code)
+        language = code
+        _ = await session?.saveLanguage(code)
+    }
+
     /// A tab a link asked for; RootView switches to it. `.messages` is the
     /// inbox, which PlayerShell lays over the tabs.
     var requestedTab: DebugLaunch.Tab?
@@ -232,7 +244,7 @@ final class SessionModel {
             let s = PlayerzSession(baseURL: url)
             try await s.signIn(
                 googleIDToken: idToken,
-                language: AppLanguage.code(for: Bundle.main.preferredLocalizations.first)
+                language: language
             )
             await adopt(s)
         } catch let error as ASWebAuthenticationSessionError where error.code == .canceledLogin {
@@ -327,7 +339,7 @@ final class SessionModel {
     /// differ, at launch and after signing in. Changing the app's language in
     /// iOS Settings relaunches it, so this sees every change.
     func followLanguage(of me: Components.Schemas.Me) async {
-        let code = AppLanguage.code(for: Bundle.main.preferredLocalizations.first)
+        let code = language
         guard me.locale != code.rawValue, let session else { return }
         _ = await session.saveLanguage(code)
     }

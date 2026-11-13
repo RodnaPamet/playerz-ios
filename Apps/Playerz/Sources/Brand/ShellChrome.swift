@@ -12,11 +12,31 @@ final class ShellChrome {
     func showBar() { barHiders = max(0, barHiders - 1) }
 }
 
+private struct ShellBarHeightKey: EnvironmentKey {
+    static let defaultValue: CGFloat = 0
+}
+
 private struct ShellTabIsActiveKey: EnvironmentKey {
     static let defaultValue = true
 }
 
 extension EnvironmentValues {
+    /// How much of the bottom the floating bar covers, 0 where it is not on
+    /// show. Every page (`brandPage`) keeps that much clear at its end.
+    ///
+    /// ═══ WHY NOT THE SHELL'S safeAreaInset ═══
+    ///
+    /// The bar was a `safeAreaInset` on the shell, which should have reached
+    /// every scroll view under it. It does not reach through the tabs'
+    /// NavigationStacks: on iOS 26.5 and on the owner's iPhone (TestFlight
+    /// 1.0 (3.1), 2026-11-13) a list scrolled to its end left its last rows
+    /// («Изход» on «Профил») under the bar, where nothing could bring them
+    /// up. A padding applied by the page itself, inside the stack, does.
+    var shellBarHeight: CGFloat {
+        get { self[ShellBarHeightKey.self] }
+        set { self[ShellBarHeightKey.self] = newValue }
+    }
+
     /// Whether this screen's tab is the one on show. Every tab stays alive
     /// behind the selected one, so `onAppear` and `task` run ONCE, not on each
     /// return as under the system's TabView.
@@ -68,6 +88,12 @@ private struct FloatingTabBarHidden: ViewModifier {
 }
 
 extension View {
+    /// Content that is not under the shell's bar: a sheet or a cover
+    /// presented from a tab, which would otherwise inherit its clearance.
+    func outsideShellBar() -> some View {
+        environment(\.shellBarHeight, 0)
+    }
+
     /// Runs each time the user comes BACK to this screen's tab: what a tab's
     /// first screen reloads, now that `task` no longer runs again by itself.
     func onShellTabReturn(_ action: @escaping @MainActor () async -> Void) -> some View {

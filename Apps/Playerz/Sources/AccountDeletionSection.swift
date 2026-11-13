@@ -87,7 +87,7 @@ struct AccountDeletionSection: View {
                 Button(String(localized: "profile.delete.button"), role: .destructive, action: askToConfirm)
                     .id(Self.anchor)
                     .sheet(isPresented: $confirming, onDismiss: focusOutcome) {
-                        ConfirmDeletionSheet(delete: delete)
+                        ConfirmDeletionSheet(delete: delete).outsideShellBar()
                     }
                     .task(openForDebugLaunch)
             }

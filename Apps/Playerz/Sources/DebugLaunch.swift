@@ -67,6 +67,12 @@ enum DebugLaunch {
     /// `PLAYERZ_EMPTY_END=1`: a scrolling empty state opens at its end, to
     /// photograph the last line above the tab bar at the largest text size.
     static var emptyStateEnd: Bool { env["PLAYERZ_EMPTY_END"] == "1" }
+    /// `PLAYERZ_SCROLL_END=1`: every page opens at its end (`brandPage`), to
+    /// see that its last row clears the tab bar.
+    static var scrollEnd: Bool { env["PLAYERZ_SCROLL_END"] == "1" }
+    /// `PLAYERZ_CHOOSE_LANGUAGE=en|bg`: chosen three seconds after launch, as
+    /// the picker in «Профил» chooses it, to see the switch happen.
+    static var chooseLanguage: String? { env["PLAYERZ_CHOOSE_LANGUAGE"] }
     /// `PLAYERZ_BOOKINGS=past`: Резервации opened on «Минали».
     static var bookingsPast: Bool { env["PLAYERZ_BOOKINGS"] == "past" }
     /// `PLAYERZ_BOOKINGS=cancelled`: Резервации opened on «Отменени» (#58).
@@ -105,6 +111,8 @@ enum DebugLaunch {
     static let home: String? = nil
     static let coachBook: Int? = nil
     static let profile: Profile? = nil
+    static let scrollEnd = false
+    static let chooseLanguage: String? = nil
     static let emptyStateEnd = false
     static let bookingsPast = false
     static let bookingsCancelled = false
