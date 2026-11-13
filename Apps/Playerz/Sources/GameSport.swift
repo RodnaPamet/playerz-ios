@@ -1,28 +1,7 @@
 import Foundation
 
-/// How a sport is drawn: its symbol, and the lines of its court.
+/// A sport's symbol. Its surface is drawn by SportPitch.
 enum GameSport {
-    enum Court {
-        /// Two sides and a net: tennis, padel, volleyball.
-        case net
-        /// A halfway line and a centre circle: football, basketball, handball.
-        case pitch
-        /// Anything else: two sides, no markings that would be wrong.
-        case plain
-    }
-
-    static func court(_ sport: String) -> Court {
-        switch sport {
-        case "TENNIS", "PADEL", "BADMINTON", "TABLE_TENNIS", "BEACH_TENNIS", "PICKLEBALL",
-             "VOLLEYBALL", "BEACH_VOLLEYBALL":
-            .net
-        case "FOOTBALL", "FOOTBALL5", "BASKETBALL", "HANDBALL":
-            .pitch
-        default:
-            .plain
-        }
-    }
-
     /// An SF Symbol for the sport; a sport added after this build gets the court.
     static func symbol(_ sport: String) -> String {
         switch sport {

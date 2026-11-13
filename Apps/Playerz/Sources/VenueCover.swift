@@ -14,6 +14,8 @@ struct VenueCover: View {
     let serverURL: String
     /// The width in pixels to ask for: 640 fills a list card, 1280 a screen's top.
     var pixelWidth = 640
+    /// The club's sport: without a photo, its surface is the cover (SportPitch).
+    var sport: String?
 
     var body: some View {
         // The picture is an overlay: a filling image must not widen its card.
@@ -34,7 +36,31 @@ struct VenueCover: View {
             .accessibilityHidden(true)
     }
 
-    private var drawn: some View {
+    @ViewBuilder private var drawn: some View {
+        if let sport, !sport.isEmpty {
+            pitch(sport)
+        } else {
+            band
+        }
+    }
+
+    /// The sport's own surface, leaning as the band does, darker at the foot
+    /// where the club's tile sits on it.
+    private func pitch(_ sport: String) -> some View {
+        let lean = Self.lean(seed)
+        return Color.clear
+            .overlay {
+                SportPitchView(sport: sport, rounded: false)
+                    .scaleEffect(1.35)
+                    .rotationEffect(.degrees(lean.tilt))
+            }
+            .overlay {
+                LinearGradient(colors: [.clear, .black.opacity(0.35)], startPoint: .center, endPoint: .bottom)
+            }
+            .clipped()
+    }
+
+    private var band: some View {
         let lean = Self.lean(seed)
         return LinearGradient(
             colors: [Theme.Palette.headerInk, Theme.Palette.headerGlow],

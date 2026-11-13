@@ -264,7 +264,7 @@ private struct VenueCard: View {
 
     var body: some View {
         BrandCoverCard(coverHeight: 132) {
-            VenueCover(photo: row.cover, seed: row.id, serverURL: serverURL)
+            VenueCover(photo: row.cover, seed: row.id, serverURL: serverURL, sport: row.sports.first)
         } logo: {
             VenueLogoTile(name: row.name, logoURL: row.clubLogoUrl.flatMap { mediaURL($0, serverURL: serverURL) })
         } content: {

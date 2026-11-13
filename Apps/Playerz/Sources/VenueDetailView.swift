@@ -291,7 +291,7 @@ private struct VenueHero: View {
 
     var body: some View {
         BrandCoverCard(coverHeight: 170, coverLabel: venue.cover?.alt) {
-            VenueCover(photo: venue.cover, seed: venue.id, serverURL: serverURL, pixelWidth: 1280)
+            VenueCover(photo: venue.cover, seed: venue.id, serverURL: serverURL, pixelWidth: 1280, sport: venue.sports.first)
         } logo: {
             VenueLogoTile(name: venue.name)
         } content: {

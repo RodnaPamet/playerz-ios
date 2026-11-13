@@ -15,7 +15,7 @@ struct PlayerzApp: App {
 
     var body: some Scene {
         WindowGroup {
-            RootView(session: session)
+            launchView
                 // Dates, amounts and SwiftUI's own words in the app's language.
                 .environment(\.locale, AppLanguageChoice.locale(session.language))
                 // A refusal for want of a confirmed phone, from any screen (#11).
@@ -41,6 +41,21 @@ struct PlayerzApp: App {
                     if session.state == .signedIn { await PushRegistrar.shared.refreshIfAllowed(session) }
                 }
         }
+    }
+}
+
+extension PlayerzApp {
+    /// The app, or in a DEBUG launch with `PLAYERZ_PITCHES=1` the sports' surfaces.
+    @ViewBuilder private var launchView: some View {
+        #if DEBUG
+        if DebugLaunch.pitches {
+            SportPitchGallery()
+        } else {
+            RootView(session: session)
+        }
+        #else
+        RootView(session: session)
+        #endif
     }
 }
 
