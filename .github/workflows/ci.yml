@@ -43,6 +43,48 @@ jobs:
       - name: Test
         run: make test
 
+  app-release:
+    # The app itself, as TestFlight archives it: Release, so the `#else`
+    # side of every `#if DEBUG` compiles. `make build` above builds only the
+    # package; a Release-only error (DebugLaunch.sport, #105) first showed up
+    # as a failed TestFlight upload after the merge.
+    name: The app compiles in Release
+    runs-on: macos-15
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: Apps/Playerz
+    steps:
+      - uses: actions/checkout@v4
+
+      # The Xcode TestFlight archives with (testflight.yml): the newest on the
+      # runner. An older one reports Sendable errors the archive never sees.
+      - name: Select Xcode
+        run: |
+          NEWEST=$(ls -d /Applications/Xcode_*.app 2>/dev/null | sort -V | tail -1)
+          [ -n "$NEWEST" ] || NEWEST=/Applications/Xcode.app
+          echo "DEVELOPER_DIR=$NEWEST/Contents/Developer" >> "$GITHUB_ENV"
+          echo "Selected: $NEWEST"
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate the project
+        run: xcodegen generate
+
+      # The simulator, unsigned: no certificate or key in a PR's job.
+      - name: Build (Release)
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project Playerz.xcodeproj -scheme Playerz -configuration Release \
+            -destination "generic/platform=iOS Simulator" \
+            -derivedDataPath "$RUNNER_TEMP/release-dd" \
+            -skipPackagePluginValidation -skipMacroValidation \
+            CODE_SIGNING_ALLOWED=NO \
+            | tee "$RUNNER_TEMP/build.log" | grep -E "error:|\*\* BUILD" \
+            || { echo "::error::the Release build failed"; tail -80 "$RUNNER_TEMP/build.log"; exit 1; }
+
   spec-drift:
     name: OpenAPI spec matches the server
     runs-on: ubuntu-latest

@@ -145,6 +145,7 @@ enum DebugLaunch {
     static let review = false
     static let reserve = false
     static let place: String? = nil
+    static let sport: String? = nil
     static let emptyStateEnd = false
     static let bookingsPast = false
     static let bookingsCancelled = false
