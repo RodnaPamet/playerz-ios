@@ -133,12 +133,6 @@ final class VenueDetailModel {
     }
 
     func load(_ session: SessionModel, venueId: String) async {
-        phase = .loading
-        guard let client = await session.client() else {
-            phase = .failed
-            return
-        }
-
         // «Днес» before the first read: asked without a date, the server
         // answers the next 24 hours, and tomorrow morning's hours showed under
         // «Днес» (owner's TestFlight, 2026-11-13). Sofia until the venue's own
@@ -148,60 +142,80 @@ final class VenueDetailModel {
             selectedDate = days.first?.apiDate
         }
 
+        // Instant (owner 2026-11-13, "needs to be instant"): what the list
+        // read ahead, or an earlier visit read, shows at once; the fresh
+        // read replaces it behind.
+        let cache = VenueDetailCache.shared
+        if let detail = cache.detail(venueId), let hours = cache.availability(venueId, date: selectedDate) {
+            apply(detail, hours)
+            phase = .loaded
+        } else {
+            phase = .loading
+        }
+
+        guard let client = await session.client() else {
+            if phase != .loaded { phase = .failed }
+            return
+        }
+
         do {
-            let detail = try await client
-                .getVenue(.init(path: .init(id: venueId)))
-                .ok.body.json.data
-            let availability = try await client
-                .getVenueAvailability(
-                    .init(path: .init(id: venueId), query: .init(date: selectedDate))
-                )
-                .ok.body.json.data
+            // The club and its hours at once, not one after the other: the
+            // hours are the slow read, and the club no longer waits in front.
+            let date = selectedDate
+            async let detailRead = client.getVenue(.init(path: .init(id: venueId)))
+            async let hoursRead = client.getVenueAvailability(.init(path: .init(id: venueId), query: .init(date: date)))
+            let detail = try await detailRead.ok.body.json.data
+            let availability = try await hoursRead.ok.body.json.data
+            cache.store(detail)
+            cache.store(availability, venueId: venueId, date: date)
+            // A day picked while this was on its way: that day's read wins.
+            guard date == selectedDate else { return }
+            apply(detail, availability)
+            phase = .loaded
 
-            let indoorById = Dictionary(
-                uniqueKeysWithValues: detail.resources.map { ($0.id, $0.isIndoor) }
-            )
-            let sportById = Dictionary(uniqueKeysWithValues: detail.resources.map { ($0.id, $0.sport) })
-
-            venue = detail
             // The club's name, for the link to its page (#17). Public, and the
-            // screen works without it.
+            // screen works without it, so it no longer holds the page back.
             if clubName == nil,
                 let club = try? await client.getClub(.init(path: .init(slug: detail.clubSlug))).ok.body.json.data
             {
                 clubName = club.name
             }
-            // The venue's own zone decides what "today" is and what the strip
-            // offers — not the device's.
-            if availability.timezone != timezone {
-                timezone = availability.timezone
-                days = VenueDay.upcoming(inTimeZone: availability.timezone)
-                selectedDate = days.first?.apiDate
-            }
-            let zone = TimeZone(identifier: availability.timezone) ?? .current
-            courts = availability.resources.map { slots in
-                Court(
-                    resourceId: slots.resourceId,
-                    name: slots.name,
-                    sport: sportById[slots.resourceId] ?? "",
-                    currency: slots.currency,
-                    // Absent from the detail response means we do not know, and
-                    // "unknown" must not render a forecast as if it were an
-                    // outdoor court. Defaulting to indoor suppresses the line.
-                    isIndoor: indoorById[slots.resourceId] ?? true,
-                    maxMinutes: slots.maxBookingMinutes,
-                    bookable: HourlySlots.hourly(slots.slots, timezone: zone),
-                    hours: HourlySlots.hourly(slots.slots, timezone: zone, includeTaken: true)
-                )
-            }
-            dropGonePicks()
-            phase = .loaded
-
             await loadPlan(client, venueId: venueId)
             await loadForecasts(lat: detail.lat, lng: detail.lng)
         } catch {
-            phase = .failed
+            if phase != .loaded { phase = .failed }
         }
+    }
+
+    /// The club and a day's hours on screen.
+    private func apply(_ detail: Components.Schemas.VenueDetail, _ availability: Components.Schemas.VenueAvailability) {
+        let indoorById = Dictionary(uniqueKeysWithValues: detail.resources.map { ($0.id, $0.isIndoor) })
+        let sportById = Dictionary(uniqueKeysWithValues: detail.resources.map { ($0.id, $0.sport) })
+        venue = detail
+        // The venue's own zone decides what "today" is and what the strip
+        // offers — not the device's.
+        if availability.timezone != timezone {
+            timezone = availability.timezone
+            days = VenueDay.upcoming(inTimeZone: availability.timezone)
+            selectedDate = days.first?.apiDate
+        }
+        let zone = TimeZone(identifier: availability.timezone) ?? .current
+        courts = availability.resources.map { slots in
+            Court(
+                resourceId: slots.resourceId,
+                name: slots.name,
+                sport: sportById[slots.resourceId] ?? "",
+                currency: slots.currency,
+                // Absent from the detail response means we do not know, and
+                // "unknown" must not render a forecast as if it were an
+                // outdoor court. Defaulting to indoor suppresses the line.
+                isIndoor: indoorById[slots.resourceId] ?? true,
+                maxMinutes: slots.maxBookingMinutes,
+                bookable: HourlySlots.hourly(slots.slots, timezone: zone),
+                hours: HourlySlots.hourly(slots.slots, timezone: zone, includeTaken: true)
+            )
+        }
+        dropGonePicks()
     }
 
     /// The plan, once. A failed read leaves the list alone and is tried again
@@ -299,6 +313,7 @@ final class VenueDetailModel {
                 lastBookingSucceeded = true
             }
         }
+        VenueDetailCache.shared.forget(venueId)
         await load(session, venueId: venueId)
         return outcomes
     }

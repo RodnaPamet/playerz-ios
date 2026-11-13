@@ -58,6 +58,38 @@ struct SportBackdrop: View {
     }
 }
 
+/// Every sport's photo in turn, a crossfade every `interval` seconds (owner
+/// 2026-11-13: "the image on the home page needs to slideshow with all other
+/// banners", "5s"). Still, on the first, when Reduce Motion is on.
+struct SportSlideshow: View {
+    let sports: [String]
+    var interval: Double = 5
+
+    @State private var index = 0
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        ZStack {
+            if !sports.isEmpty {
+                SportBackdrop(sport: sports[index % sports.count])
+                    .id(index)
+                    .transition(.opacity)
+            }
+        }
+        .task(id: reduceMotion) {
+            guard !reduceMotion, sports.count > 1 else { return }
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .seconds(interval))
+                guard !Task.isCancelled else { return }
+                // The next photo decoded before it fades in, not during.
+                _ = SportArtImage.image(sports[(index + 1) % sports.count])
+                withAnimation(.easeInOut(duration: 0.9)) { index = (index + 1) % sports.count }
+            }
+        }
+        .accessibilityHidden(true)
+    }
+}
+
 /// A short banner at the top of a sport's page (a place's hours): the photo,
 /// a title and a line under it, on the ink scrim. As the draft's
 /// `.club-banner`.

@@ -35,7 +35,7 @@ struct VenueListView: View {
             ScrollViewReader { proxy in
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: Theme.Spacing.l) {
-                        HomeActionGrid(modules: session.modules, heroSport: model.filters.sport ?? "PADEL", run: run)
+                        HomeActionGrid(modules: session.modules, heroSport: model.filters.sport, run: run)
                         if let nextBooking {
                             NavigationLink {
                                 BookingDetailView(bookingId: nextBooking.id, session: session)
@@ -317,6 +317,8 @@ struct VenueListView: View {
                 }
                 .onAppear {
                     if row.id == model.rows.last?.id { Task { await model.loadMore(session) } }
+                    // Read ahead, so the club opens at once (owner 2026-11-13).
+                    Task { await VenueDetailCache.shared.prefetch(session, venueId: row.id) }
                 }
             }
         }
