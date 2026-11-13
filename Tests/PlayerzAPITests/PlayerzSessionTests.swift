@@ -159,6 +159,39 @@ struct PlayerzSessionTests {
         }
     }
 
+    @Test("a Google ID token is sent as the google grant and stores the session")
+    func googleGrant() async throws {
+        let persistence = MemoryPersistence()
+        let session = PlayerzSession(
+            baseURL: BASE,
+            persistence: persistence,
+            transport: StubTransport(["authSignIn": .init(status: 200, body: tokensJSON(refresh: "r1"))])
+        )
+
+        try await session.signIn(googleIDToken: "h.p.s", language: .en)
+
+        #expect(await session.isSignedIn)
+        #expect(persistence.peek?.refreshToken == "r1")
+    }
+
+    @Test("a 403 keeps the server's code: Google off, or no verified address")
+    func forbiddenKeepsTheCode() async throws {
+        let session = PlayerzSession(
+            baseURL: BASE,
+            persistence: MemoryPersistence(),
+            transport: StubTransport([
+                "authSignIn": .init(
+                    status: 403, body: #"{"error":{"code":"SIGN_IN_METHOD_DISABLED","message":"no"}}"#
+                )
+            ])
+        )
+
+        await #expect(throws: SessionError.refused("SIGN_IN_METHOD_DISABLED")) {
+            try await session.signIn(googleIDToken: "h.p.s", language: .bg)
+        }
+        #expect(await session.isSignedIn == false)
+    }
+
     @Test("429 is distinguishable from a wrong password")
     func throttledMapsCleanly() async throws {
         // These must differ: "wrong password" sends someone to reset a password

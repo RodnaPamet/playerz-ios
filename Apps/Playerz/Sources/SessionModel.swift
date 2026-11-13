@@ -1,5 +1,7 @@
+import AuthenticationServices
 import Foundation
 import Observation
+import SwiftUI
 import PlayerzAPI
 
 /// The app's view of the session.
@@ -25,7 +27,28 @@ final class SessionModel {
     ///
     /// Reading an environment variable is inert in a shipped build — nothing
     /// sets it — so this needs no #if and cannot change release behaviour.
-    var serverURL: String = ProcessInfo.processInfo.environment["PLAYERZ_SERVER_URL"] ?? ""
+    ///
+    /// A Release build (TestFlight) has the server built in instead
+    /// (`bundledServer`) and shows no field for it.
+    var serverURL: String = ProcessInfo.processInfo.environment["PLAYERZ_SERVER_URL"] ?? bundledServer ?? ""
+
+    /// The server this build was made for: Info.plist `PlayerzServerURL`,
+    /// from the build setting of the same name (project.yml: playerz.bg in
+    /// Release, empty in Debug). Nil when there is none.
+    nonisolated static let bundledServer: String? = infoValue("PlayerzServerURL")
+
+    /// The app's iOS OAuth client (Info.plist `PlayerzGoogleClientID`), nil
+    /// until the build has one: no client, no Google button.
+    nonisolated static let googleClientID: String? = infoValue("PlayerzGoogleClientID")
+
+    private nonisolated static func infoValue(_ key: String) -> String? {
+        let value = (Bundle.main.object(forInfoDictionaryKey: key) as? String)?
+            .trimmingCharacters(in: .whitespaces)
+        return value?.isEmpty == false ? value : nil
+    }
+
+    /// Whether «Вход с Google» is offered: this build has a client for it.
+    var offersGoogle: Bool { Self.googleClientID.flatMap { GoogleOAuth(clientID: $0) } != nil }
     private(set) var state: State = .unknown
     private(set) var signInError: String?
     private(set) var busy = false
@@ -161,12 +184,7 @@ final class SessionModel {
         let s = PlayerzSession(baseURL: url)
         do {
             try await s.signIn(email: email, password: password)
-            session = s
-            state = .signedIn
-            // This phone's token, if notifications are allowed, now belongs to
-            // this account (#12).
-            await PushRegistrar.shared.refreshIfAllowed(self)
-            await refreshModules()
+            await adopt(s)
         } catch SessionError.invalidCredentials {
             // One message for both "no such account" and "wrong password".
             // `authorize()` equalises bcrypt timing precisely so the response
@@ -177,6 +195,71 @@ final class SessionModel {
         } catch {
             signInError = String(localized: "signIn.failed")
         }
+    }
+
+    /// Sign in with Google (`GoogleOAuth`): Google's page in a sheet that
+    /// keeps no cookies, the code traded for an ID token, the token for a
+    /// session. Closing the sheet is not an error.
+    func signInWithGoogle(using web: WebAuthenticationSession) async {
+        guard let flow = Self.googleClientID.flatMap({ GoogleOAuth(clientID: $0) }),
+              let url = URL(string: serverURL), url.scheme != nil
+        else {
+            signInError = String(localized: "signIn.failed")
+            return
+        }
+
+        busy = true
+        signInError = nil
+        defer { busy = false }
+
+        do {
+            // Ephemeral, as Agrent's sign-in sheet is: the person picks the
+            // account every time rather than inheriting Safari's.
+            let callback = try await web.authenticate(
+                using: flow.authorizationURL,
+                callbackURLScheme: flow.callbackScheme,
+                preferredBrowserSession: .ephemeral
+            )
+            let code = try flow.code(from: callback)
+            // Its own session, so Google's answer is never cached; a session
+            // that is not `.shared` lives until it is invalidated.
+            let google = URLSession(configuration: .ephemeral)
+            defer { google.finishTasksAndInvalidate() }
+            let (data, response) = try await google.data(for: flow.tokenRequest(code: code))
+            let idToken = try GoogleOAuth.idToken(
+                from: data, status: (response as? HTTPURLResponse)?.statusCode ?? 0
+            )
+            let s = PlayerzSession(baseURL: url)
+            try await s.signIn(
+                googleIDToken: idToken,
+                language: AppLanguage.code(for: Bundle.main.preferredLocalizations.first)
+            )
+            await adopt(s)
+        } catch let error as ASWebAuthenticationSessionError where error.code == .canceledLogin {
+            return
+        } catch GoogleOAuthError.declined {
+            return
+        } catch SessionError.throttled {
+            signInError = String(localized: "signIn.throttled")
+        } catch let SessionError.refused(code) {
+            signInError = switch code {
+            case "SIGN_IN_METHOD_DISABLED": String(localized: "signIn.googleOff")
+            case "EMAIL_REQUIRED", "EMAIL_UNVERIFIED": String(localized: "signIn.googleNoEmail")
+            default: String(localized: "signIn.failed")
+            }
+        } catch {
+            signInError = String(localized: "signIn.failed")
+        }
+    }
+
+    /// A session from any sign-in becomes the app's.
+    private func adopt(_ s: PlayerzSession) async {
+        session = s
+        state = .signedIn
+        // This phone's token, if notifications are allowed, now belongs to
+        // this account (#12).
+        await PushRegistrar.shared.refreshIfAllowed(self)
+        await refreshModules()
     }
 
     /// Delete the account (playerz-ios#9). On success the server has already

@@ -1,0 +1,213 @@
+name: TestFlight
+
+# Archives a Release build and uploads it to App Store Connect, where it
+# appears under TestFlight. Modelled on agrent-ios's workflow of the same name
+# (same Apple team, same signing).
+#
+# ── Never on a PR or a push to main ──
+#
+# An upload is outward-facing and cannot be taken back: a build number, once
+# used, is spent for that version. So it runs when someone asks — the Actions
+# tab's "Run workflow" — or when a `v*` tag is pushed.
+#
+# ── What the owner sets up once ──
+#
+#   1. App Store Connect → Apps → + → New App: iOS, bundle ID bg.playerz.app.
+#   2. Three repository secrets (Settings → Secrets and variables → Actions):
+#        ASC_KEY_ID     the API key's Key ID
+#        ASC_ISSUER_ID  the Issuer ID on the same page
+#        ASC_KEY_P8     the whole AuthKey_<id>.p8 file, BEGIN/END lines included
+#      An App Store Connect API key with the App Manager role (Users and
+#      Access → Integrations). Agrent's key works: it is the same team.
+#
+# ── Signing: automatic, through the API key ──
+#
+# With `-allowProvisioningUpdates` the key lets xcodebuild register the App ID,
+# make the profile, and sign the export with the team's cloud-managed Apple
+# Distribution certificate, which never leaves Apple. The team ID is the one
+# project.yml commits: it is in every signed binary, not a secret.
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+
+# One upload at a time, and never cancelled halfway: a cancelled run can leave
+# an upload half-processed in App Store Connect with its build number spent.
+concurrency:
+  group: testflight
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  APPLE_TEAM_ID: 9423GKWL67
+
+jobs:
+  upload:
+    name: Archive and upload
+    runs-on: macos-15
+    environment: testflight
+    timeout-minutes: 60
+    defaults:
+      run:
+        working-directory: Apps/Playerz
+    steps:
+      - uses: actions/checkout@v4
+
+      # Before anything slow: a missing secret otherwise surfaces twenty
+      # minutes in, as an authentication error that names no value.
+      - name: The credentials are configured
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+        run: |
+          missing=""
+          [ -n "$ASC_KEY_ID" ]    || missing="$missing ASC_KEY_ID"
+          [ -n "$ASC_ISSUER_ID" ] || missing="$missing ASC_ISSUER_ID"
+          [ -n "$ASC_KEY_P8" ]    || missing="$missing ASC_KEY_P8"
+          if [ -n "$missing" ]; then
+            echo "::error::Repository secrets not set:$missing — see the top of this workflow."
+            exit 1
+          fi
+          case "$ASC_KEY_P8" in
+            *"BEGIN PRIVATE KEY"*) ;;
+            *) echo "::error::ASC_KEY_P8 must be the whole .p8 file, BEGIN/END lines included."
+               exit 1 ;;
+          esac
+          echo "All three are set."
+
+      # The newest Xcode on the runner: App Store Connect refuses builds made
+      # with an SDK older than its current minimum.
+      - name: Select Xcode
+        run: |
+          NEWEST=$(ls -d /Applications/Xcode_*.app 2>/dev/null | sort -V | tail -1)
+          [ -n "$NEWEST" ] || NEWEST=/Applications/Xcode.app
+          echo "DEVELOPER_DIR=$NEWEST/Contents/Developer" >> "$GITHUB_ENV"
+          echo "Selected: $NEWEST"
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate the project
+        run: |
+          xcodebuild -version
+          xcodegen generate
+
+      # MARKETING_VERSION stays in project.yml. The BUILD number must rise for
+      # every upload of a version: `run_number.run_attempt` does, and a re-run
+      # (12.2) still sorts above its failed first attempt (12.1).
+      - name: Versions
+        id: version
+        run: |
+          MARKETING=$(sed -nE 's/^ *MARKETING_VERSION: *"?([0-9.]+)"? *$/\1/p' project.yml | head -1)
+          [ -n "$MARKETING" ] || { echo "::error::No MARKETING_VERSION in project.yml"; exit 1; }
+          BUILD="${GITHUB_RUN_NUMBER}.${GITHUB_RUN_ATTEMPT}"
+          if [ "$GITHUB_REF_TYPE" = "tag" ] && [ "$GITHUB_REF_NAME" != "v$MARKETING" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match MARKETING_VERSION $MARKETING in project.yml."
+            exit 1
+          fi
+          echo "marketing=$MARKETING" >> "$GITHUB_OUTPUT"
+          echo "build=$BUILD" >> "$GITHUB_OUTPUT"
+          echo "playerz $MARKETING ($BUILD)"
+
+      # Outside the checkout, 0600, and removed by the last step either way.
+      - name: Write the API key
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+        run: |
+          KEY="$RUNNER_TEMP/asc/AuthKey_${ASC_KEY_ID}.p8"
+          mkdir -p "$RUNNER_TEMP/asc"
+          ( umask 077; printf '%s\n' "$ASC_KEY_P8" > "$KEY" )
+          echo "ASC_KEY_PATH=$KEY" >> "$GITHUB_ENV"
+
+      # The OpenAPI client is generated by a SwiftPM build plugin, which an
+      # unattended xcodebuild must be told to trust.
+      - name: Archive
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+        run: |
+          set -o pipefail
+          xcodebuild archive \
+            -project Playerz.xcodeproj -scheme Playerz -configuration Release \
+            -destination "generic/platform=iOS" \
+            -archivePath "$RUNNER_TEMP/Playerz.xcarchive" \
+            -derivedDataPath "$RUNNER_TEMP/release-dd" \
+            -skipPackagePluginValidation -skipMacroValidation \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$ASC_KEY_PATH" \
+            -authenticationKeyID "$ASC_KEY_ID" \
+            -authenticationKeyIssuerID "$ASC_ISSUER_ID" \
+            CURRENT_PROJECT_VERSION="${{ steps.version.outputs.build }}" \
+            | tee "$RUNNER_TEMP/archive.log" | grep -E "error:|\*\* ARCHIVE" \
+            || { echo "::error::the archive failed"; tail -80 "$RUNNER_TEMP/archive.log"; exit 1; }
+
+      # What App Store Connect would refuse, or a build that could not sign
+      # anyone in, checked here where the failure is red and named.
+      - name: The archive passes the upload checks
+        run: |
+          python3 "$GITHUB_WORKSPACE/.github/scripts/check-app-bundle.py" \
+            "$RUNNER_TEMP/Playerz.xcarchive/Products/Applications/Playerz.app" \
+            "${{ steps.version.outputs.marketing }}" "${{ steps.version.outputs.build }}"
+
+      - name: Export and upload to App Store Connect
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+        run: |
+          set -o pipefail
+          xcodebuild -exportArchive \
+            -archivePath "$RUNNER_TEMP/Playerz.xcarchive" \
+            -exportOptionsPlist "$GITHUB_WORKSPACE/.github/testflight/ExportOptions.plist" \
+            -exportPath "$RUNNER_TEMP/export" \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$ASC_KEY_PATH" \
+            -authenticationKeyID "$ASC_KEY_ID" \
+            -authenticationKeyIssuerID "$ASC_ISSUER_ID" \
+            | tee "$RUNNER_TEMP/export.log" | grep -E "error:|Upload|\*\* EXPORT" \
+            || { echo "::error::export/upload failed"; tail -80 "$RUNNER_TEMP/export.log"; exit 1; }
+          {
+            echo "### Uploaded"
+            echo ""
+            echo "playerz **${{ steps.version.outputs.marketing }} (${{ steps.version.outputs.build }})** — "
+            echo "App Store Connect processes it for 5–30 min before it appears under TestFlight."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # The archive made an Apple Development certificate whose key lives only
+      # on this runner; at one per build the team reaches Apple's limit and the
+      # next archive (Agrent's too) cannot sign. Only a certificate whose serial
+      # is in THIS runner's keychain is revoked.
+      - name: Revoke this run's development certificate
+        if: always()
+        continue-on-error: true
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+        run: |
+          if python3 "$GITHUB_WORKSPACE/.github/scripts/revoke-run-certificate.py"; then
+            echo "This run's development certificate was revoked (or none was created)." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "**A development certificate from this run is still on the account** — revoke it by hand." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+      - name: Remove the API key
+        if: always()
+        run: rm -rf "$RUNNER_TEMP/asc"
+
+      # Logs only — not the archive: this repo is public, and a workflow
+      # artifact on it is downloadable by anyone.
+      - name: Keep the logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: testflight-logs
+          path: |
+            ${{ runner.temp }}/archive.log
+            ${{ runner.temp }}/export.log
+          retention-days: 14
+          if-no-files-found: ignore
