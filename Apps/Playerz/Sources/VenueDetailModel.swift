@@ -52,8 +52,10 @@ final class VenueDetailModel {
         var id: String { "\(block.resourceId)@\(block.start.timeIntervalSince1970)" }
     }
 
-    /// The hours picked, kept across days until reserved or cleared.
+    /// The hours picked, kept across days and places until reserved or cleared.
     private(set) var picks: [Pick] = []
+    /// While a summary is up: the push offer waits (its alert would close it).
+    var summaryOpen = false
 
     private(set) var phase: Phase = .loading
     private(set) var venue: Components.Schemas.VenueDetail?
@@ -134,6 +136,15 @@ final class VenueDetailModel {
             return
         }
 
+        // «Днес» before the first read: asked without a date, the server
+        // answers the next 24 hours, and tomorrow morning's hours showed under
+        // «Днес» (owner's TestFlight, 2026-11-13). Sofia until the venue's own
+        // zone is known; corrected below if it differs.
+        if days.isEmpty {
+            days = VenueDay.upcoming(inTimeZone: timezone)
+            selectedDate = days.first?.apiDate
+        }
+
         do {
             let detail = try await client
                 .getVenue(.init(path: .init(id: venueId)))
@@ -159,8 +170,8 @@ final class VenueDetailModel {
             }
             // The venue's own zone decides what "today" is and what the strip
             // offers — not the device's.
-            timezone = availability.timezone
-            if days.isEmpty {
+            if availability.timezone != timezone {
+                timezone = availability.timezone
                 days = VenueDay.upcoming(inTimeZone: availability.timezone)
                 selectedDate = days.first?.apiDate
             }

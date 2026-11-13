@@ -20,6 +20,12 @@ struct VenueDetailView: View {
     @State private var selectedCourt: String?
     /// The summary of the hours picked (owner 2026-11-13).
     @State private var reviewing = false
+    /// A place opened from the picker: its hours on their own screen.
+    @State private var openedPlace: PlaceRoute?
+
+    struct PlaceRoute: Hashable, Identifiable {
+        let id: String
+    }
     /// The coaches teaching here (#19), while the coaches module is on.
     @State private var coaches: [Components.Schemas.PublicCoach] = []
 
@@ -51,10 +57,15 @@ struct VenueDetailView: View {
                 )
             }
         }
-        .sheet(isPresented: $reviewing, onDismiss: {
-            // The offer the summary held back, now that it has closed.
-            if model.lastBookingSucceeded { offerPushIfUndecided() }
-        }) {
+        .navigationDestination(item: $openedPlace) { route in
+            PlaceHoursView(model: model, session: session, venueId: venueId, resourceId: route.id)
+        }
+        .onChange(of: model.summaryOpen) { _, open in
+            // The offer a summary held back (here or on a place's screen),
+            // now that it has closed.
+            if !open, model.lastBookingSucceeded { offerPushIfUndecided() }
+        }
+        .sheet(isPresented: $reviewing) {
             ReservationSheet(model: model, session: session, venueId: venueId, venueName: model.venue?.name ?? "")
                 .outsideShellBar()
         }
@@ -125,9 +136,12 @@ struct VenueDetailView: View {
             await model.load(session, venueId: venueId)
             await loadCoaches()
             // DEBUG only: hours picked and the summary open, for a screenshot.
+            if DebugLaunch.place != nil, model.courts.count > 1, let court = model.courts.first(where: { !$0.bookable.isEmpty }) {
+                openedPlace = PlaceRoute(id: court.resourceId)
+            }
             if let count = DebugLaunch.pick, let court = model.courts.first(where: { !$0.bookable.isEmpty }) {
                 for slot in court.bookable.prefix(count) { model.toggle(court, slot) }
-                reviewing = DebugLaunch.review
+                reviewing = DebugLaunch.review && DebugLaunch.place == nil
             }
         }
         // A new day, or the first read: keep the court chosen while it is there.
@@ -146,7 +160,7 @@ struct VenueDetailView: View {
             // system prompt, so it is spent at the moment the offer is
             // concrete rather than on a cold launch. Not while the summary is
             // open: an alert here would close it over its payment step.
-            guard booked, !reviewing else { return }
+            guard booked, !model.summaryOpen else { return }
             offerPushIfUndecided()
         }
         .alert(String(localized: "push.askTitle"), isPresented: $offerPush) {
@@ -227,7 +241,7 @@ struct VenueDetailView: View {
         let offPlan = model.courts.filter { court in !(model.plan?.courts.contains { $0.id == court.resourceId } ?? false) }
         if !offPlan.isEmpty, model.courts.count > 1 {
             Section {
-                VenueCourtPicker(courts: offPlan, selected: $selectedCourt)
+                VenueCourtPicker(courts: offPlan, selected: $selectedCourt) { openedPlace = PlaceRoute(id: $0) }
                     .listRowInsets(EdgeInsets(top: 12, leading: 12, bottom: 12, trailing: 12))
                     .listRowBackground(Color.clear)
             } header: {
@@ -240,7 +254,14 @@ struct VenueDetailView: View {
             .id("courts")
         }
 
-        ForEach(model.courts.filter { $0.resourceId == selectedCourt }, id: \.resourceId) { court in
+        // Inline only where nothing is picked on a picker: a venue with one
+        // place, or a place chosen on the plan. A picker's place opens its
+        // own screen (PlaceHoursView).
+        let inline = model.courts.filter { court in
+            court.resourceId == selectedCourt
+                && (model.courts.count == 1 || !offPlan.contains { $0.resourceId == court.resourceId })
+        }
+        ForEach(inline, id: \.resourceId) { court in
             Section {
                 if court.bookable.isEmpty {
                     Text(String(localized: "venue.noSlots"))
@@ -409,7 +430,7 @@ private struct CourtHeader: View {
 
 /// One free hour: «18:00 – 19:00», its price, and whether it is picked.
 /// The whole row picks it, or puts it back.
-private struct SlotRow: View {
+struct SlotRow: View {
     let slot: Components.Schemas.AvailabilitySlot
     let currency: String
     let timezone: String

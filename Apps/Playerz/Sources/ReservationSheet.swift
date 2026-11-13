@@ -40,6 +40,8 @@ struct ReservationSheet: View {
         }
         // DEBUG only (`PLAYERZ_RESERVE=1`), on the local server: the payment step.
         .task { if DebugLaunch.reserve { await reserve() } }
+        .onAppear { model.summaryOpen = true }
+        .onDisappear { model.summaryOpen = false }
     }
 
     private var title: String {
