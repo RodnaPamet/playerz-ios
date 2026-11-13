@@ -81,6 +81,8 @@ enum DebugLaunch {
     static var survey: Bool { env["PLAYERZ_SURVEY"] == "1" }
     /// «Прогрес» scrolled to a section (`PLAYERZ_STATS_AT=performance|standing|sets|partners|rivals|activity`).
     static var statsAt: String? { env["PLAYERZ_STATS_AT"] }
+    /// A venue opened at its court picker (`PLAYERZ_VENUE_AT=courts`).
+    static var venueAt: String? { env["PLAYERZ_VENUE_AT"] }
     /// `PLAYERZ_BOOKINGS=past`: Резервации opened on «Минали».
     static var bookingsPast: Bool { env["PLAYERZ_BOOKINGS"] == "past" }
     /// `PLAYERZ_BOOKINGS=cancelled`: Резервации opened on «Отменени» (#58).
@@ -125,6 +127,7 @@ enum DebugLaunch {
     static let statsSport: String? = nil
     static let survey = false
     static let statsAt: String? = nil
+    static let venueAt: String? = nil
     static let emptyStateEnd = false
     static let bookingsPast = false
     static let bookingsCancelled = false

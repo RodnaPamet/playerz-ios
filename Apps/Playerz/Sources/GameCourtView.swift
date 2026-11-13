@@ -42,24 +42,7 @@ struct GameCourtView: View {
     }
 
     private var surface: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: Theme.Radius.tile)
-                .fill(
-                    LinearGradient(
-                        colors: [Theme.Palette.headerGlow, Theme.Palette.controlOn],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
-            CourtLines(court: court)
-                .stroke(Theme.Palette.onHeader.opacity(0.5), lineWidth: 1.5)
-            if court == .net {
-                Capsule()
-                    .fill(Theme.Palette.onHeader.opacity(0.9))
-                    .frame(width: 4)
-                    .padding(.vertical, 4)
-            }
-        }
+        CourtSurface(court: court)
     }
 
     private func side(_ side: [GameSeats.Seat]) -> some View {
@@ -197,7 +180,7 @@ struct GameCourtView: View {
 
 /// The markings of a court seen from above, the net or halfway line upright
 /// in the middle.
-private struct CourtLines: Shape {
+struct CourtLines: Shape {
     let court: GameSport.Court
 
     func path(in rect: CGRect) -> Path {

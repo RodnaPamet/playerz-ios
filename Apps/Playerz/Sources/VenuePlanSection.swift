@@ -3,8 +3,8 @@ import SwiftUI
 
 /// The venue plan above the courts (#25), as on the web: time first, then
 /// which courts are free for it. Tap a free court and book it under the plan;
-/// tap a taken one for its next free times. The list below stays, and does
-/// everything the plan does.
+/// tap a taken one for its next free times. The court tapped is also the one
+/// whose times the list below shows (owner 2026-11-13).
 struct VenuePlanSection: View {
     let drawing: VenuePlanDrawing
     let courts: [VenueDetailModel.Court]
@@ -12,8 +12,9 @@ struct VenuePlanSection: View {
     let busySlot: Date?
     let book: (VenueDetailModel.Court, Components.Schemas.AvailabilitySlot) -> Void
 
+    /// The court chosen: the screen's, shared with the list of times.
+    @Binding var picked: String?
     @State private var chosen: Date?
-    @State private var picked: String?
 
     private static let copyright = URL(string: "https://www.openstreetmap.org/copyright")
 

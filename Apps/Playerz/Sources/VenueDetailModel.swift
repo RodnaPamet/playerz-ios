@@ -16,6 +16,8 @@ final class VenueDetailModel {
     struct Court {
         let resourceId: String
         let name: String
+        /// For the court's drawing in the picker (owner 2026-11-13).
+        let sport: String
         let currency: String
         let isIndoor: Bool
         let bookable: [Components.Schemas.AvailabilitySlot]
@@ -114,6 +116,7 @@ final class VenueDetailModel {
             let indoorById = Dictionary(
                 uniqueKeysWithValues: detail.resources.map { ($0.id, $0.isIndoor) }
             )
+            let sportById = Dictionary(uniqueKeysWithValues: detail.resources.map { ($0.id, $0.sport) })
 
             venue = detail
             // The club's name, for the link to its page (#17). Public, and the
@@ -134,6 +137,7 @@ final class VenueDetailModel {
                 Court(
                     resourceId: slots.resourceId,
                     name: slots.name,
+                    sport: sportById[slots.resourceId] ?? "",
                     currency: slots.currency,
                     // Absent from the detail response means we do not know, and
                     // "unknown" must not render a forecast as if it were an
