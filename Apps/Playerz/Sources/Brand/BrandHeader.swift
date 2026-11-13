@@ -62,6 +62,10 @@ struct BrandHeader<Accessory: View, Actions: View>: View {
         .padding(.bottom, Theme.Spacing.m)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background { BrandHeaderBackdrop().ignoresSafeArea(edges: [.top, .horizontal]) }
+        // Paint run off the band's edge, over the page's top margin.
+        .overlay(alignment: .bottom) {
+            SprayDrips().offset(y: SprayDrips.reach).ignoresSafeArea(edges: .horizontal)
+        }
         // Dark in both modes, so everything on it resolves its dark values.
         .environment(\.colorScheme, .dark)
         // The band is chrome: past this size it would take the screen from

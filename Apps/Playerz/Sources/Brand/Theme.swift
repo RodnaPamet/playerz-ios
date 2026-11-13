@@ -130,7 +130,7 @@ private struct BrandPage: ViewModifier {
             // DEBUG only (`PLAYERZ_SCROLL_END=1`): open at the end, for a screenshot.
             .defaultScrollAnchor(DebugLaunch.scrollEnd ? .bottom : nil)
             .safeAreaPadding(.bottom, barHeight)
-            .background(Theme.Palette.page.ignoresSafeArea())
+            .background(ConcreteBackground().ignoresSafeArea())
     }
 }
 

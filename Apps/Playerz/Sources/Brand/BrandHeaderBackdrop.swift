@@ -1,7 +1,8 @@
 import SwiftUI
 
 /// The header band's texture, drawn in code: ink fading to purple, faint
-/// court-line rings on the trailing side, a diagonal hatch. Decoration only.
+/// court-line rings on the trailing side, a diagonal hatch, and spray over
+/// it (SprayTexture, owner 2026-11-13). Decoration only.
 struct BrandHeaderBackdrop: View {
     var body: some View {
         Canvas { context, size in
@@ -33,6 +34,7 @@ struct BrandHeaderBackdrop: View {
                 context.stroke(circle, with: .color(.white.opacity(0.07)), lineWidth: 1.5)
             }
         }
+        .overlay { SprayTexture() }
         .accessibilityHidden(true)
     }
 }

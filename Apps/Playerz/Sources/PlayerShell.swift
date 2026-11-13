@@ -27,7 +27,7 @@ struct PlayerShell: View {
 
     var body: some View {
         ZStack {
-            Theme.Palette.page.ignoresSafeArea()
+            ConcreteBackground().ignoresSafeArea()
             ForEach(tabs, id: \.self) { item in
                 if item == tab || mounted.contains(item) {
                     screen(item)
