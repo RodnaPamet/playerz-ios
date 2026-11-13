@@ -18715,6 +18715,24 @@
         }
       }
     },
+    "venues.sportCount %lld": {
+      "comment": "One tag for a club's sports when they don't all fit on its card (owner: 3 tags max). Always 2 or more.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld спорта"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld sports"
+          }
+        }
+      }
+    },
     "venues.title": {
       "localizations": {
         "bg": {
