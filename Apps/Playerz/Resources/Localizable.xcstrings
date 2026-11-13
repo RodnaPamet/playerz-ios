@@ -10247,6 +10247,264 @@
         }
       }
     },
+    "newGame.bookedNoGame": {
+      "comment": "New-game flow: booked, but opening the game failed; the booking's game screen opens.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Часът е запазен, но търсенето на играчи не тръгна. Опитайте оттук."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The hour is booked, but looking for players did not start. Try again here."
+          }
+        }
+      }
+    },
+    "newGame.club": {
+      "comment": "New-game flow: the clubs' header.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Клуб"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Club"
+          }
+        }
+      }
+    },
+    "newGame.create": {
+      "comment": "New-game flow: books the court and opens the game.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Създай игра"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Create game"
+          }
+        }
+      }
+    },
+    "newGame.cutoff %lld": {
+      "comment": "New-game flow, above the hours: a game opens only on hours further away than the club's cancellation cutoff.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Игра се пуска най-късно %lld час преди началото."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Игра се пуска най-късно %lld часа преди началото."
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "A game opens at least %lld hour before it starts."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "A game opens at least %lld hours before it starts."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "newGame.failed": {
+      "comment": "New-game flow: the booking failed.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Играта не беше създадена. Опитайте отново."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The game was not created. Try again."
+          }
+        }
+      }
+    },
+    "newGame.mine": {
+      "comment": "Upcoming bookings to look for players on, above the new-game flow.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вашите резервации"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your bookings"
+          }
+        }
+      }
+    },
+    "newGame.mine.footer": {
+      "comment": "Footer under the caller's upcoming bookings in the new-game flow.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Търсете играчи за час, който вече имате."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Look for players for an hour you already have."
+          }
+        }
+      }
+    },
+    "newGame.next": {
+      "comment": "New-game flow: from the hour to the players.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Напред"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next"
+          }
+        }
+      }
+    },
+    "newGame.noClubs": {
+      "comment": "New-game flow: no club has a court for the chosen sport.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Няма клубове с този спорт."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No clubs offer this sport."
+          }
+        }
+      }
+    },
+    "newGame.oneBlock": {
+      "comment": "New-game flow: the picks would make more than one booking.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изберете часове един след друг на едно място."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick hours back to back on one place."
+          }
+        }
+      }
+    },
+    "newGame.players": {
+      "comment": "New-game flow: the players-wanted section header.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Играчи"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Players"
+          }
+        }
+      }
+    },
+    "newGame.sport": {
+      "comment": "New-game flow: the sport chips' header.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Спорт"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sport"
+          }
+        }
+      }
+    },
+    "newGame.title": {
+      "comment": "The one-flow «Създай игра» screens: title.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нова игра"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New game"
+          }
+        }
+      }
+    },
     "notifications.empty": {
       "localizations": {
         "bg": {

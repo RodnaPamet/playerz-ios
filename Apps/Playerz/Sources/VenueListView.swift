@@ -11,6 +11,8 @@ struct VenueListView: View {
     /// «Треньори» on show: from the header's pill, «Създай», or a DEBUG launch.
     @State private var showingCoaches = DebugLaunch.coaches
     @State private var showingTournaments = false
+    /// «Създай игра» in one flow (owner 2026-11-13).
+    @State private var showingNewGame = DebugLaunch.home == "newGame"
     @State private var filtering = DebugLaunch.home == "filters"
     /// Changed to start the stack again from the club list.
     @State private var stackID = 0
@@ -79,6 +81,9 @@ struct VenueListView: View {
             .navigationDestination(isPresented: $showingCoaches) {
                 CoachesView(session: session)
             }
+            .navigationDestination(isPresented: $showingNewGame) {
+                NewGameView(session: session)
+            }
             .navigationDestination(item: $debugCoach) { slug in
                 CoachView(slug: slug, session: session)
             }
@@ -121,6 +126,7 @@ struct VenueListView: View {
             debugCoach = nil
             showingTournaments = false
             showingCoaches = request == .coaches && session.modules.coaches
+            showingNewGame = request == .newGame
             clubsWanted = request == .clubs
             stackID += 1
         }
@@ -137,8 +143,7 @@ struct VenueListView: View {
     private func run(_ action: HomeActionGrid.Action) {
         switch action {
         case .court: clubsWanted = true
-        // A game is opened from a booking («Търся играчи»), as «Създай» has it.
-        case .createGame: session.requestedTab = .bookings
+        case .createGame: showingNewGame = true
         case .findGames: session.requestedTab = .games
         case .lesson: showingCoaches = true
         case .tournaments: showingTournaments = true
