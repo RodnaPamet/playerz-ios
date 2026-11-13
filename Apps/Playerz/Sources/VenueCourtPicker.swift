@@ -51,7 +51,7 @@ struct VenueCourtPicker: View {
                     .font(.subheadline.weight(.bold))
                     .lineLimit(2)
                     .fixedSize(horizontal: false, vertical: true)
-                Text(court.isIndoor ? String(localized: "venue.indoor") : String(localized: "venue.outdoor"))
+                Text(PlaceText.roof(PlaceWord.of(court.sport), indoor: court.isIndoor))
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 Text(free == 0 ? String(localized: "venue.court.none") : String(localized: "venue.court.free \(free)"))

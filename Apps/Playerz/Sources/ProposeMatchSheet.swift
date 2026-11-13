@@ -60,7 +60,7 @@ struct ProposeMatchSheet: View {
                 .padding(.horizontal, -Theme.Spacing.l)
             }
             if let availability, availability.resources.count > 1 {
-                section(String(localized: "tournaments.propose.court")) {
+                section(PlaceText.label(PlaceWord.common(availability.resources.map(\.sport)))) {
                     BrandChipRow {
                         ForEach(availability.resources, id: \.resourceId) { item in
                             BrandChip(item.name, isSelected: court == item.resourceId) { court = item.resourceId }

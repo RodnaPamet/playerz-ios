@@ -33,7 +33,7 @@ struct LessonConfirmSheet: View {
                 LabeledContent(String(localized: "coaches.lesson.sheet.coach"), value: coachName)
                 LabeledContent(String(localized: "coaches.lesson.sheet.venue"), value: venue.name)
                 LabeledContent(
-                    String(localized: "coaches.lesson.sheet.court"),
+                    PlaceText.label(sport: time.sport),
                     value: String(localized: "coaches.lesson.sheet.courtOf \(time.court.name) \(GameText.sport(time.sport))")
                 )
                 LabeledContent(String(localized: "coaches.lesson.sheet.when")) {
@@ -42,7 +42,7 @@ struct LessonConfirmSheet: View {
             }
             facts {
                 LabeledContent(String(localized: "coaches.lesson.sheet.coachFee"), value: CoachText.money(times.coachFeeCents, times.currency))
-                LabeledContent(String(localized: "coaches.lesson.sheet.courtPrice"), value: CoachText.money(time.courtPriceCents, times.currency))
+                LabeledContent(String(localized: "coaches.lesson.sheet.placePrice \(PlaceText.of(PlaceWord.of(time.sport)))"), value: CoachText.money(time.courtPriceCents, times.currency))
                 LabeledContent(String(localized: "coaches.lesson.sheet.total")) {
                     Text(CoachText.money(time.totalCents, times.currency)).bold()
                 }

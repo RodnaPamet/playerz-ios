@@ -433,22 +433,6 @@
         }
       }
     },
-    "bookingInvite.court": {
-      "localizations": {
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Корт"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Court"
-          }
-        }
-      }
-    },
     "bookingInvite.error.FAILED": {
       "localizations": {
         "bg": {
@@ -625,18 +609,18 @@
         }
       }
     },
-    "bookingInvite.lesson.payAtClub": {
+    "bookingInvite.lesson.payAtClubOf %@": {
       "localizations": {
         "bg": {
           "stringUnit": {
             "state": "translated",
-            "value": "Плаща се на място в клуба: кортът и треньорът."
+            "value": "Плаща се на място в клуба: %@ и треньорът."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Paid at the club: the court and the coach."
+            "value": "Paid at the club: %@ and the coach."
           }
         }
       }
@@ -653,38 +637,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Payment is at the club."
-          }
-        }
-      }
-    },
-    "bookingInvite.pitch.court": {
-      "localizations": {
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Игрище"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pitch"
-          }
-        }
-      }
-    },
-    "bookingInvite.seat.court": {
-      "localizations": {
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Място"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Seat"
           }
         }
       }
@@ -741,22 +693,6 @@
         }
       }
     },
-    "bookingInvite.table.court": {
-      "localizations": {
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Маса"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Table"
-          }
-        }
-      }
-    },
     "bookingInvite.title %@": {
       "localizations": {
         "bg": {
@@ -801,22 +737,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Go to my bookings"
-          }
-        }
-      }
-    },
-    "bookingInvite.track.court": {
-      "localizations": {
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Писта"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Track"
           }
         }
       }
@@ -1258,13 +1178,13 @@
         "bg": {
           "stringUnit": {
             "state": "translated",
-            "value": "Клубът се управлява от playerz.bg в браузъра: календар, кортове, играчи и съобщения. Приложението е за играчи."
+            "value": "Клубът се управлява от playerz.bg в браузъра: календар, кортове, игрища и маси, играчи и съобщения. Приложението е за играчи."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "A club is run from playerz.bg in a browser: its calendar, courts, players and messages. The app is for players."
+            "value": "A club is run from playerz.bg in a browser: its calendar, courts, pitches and tables, players and messages. The app is for players."
           }
         }
       }
@@ -1610,13 +1530,13 @@
         "bg": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ от %2$@, %3$@. Кортът ще се освободи, а играчът ще получи известие и имейл."
+            "value": "%1$@ от %2$@, %3$@. Часът ще се освободи, а играчът ще получи известие и имейл."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ at %2$@, %3$@. The court will be released, and the player will get a notification and an email."
+            "value": "%1$@ at %2$@, %3$@. The time will be released, and the player will get a notification and an email."
           }
         }
       }
@@ -3506,13 +3426,13 @@
         "bg": {
           "stringUnit": {
             "state": "translated",
-            "value": "В този обект няма корт или игрище в употреба за спортовете, които преподавате, затова тук не могат да се записват уроци."
+            "value": "В този обект няма корт, игрище или маса в употреба за спортовете, които преподавате, затова тук не могат да се записват уроци."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "This venue has no court in use for the sports you teach, so lessons cannot be booked here."
+            "value": "This venue has no court, pitch or table in use for the sports you teach, so lessons cannot be booked here."
           }
         }
       }
@@ -3810,13 +3730,13 @@
         "bg": {
           "stringUnit": {
             "state": "translated",
-            "value": "Какво вземате и кога работите в този обект. Към цената ви се добавя цената на корта."
+            "value": "Какво вземате и кога работите в този обект. Към цената ви се добавя цената на часа в обекта."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "What you charge and when you work at this venue. The court’s price is added to yours."
+            "value": "What you charge and when you work at this venue. The venue’s price for the hour is added to yours."
           }
         }
       }
@@ -3938,13 +3858,13 @@
         "bg": {
           "stringUnit": {
             "state": "translated",
-            "value": "Колкото може да се запази корт в този обект."
+            "value": "Колкото може да се запази час в този обект."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "As long as a court can be booked at this venue."
+            "value": "As long as a booking can last at this venue."
           }
         }
       }
@@ -4466,13 +4386,13 @@
         "bg": {
           "stringUnit": {
             "state": "translated",
-            "value": "Цената е за един играч и включва %@ за треньора и цената на корта. Плаща се на място в клуба."
+            "value": "Цената е за един играч и включва %@ за треньора и цената на часа в клуба. Плаща се на място в клуба."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The price is for one player and includes %@ for the coach and the court's price. Paid at the club."
+            "value": "The price is for one player and includes %@ for the coach and the club’s price for the hour. Paid at the club."
           }
         }
       }
@@ -4509,22 +4429,6 @@
         }
       }
     },
-    "coaches.lesson.sheet.court": {
-      "localizations": {
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Корт"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Court"
-          }
-        }
-      }
-    },
     "coaches.lesson.sheet.courtOf %@ %@": {
       "localizations": {
         "bg": {
@@ -4537,22 +4441,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$@ · %2$@"
-          }
-        }
-      }
-    },
-    "coaches.lesson.sheet.courtPrice": {
-      "localizations": {
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "За корта"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "For the court"
           }
         }
       }
@@ -4594,13 +4482,13 @@
         "bg": {
           "stringUnit": {
             "state": "translated",
-            "value": "Кортовете за този час току-що бяха заети. Свободните часове са обновени. Изберете друг."
+            "value": "Местата за този час току-що бяха заети. Свободните часове са обновени. Изберете друг."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The courts for that time have just been taken. The free times have been refreshed. Choose another."
+            "value": "Every place for that time has just been taken. The free times have been refreshed. Choose another."
           }
         }
       }
@@ -4658,13 +4546,13 @@
         "bg": {
           "stringUnit": {
             "state": "translated",
-            "value": "Кортът, за който беше тази цена, вече е зает. За този час урокът струва %@. Свободните часове са обновени. Изберете отново."
+            "value": "Мястото, за което беше тази цена, вече е заето. За този час урокът струва %@. Свободните часове са обновени. Изберете отново."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The court that price was for has been taken. The lesson at that time now costs %@. The free times have been refreshed. Choose again."
+            "value": "The place that price was for has been taken. The lesson at that time now costs %@. The free times have been refreshed. Choose again."
           }
         }
       }
@@ -4674,13 +4562,13 @@
         "bg": {
           "stringUnit": {
             "state": "translated",
-            "value": "Кортът, за който беше тази цена, вече е зает. Свободните часове са обновени. Изберете отново."
+            "value": "Мястото, за което беше тази цена, вече е заето. Свободните часове са обновени. Изберете отново."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The court that price was for has been taken. The free times have been refreshed. Choose again."
+            "value": "The place that price was for has been taken. The free times have been refreshed. Choose again."
           }
         }
       }
@@ -4746,13 +4634,29 @@
         "bg": {
           "stringUnit": {
             "state": "translated",
-            "value": "Плаща се на място в клуба. Ако кортът междувременно бъде зает, урокът ще е на друг свободен корт, без да струва повече."
+            "value": "Плаща се на място в клуба. Ако часът междувременно бъде зает, урокът ще е на друго свободно място, без да струва повече."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Paid at the club. If the court is taken in the meantime, the lesson will be on another free court, and will not cost more."
+            "value": "Paid at the club. If that time is taken in the meantime, the lesson moves to another free place at no extra cost."
+          }
+        }
+      }
+    },
+    "coaches.lesson.sheet.placePrice %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "За %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "For %@"
           }
         }
       }
@@ -4938,13 +4842,13 @@
         "bg": {
           "stringUnit": {
             "state": "translated",
-            "value": "Към цената на треньора се добавя цената на корта. Плаща се на място в клуба."
+            "value": "Към цената на треньора се добавя цената на часа в клуба. Плаща се на място в клуба."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The court’s price is added to the coach’s. Paid at the club."
+            "value": "The club’s price for the hour is added to the coach’s. Paid at the club."
           }
         }
       }
@@ -5542,13 +5446,13 @@
         "bg": {
           "stringUnit": {
             "state": "translated",
-            "value": "Резервирай корт"
+            "value": "Резервирай място"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Book a court"
+            "value": "Book a place"
           }
         }
       }
@@ -5897,38 +5801,6 @@
         }
       }
     },
-    "games.courtPrice %@": {
-      "localizations": {
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Корт: %@"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Court: %@"
-          }
-        }
-      }
-    },
-    "games.detail.court": {
-      "localizations": {
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Корт"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Court"
-          }
-        }
-      }
-    },
     "games.detail.cutoff": {
       "localizations": {
         "bg": {
@@ -6081,18 +5953,18 @@
         }
       }
     },
-    "games.detail.price": {
+    "games.detail.priceOf %@": {
       "localizations": {
         "bg": {
           "stringUnit": {
             "state": "translated",
-            "value": "Цена на корта"
+            "value": "Цена на %@"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Court price"
+            "value": "Price of %@"
           }
         }
       }
@@ -6929,6 +6801,22 @@
         }
       }
     },
+    "games.placePrice %@ %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: %2$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: %2$@"
+          }
+        }
+      }
+    },
     "games.players %lld %lld": {
       "localizations": {
         "bg": {
@@ -7502,13 +7390,13 @@
         "bg": {
           "stringUnit": {
             "state": "translated",
-            "value": "Резервирате кортове и играете с приятели."
+            "value": "Резервирате място за игра и играете с приятели."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Book courts and play with friends."
+            "value": "Book a place to play and play with friends."
           }
         }
       }
@@ -8801,22 +8689,6 @@
         }
       }
     },
-    "myBookings.detail.court": {
-      "localizations": {
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Корт"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Court"
-          }
-        }
-      }
-    },
     "myBookings.detail.cutoffPassed %@": {
       "localizations": {
         "bg": {
@@ -8897,18 +8769,18 @@
         }
       }
     },
-    "myBookings.detail.lesson.parts %@ %@": {
+    "myBookings.detail.lesson.partsOf %@ %@ %@": {
       "localizations": {
         "bg": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ за треньора + %2$@ за корта"
+            "value": "%1$@ за треньора + %2$@ за %3$@"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ for the coach + %2$@ for the court"
+            "value": "%1$@ for the coach + %2$@ for %3$@"
           }
         }
       }
@@ -8925,22 +8797,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pay at the club"
-          }
-        }
-      }
-    },
-    "myBookings.detail.pitch.court": {
-      "localizations": {
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Игрище"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pitch"
           }
         }
       }
@@ -8977,22 +8833,6 @@
         }
       }
     },
-    "myBookings.detail.seat.court": {
-      "localizations": {
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Място"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Seat"
-          }
-        }
-      }
-    },
     "myBookings.detail.status": {
       "localizations": {
         "bg": {
@@ -9005,38 +8845,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Status"
-          }
-        }
-      }
-    },
-    "myBookings.detail.table.court": {
-      "localizations": {
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Маса"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Table"
-          }
-        }
-      }
-    },
-    "myBookings.detail.track.court": {
-      "localizations": {
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Писта"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Track"
           }
         }
       }
@@ -11133,6 +10941,662 @@
         }
       }
     },
+    "place.court": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Корт"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Court"
+          }
+        }
+      }
+    },
+    "place.court.lower": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "корт"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "court"
+          }
+        }
+      }
+    },
+    "place.court.of": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "корта"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "the court"
+          }
+        }
+      }
+    },
+    "place.court.plural": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "кортове"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "courts"
+          }
+        }
+      }
+    },
+    "place.court.the": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "кортът"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "the court"
+          }
+        }
+      }
+    },
+    "place.hall": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Зала"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hall"
+          }
+        }
+      }
+    },
+    "place.hall.lower": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "зала"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "hall"
+          }
+        }
+      }
+    },
+    "place.hall.of": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "залата"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "the hall"
+          }
+        }
+      }
+    },
+    "place.hall.plural": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "зали"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "halls"
+          }
+        }
+      }
+    },
+    "place.hall.the": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "залата"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "the hall"
+          }
+        }
+      }
+    },
+    "place.indoor.feminine": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Закрита"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indoor"
+          }
+        }
+      }
+    },
+    "place.indoor.masculine": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Закрит"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indoor"
+          }
+        }
+      }
+    },
+    "place.indoor.neuter": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Закрито"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indoor"
+          }
+        }
+      }
+    },
+    "place.outdoor.feminine": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Открита"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Outdoor"
+          }
+        }
+      }
+    },
+    "place.outdoor.masculine": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Открит"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Outdoor"
+          }
+        }
+      }
+    },
+    "place.outdoor.neuter": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Открито"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Outdoor"
+          }
+        }
+      }
+    },
+    "place.pitch": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Игрище"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pitch"
+          }
+        }
+      }
+    },
+    "place.pitch.lower": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "игрище"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "pitch"
+          }
+        }
+      }
+    },
+    "place.pitch.of": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "игрището"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "the pitch"
+          }
+        }
+      }
+    },
+    "place.pitch.plural": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "игрища"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "pitches"
+          }
+        }
+      }
+    },
+    "place.pitch.the": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "игрището"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "the pitch"
+          }
+        }
+      }
+    },
+    "place.route": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Трасе"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Route"
+          }
+        }
+      }
+    },
+    "place.route.lower": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "трасе"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "route"
+          }
+        }
+      }
+    },
+    "place.route.of": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "трасето"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "the route"
+          }
+        }
+      }
+    },
+    "place.route.plural": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "трасета"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "routes"
+          }
+        }
+      }
+    },
+    "place.route.the": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "трасето"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "the route"
+          }
+        }
+      }
+    },
+    "place.spot": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Място"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Place"
+          }
+        }
+      }
+    },
+    "place.spot.lower": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "място"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "place"
+          }
+        }
+      }
+    },
+    "place.spot.of": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "мястото"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "the place"
+          }
+        }
+      }
+    },
+    "place.spot.plural": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "места"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "places"
+          }
+        }
+      }
+    },
+    "place.spot.the": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "мястото"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "the place"
+          }
+        }
+      }
+    },
+    "place.table": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Маса"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Table"
+          }
+        }
+      }
+    },
+    "place.table.lower": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "маса"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "table"
+          }
+        }
+      }
+    },
+    "place.table.of": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "масата"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "the table"
+          }
+        }
+      }
+    },
+    "place.table.plural": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "маси"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "tables"
+          }
+        }
+      }
+    },
+    "place.table.the": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "масата"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "the table"
+          }
+        }
+      }
+    },
+    "place.track": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Писта"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Track"
+          }
+        }
+      }
+    },
+    "place.track.lower": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "писта"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "track"
+          }
+        }
+      }
+    },
+    "place.track.of": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "пистата"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "the track"
+          }
+        }
+      }
+    },
+    "place.track.plural": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "писти"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "tracks"
+          }
+        }
+      }
+    },
+    "place.track.the": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "пистата"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "the track"
+          }
+        }
+      }
+    },
     "profile.data.download": {
       "localizations": {
         "bg": {
@@ -12998,13 +13462,13 @@
         "bg": {
           "stringUnit": {
             "state": "translated",
-            "value": "Резервирайте корт за минути."
+            "value": "Резервирайте място за игра за минути."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Book a court in minutes."
+            "value": "Book a place to play in minutes."
           }
         }
       }
@@ -15180,7 +15644,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Not on a court yet"
+            "value": "Not scheduled yet"
           }
         }
       }
@@ -16401,22 +16865,6 @@
         }
       }
     },
-    "tournaments.propose.court": {
-      "localizations": {
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Корт"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Court"
-          }
-        }
-      }
-    },
     "tournaments.propose.day": {
       "localizations": {
         "bg": {
@@ -16454,13 +16902,13 @@
         "bg": {
           "stringUnit": {
             "state": "translated",
-            "value": "Срещу %@. Кортът се запазва на ваше име и се плаща в клуба; потвърждава се, когато другата страна приеме."
+            "value": "Срещу %@. Часът се запазва на ваше име и се плаща в клуба; потвърждава се, когато другата страна приеме."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Against %@. The court is held in your name and paid at the club; it is confirmed when the other side accepts."
+            "value": "Against %@. The time is held in your name and paid at the club; it is confirmed when the other side accepts."
           }
         }
       }
@@ -16470,13 +16918,13 @@
         "bg": {
           "stringUnit": {
             "state": "translated",
-            "value": "Най-рано след два часа. Ако никой не отговори до един ден, кортът се освобождава."
+            "value": "Най-рано след два часа. Ако никой не отговори до един ден, часът се освобождава."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Two hours from now at the earliest. If nobody answers within a day, the court is released."
+            "value": "Two hours from now at the earliest. If nobody answers within a day, the time is released."
           }
         }
       }
@@ -16534,13 +16982,13 @@
         "bg": {
           "stringUnit": {
             "state": "translated",
-            "value": "Предлагат ви %1$@, %2$@. Кортът е запазен до %3$@."
+            "value": "Предлагат ви %1$@, %2$@. Часът е задържан до %3$@."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "They propose %1$@, %2$@. The court is held until %3$@."
+            "value": "They propose %1$@, %2$@. The time is held until %3$@."
           }
         }
       }
@@ -17021,38 +17469,6 @@
         }
       }
     },
-    "venue.courts.choose": {
-      "localizations": {
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Избери корт"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Choose a court"
-          }
-        }
-      }
-    },
-    "venue.courts.others": {
-      "localizations": {
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Други кортове"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Other courts"
-          }
-        }
-      }
-    },
     "venue.dayPicker": {
       "localizations": {
         "bg": {
@@ -17085,22 +17501,6 @@
         }
       }
     },
-    "venue.indoor": {
-      "localizations": {
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Закрит"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Indoor"
-          }
-        }
-      }
-    },
     "venue.noSlots": {
       "localizations": {
         "bg": {
@@ -17117,22 +17517,6 @@
         }
       }
     },
-    "venue.outdoor": {
-      "localizations": {
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Открит"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Outdoor"
-          }
-        }
-      }
-    },
     "venue.photos": {
       "localizations": {
         "bg": {
@@ -17145,6 +17529,38 @@
           "stringUnit": {
             "state": "translated",
             "value": "Photos"
+          }
+        }
+      }
+    },
+    "venue.places.choose %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Избери %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose a %@"
+          }
+        }
+      }
+    },
+    "venue.places.others %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Други %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Other %@"
           }
         }
       }
@@ -17234,13 +17650,13 @@
         "bg": {
           "stringUnit": {
             "state": "translated",
-            "value": "Докоснете свободен корт."
+            "value": "Докоснете свободно място."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tap a free court."
+            "value": "Tap a free place."
           }
         }
       }
@@ -17570,13 +17986,13 @@
         "bg": {
           "stringUnit": {
             "state": "translated",
-            "value": "Вид корт"
+            "value": "Закрито или открито"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Court type"
+            "value": "Indoor or outdoor"
           }
         }
       }
@@ -17714,13 +18130,13 @@
         "bg": {
           "stringUnit": {
             "state": "translated",
-            "value": "Достъпът до местоположението е отказан. Разрешете го в Настройки, за да видите кортове близо до вас."
+            "value": "Достъпът до местоположението е отказан. Разрешете го в Настройки, за да видите места за игра близо до вас."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Location access is off. Allow it in Settings to see courts near you."
+            "value": "Location access is off. Allow it in Settings to see places to play near you."
           }
         }
       }
@@ -17746,13 +18162,13 @@
         "bg": {
           "stringUnit": {
             "state": "translated",
-            "value": "Няма свободни кортове"
+            "value": "Няма свободни места"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "No bookable courts"
+            "value": "Nothing free to book"
           }
         }
       }

@@ -224,8 +224,8 @@ struct GameDetailView: View {
             VStack(spacing: Theme.Spacing.m) {
                 LabeledContent(String(localized: "games.detail.where"), value: "\(game.venue.name), \(CityText.shown(game.venue.cityNames))")
                 divider
-                LabeledContent(String(localized: "games.detail.court"), value: game.courtName)
-                LabeledContent(String(localized: "games.detail.price"), value: GameText.money(game))
+                LabeledContent(PlaceText.label(sport: game.sport), value: game.courtName)
+                LabeledContent(String(localized: "games.detail.priceOf \(PlaceText.of(PlaceWord.of(game.sport)))"), value: GameText.money(game))
                 divider
                 LabeledContent(String(localized: "games.detail.level"),
                                value: GameText.level(min: game.levelMin, max: game.levelMax))
