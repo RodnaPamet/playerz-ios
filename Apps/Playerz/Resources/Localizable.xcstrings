@@ -18589,6 +18589,24 @@
         }
       }
     },
+    "venues.sportBanner %@": {
+      "comment": "Under a selected sport's banner photo on «Начало»: the clubs below have places of this kind (кортове, игрища, маси …).",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Клубове с %@ по-долу"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clubs with %@ below"
+          }
+        }
+      }
+    },
     "venues.title": {
       "localizations": {
         "bg": {

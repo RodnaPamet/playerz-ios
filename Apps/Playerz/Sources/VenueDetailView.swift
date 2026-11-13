@@ -461,7 +461,7 @@ struct SlotRow: View {
             .contentShape(.rect)
         }
         .buttonStyle(.plain)
-        .listRowBackground(picked ? Theme.Palette.accentFill.opacity(0.14) : Theme.Palette.card)
+        .listRowBackground(picked ? Theme.Palette.selectedFill : Theme.Palette.card)
         .accessibilityLabel(String(localized: "venue.hour.spoken \(hours) \(price)"))
         .accessibilityAddTraits(picked ? .isSelected : [])
     }

@@ -8,41 +8,56 @@ enum Theme {
     /// Colours, each with a light and a dark value unless it sits on a surface
     /// that is dark in both (the header band, a dark sheet).
     enum Palette {
-        /// The page behind cards and lists.
-        static var page: Color { Color(light: 0xF4F4F7, dark: 0x120A28) }
+        /// The page behind cards and lists: warm paper in light mode, ink in
+        /// dark (the design draft, owner 2026-11-13: "a bit of elegance").
+        static var page: Color { Color(light: 0xF6F4F0, dark: 0x101016) }
         /// A card, a list row, the floating bar.
-        static var card: Color { Color(light: 0xFFFFFF, dark: 0x1F1244) }
+        static var card: Color { Color(light: 0xFFFFFF, dark: 0x1A1A24) }
 
-        /// The header band, dark in both modes; `headerGlow` is the purple it fades to.
-        static var headerInk: Color { Color(hex: 0x0E0624) }
-        static var headerGlow: Color { Color(hex: 0x3A1C99) }
+        /// The draft's ink, the same in both modes: the scrim over a sport's photo.
+        static var ink: Color { Color(hex: 0x101016) }
+        /// Secondary text on ink or on a photo's scrim (8.6:1 on ink).
+        static var muted: Color { Color(hex: 0xB1AEBD) }
+        /// The edge of a photo card, dark in both modes.
+        static var photoEdge: Color { Color(hex: 0x453A58) }
+
+        /// The header band, dark in both modes; `headerGlow` is the muted
+        /// violet it fades to.
+        static var headerInk: Color { Color(hex: 0x101016) }
+        static var headerGlow: Color { Color(hex: 0x2B2245) }
         static var onHeader: Color { .white }
 
-        /// THE accent: the web's purple in light mode; in dark mode yellow on
-        /// purple (owner 2026-11-13: "purple, yellow and white for the dark
+        /// THE action colour: the web's purple in light mode; yellow in dark
+        /// mode (owner 2026-11-13: "purple, yellow and white for the dark
         /// theme"), and on every surface that is dark in both modes (the
         /// header band, dark sheets). White on the purple is 5.9:1; the deep
-        /// purple ink on the yellow is 13:1.
+        /// purple ink on the yellow is 13:1. The draft's lavender carries
+        /// everything chosen (`accentText`, `selectedFill`).
         static var accentFill: Color { Color(light: 0x6D3FE8, dark: 0xFFD23F) }
         static var onAccent: Color { Color(light: 0xFFFFFF, dark: 0x1A0B3D) }
-        /// Accent-coloured text and icons on `page` or `card`; also the app's tint.
-        static var accentText: Color { Color(light: 0x6D3FE8, dark: 0xFFD86A) }
+        /// Accent-coloured text and icons on `page` or `card`, and what is
+        /// chosen; also the app's tint. The draft's lavender in dark mode
+        /// (9.4:1 on ink, 8.4:1 on the card).
+        static var accentText: Color { Color(light: 0x6D3FE8, dark: 0xBCAAFF) }
         /// A switch that is ON: its knob is white in both modes, so the dark
         /// value stays deep (white on it is 4.9:1), unlike `accentText`.
         static var controlOn: Color { Color(light: 0x6D3FE8, dark: 0x7A52F0) }
 
-        static var chipIdle: Color { Color(light: 0xE8E8EE, dark: 0x2D1C5C) }
-        static var chipSelected: Color { accentFill }
+        static var chipIdle: Color { Color(light: 0xEFECF3, dark: 0x191923) }
+        /// A chosen chip, day or tab: a quiet violet under `accentText`
+        /// (the draft's selected chip), not a fill that shouts.
+        static var selectedFill: Color { Color(light: 0xEEE8FF, dark: 0x272137) }
+        static var selectedEdge: Color { Color(light: 0xB9A5F5, dark: 0x635589) }
 
         /// The strongest contrast with the page: the bar's round centre button.
         static var inverse: Color { Color(light: 0x0B0B12, dark: 0xF4F4F7) }
         static var onInverse: Color { Color(light: 0xFFFFFF, dark: 0x120A28) }
 
         /// A dark bottom sheet and a row in it, dark in both modes.
-        static var sheetSurface: Color { Color(hex: 0x170C36) }
-        static var sheetRow: Color { Color(hex: 0x261752) }
+        static var sheetSurface: Color { Color(hex: 0x16161F) }
+        static var sheetRow: Color { Color(hex: 0x1F1E2A) }
 
-        static var hairline: Color { Color(light: 0xE2E2E8, dark: 0x3A2A72) }
+        static var hairline: Color { Color(light: 0xE4E0E8, dark: 0x2C2B38) }
         /// A count or an unread dot; white on it is 4.8:1.
         static var badge: Color { Color(hex: 0xD92D3A) }
         static var onBadge: Color { .white }
@@ -50,16 +65,18 @@ enum Theme {
         /// of a failure, on `page` or `card`: 6.1:1 light, 7.4:1 dark.
         static var danger: Color { Color(light: 0xC4222E, dark: 0xFF7A85) }
         /// Text of an outcome that went through («Запазено»), on `page` or
-        /// `card`: 5.6:1 light, 9.6:1 dark.
-        static var success: Color { Color(light: 0x1E7A3C, dark: 0x5BD58A) }
+        /// `card`: 5.6:1 light; the draft's soft green in dark, 11:1.
+        static var success: Color { Color(light: 0x1E7A3C, dark: 0xB5E7BD) }
     }
 
     enum Radius {
-        static let card: CGFloat = 24
+        static let card: CGFloat = 20
         static let sheet: CGFloat = 28
-        static let row: CGFloat = 20
+        static let row: CGFloat = 14
         /// An icon square, a logo square.
-        static let tile: CGFloat = 14
+        static let tile: CGFloat = 12
+        /// A chip, a day in the strip, an hour.
+        static let chip: CGFloat = 11
     }
 
     enum Spacing {
@@ -78,7 +95,7 @@ enum Theme {
         let radius: CGFloat
         let y: CGFloat
 
-        static var card: Shadow { Shadow(color: .black.opacity(0.08), radius: 12, y: 4) }
+        static var card: Shadow { Shadow(color: .black.opacity(0.05), radius: 10, y: 3) }
         static var floating: Shadow { Shadow(color: .black.opacity(0.18), radius: 18, y: 8) }
     }
 
@@ -180,7 +197,7 @@ extension View {
         ("headerInk", Theme.Palette.headerInk), ("headerGlow", Theme.Palette.headerGlow),
         ("accentFill", Theme.Palette.accentFill), ("accentText", Theme.Palette.accentText),
         ("controlOn", Theme.Palette.controlOn),
-        ("chipIdle", Theme.Palette.chipIdle), ("inverse", Theme.Palette.inverse),
+        ("chipIdle", Theme.Palette.chipIdle), ("selectedFill", Theme.Palette.selectedFill), ("inverse", Theme.Palette.inverse),
         ("sheetSurface", Theme.Palette.sheetSurface), ("sheetRow", Theme.Palette.sheetRow),
         ("hairline", Theme.Palette.hairline), ("badge", Theme.Palette.badge),
     ]

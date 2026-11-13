@@ -1,7 +1,8 @@
 import SwiftUI
 
-/// A filter pill: accent fill when selected. Also a tick when the user asks
-/// for differences that are not colour alone.
+/// A filter chip: a hairline box, a quiet violet one with the accent's words
+/// when selected (the design draft). Also a tick when the user asks for
+/// differences that are not colour alone.
 struct BrandChip: View {
     let title: String
     var systemImage: String?
@@ -27,10 +28,14 @@ struct BrandChip: View {
                 }
                 Text(title).font(Theme.Typography.chip).lineLimit(1)
             }
-            .foregroundStyle(isSelected ? Theme.Palette.onAccent : Color.primary)
-            .padding(.horizontal, Theme.Spacing.l)
-            .padding(.vertical, Theme.Spacing.s)
-            .background(isSelected ? Theme.Palette.chipSelected : Theme.Palette.chipIdle, in: .capsule)
+            .foregroundStyle(isSelected ? Theme.Palette.accentText : Color.primary)
+            .padding(.horizontal, Theme.Spacing.m + 2)
+            .padding(.vertical, Theme.Spacing.s + 2)
+            .background(isSelected ? Theme.Palette.selectedFill : Theme.Palette.chipIdle, in: .rect(cornerRadius: Theme.Radius.chip))
+            .overlay(
+                RoundedRectangle(cornerRadius: Theme.Radius.chip)
+                    .strokeBorder(isSelected ? Theme.Palette.selectedEdge : Theme.Palette.hairline, lineWidth: 1)
+            )
             // The pill is shorter than a finger; the target is not.
             .frame(minHeight: Theme.minTarget)
             // The row scrolls to the chosen chip (#83): where it is, by its title.

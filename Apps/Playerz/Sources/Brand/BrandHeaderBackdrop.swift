@@ -1,8 +1,11 @@
 import SwiftUI
 
-/// The header band's texture, drawn in code: ink fading to purple, and
-/// slanted speed lines on the trailing side. Decoration only.
+/// The header band's texture, drawn in code: ink fading to a muted violet,
+/// and faint slanted speed lines on the trailing side. Decoration only.
 struct BrandHeaderBackdrop: View {
+    /// The band is dark in both modes: the accent's dark value, always.
+    private static let lavender = Color(hex: 0xBCAAFF)
+
     var body: some View {
         Canvas { context, size in
             let rect = CGRect(origin: .zero, size: size)
@@ -30,7 +33,7 @@ struct BrandHeaderBackdrop: View {
                 band.addLine(to: CGPoint(x: x, y: size.height))
                 band.closeSubpath()
                 context.fill(band, with: .linearGradient(
-                    Gradient(colors: [Theme.Palette.accentFill.opacity(stripe.alpha * 1.6), .white.opacity(stripe.alpha * 0.4)]),
+                    Gradient(colors: [Self.lavender.opacity(stripe.alpha * 0.9), .white.opacity(stripe.alpha * 0.25)]),
                     startPoint: CGPoint(x: x, y: size.height), endPoint: CGPoint(x: x + slant, y: 0)
                 ))
             }

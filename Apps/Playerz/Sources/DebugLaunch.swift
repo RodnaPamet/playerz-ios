@@ -91,6 +91,8 @@ enum DebugLaunch {
     static var pick: Int? { env["PLAYERZ_PICK"].flatMap(Int.init) }
     static var review: Bool { env["PLAYERZ_REVIEW"] == "1" }
     static var reserve: Bool { env["PLAYERZ_RESERVE"] == "1" }
+    /// «Начало» with the clubs narrowed to a sport (`PLAYERZ_SPORT=TENNIS`).
+    static var sport: String? { env["PLAYERZ_SPORT"] }
     /// A venue's place opened on its own hours (`PLAYERZ_PLACE=first`).
     static var place: String? { env["PLAYERZ_PLACE"] }
     /// `PLAYERZ_BOOKINGS=past`: Резервации opened on «Минали».

@@ -83,11 +83,11 @@ struct BrandTabBar<ID: Hashable>: View {
                     .fixedSize()
                     .padding(.horizontal, 6)
             }
-            .foregroundStyle(selected ? Theme.Palette.onAccent : Color.primary)
+            .foregroundStyle(selected ? Theme.Palette.accentText : Color.primary)
             .frame(maxWidth: .infinity, minHeight: 52)
             .background {
                 if selected {
-                    Capsule().fill(Theme.Palette.accentFill).matchedGeometryEffect(id: "pill", in: pill)
+                    Capsule().fill(Theme.Palette.selectedFill).matchedGeometryEffect(id: "pill", in: pill)
                 }
             }
             .contentShape(.capsule)
