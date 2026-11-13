@@ -4,11 +4,12 @@ name: TestFlight
 # appears under TestFlight. Modelled on agrent-ios's workflow of the same name
 # (same Apple team, same signing).
 #
-# ── Never on a PR or a push to main ──
+# ── After every merge to main, once CI is green (owner 2026-11-13) ──
 #
-# An upload is outward-facing and cannot be taken back: a build number, once
-# used, is spent for that version. So it runs when someone asks — the Actions
-# tab's "Run workflow" — or when a `v*` tag is pushed.
+# `workflow_run` on CI: a push to main whose CI passed uploads THAT commit
+# (head_sha), so what reaches TestFlight is what CI verified. A PR's CI, or
+# a red one, uploads nothing. Also by hand ("Run workflow") and on a `v*`
+# tag. The Owner group has every build, so each merge reaches the phone.
 #
 # ── What the owner sets up once ──
 #
@@ -31,6 +32,10 @@ on:
   workflow_dispatch:
   push:
     tags: ['v*']
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
 
 # One upload at a time, and never cancelled halfway: a cancelled run can leave
 # an upload half-processed in App Store Connect with its build number spent.
@@ -47,6 +52,10 @@ env:
 jobs:
   upload:
     name: Archive and upload
+    # From CI only for a push to main that passed.
+    if: >-
+      github.event_name != 'workflow_run' ||
+      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
     runs-on: macos-15
     environment: testflight
     timeout-minutes: 60
@@ -55,6 +64,9 @@ jobs:
         working-directory: Apps/Playerz
     steps:
       - uses: actions/checkout@v4
+        with:
+          # The commit CI passed, not whatever main is by now.
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
       # Before anything slow: a missing secret otherwise surfaces twenty
       # minutes in, as an authentication error that names no value.
@@ -181,9 +193,12 @@ jobs:
       # on this runner; at one per build the team reaches Apple's limit and the
       # next archive (Agrent's too) cannot sign. Only a certificate whose serial
       # is in THIS runner's keychain is revoked.
+      #
+      # Not continue-on-error (owner 2026-11-13: every build's certificate
+      # must go): one left behind turns the run red even after an upload, so
+      # it is seen and revoked by hand, not found at the limit.
       - name: Revoke this run's development certificate
         if: always()
-        continue-on-error: true
         env:
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
