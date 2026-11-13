@@ -94,6 +94,8 @@ enum DebugLaunch {
     /// «Нова игра» walked on to its first club's hours (`PLAYERZ_NEWGAME=hours`),
     /// or on to the players with `PLAYERZ_PICK` hours picked (`=details`).
     static var newGame: String? { env["PLAYERZ_NEWGAME"] }
+    /// A sport's page with its clubs (`PLAYERZ_SPORT_PAGE=TENNIS`).
+    static var sportPage: String? { env["PLAYERZ_SPORT_PAGE"] }
     /// «Начало» with the clubs narrowed to a sport (`PLAYERZ_SPORT=TENNIS`).
     static var sport: String? { env["PLAYERZ_SPORT"] }
     /// A venue's place opened on its own hours (`PLAYERZ_PLACE=first`).
@@ -149,6 +151,7 @@ enum DebugLaunch {
     static let reserve = false
     static let place: String? = nil
     static let sport: String? = nil
+    static let sportPage: String? = nil
     static let newGame: String? = nil
     static let emptyStateEnd = false
     static let bookingsPast = false

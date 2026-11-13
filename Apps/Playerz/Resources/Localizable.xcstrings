@@ -14495,6 +14495,84 @@
         }
       }
     },
+    "sports.card.subtitle %@": {
+      "comment": "A sport card: what it opens (%@ = кортове, игрища, маси …).",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Клубове и свободни %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clubs and free %@"
+          }
+        }
+      }
+    },
+    "sports.clubCount %lld": {
+      "comment": "A sport's page: how many clubs offer it.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld клуб"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld клуба"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld club"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld clubs"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "sports.title": {
+      "comment": "«Начало»: the sports carousel under the clubs.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Спортове"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sports"
+          }
+        }
+      }
+    },
     "stats.activity.favourite %@ %lld %lld": {
       "localizations": {
         "bg": {

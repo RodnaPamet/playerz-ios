@@ -8,6 +8,7 @@ struct VenueListView: View {
     @State private var model = VenueListModel()
     @State private var debugClub: String? = DebugLaunch.club
     @State private var debugVenue: String? = DebugLaunch.venue
+    @State private var debugSportPage: String? = DebugLaunch.sportPage
     /// «Треньори» on show: from the header's pill, «Създай», or a DEBUG launch.
     @State private var showingCoaches = DebugLaunch.coaches
     @State private var showingTournaments = false
@@ -54,6 +55,7 @@ struct VenueListView: View {
                             )
                         }
                         clubs
+                        sportsSection
                     }
                     .padding(.horizontal, Theme.Spacing.l)
                     .padding(.bottom, Theme.Spacing.l)
@@ -80,6 +82,9 @@ struct VenueListView: View {
             }
             .navigationDestination(item: $debugVenue) { id in
                 VenueDetailView(venueId: id, session: session)
+            }
+            .navigationDestination(item: $debugSportPage) { sport in
+                SportClubsView(sport: sport, session: session)
             }
             .brandPage()
             .navigationDestination(isPresented: $showingCoaches) {
@@ -305,8 +310,40 @@ struct VenueListView: View {
             // another, as before, rather than sideways.
             ForEach(model.rows) { row in clubCard(row) }
         case .loaded:
-            ClubCarousel(rows: model.rows) { row in clubCard(row) }
+            CardCarousel(rows: model.rows) { row in clubCard(row) }
         }
+    }
+
+    /// «Спортове» under the clubs (owner 2026-11-13): the way in from the
+    /// other end — a sport, then its clubs, then the hour.
+    @ViewBuilder private var sportsSection: some View {
+        if !model.sports.isEmpty, !showingMap {
+            Text(String(localized: "sports.title"))
+                .font(Theme.Typography.sectionTitle)
+                .accessibilityAddTraits(.isHeader)
+                .padding(.top, Theme.Spacing.s)
+            let items = model.sports.map(SportItem.init)
+            if typeSize.isAccessibilitySize {
+                ForEach(items) { sportCard($0.id) }
+            } else {
+                CardCarousel(rows: items) { sportCard($0.id) }
+            }
+        }
+    }
+
+    private func sportCard(_ sport: String) -> some View {
+        NavigationLink {
+            SportClubsView(sport: sport, session: session)
+        } label: {
+            BrandActionCard(
+                title: GameText.sport(sport),
+                subtitle: String(localized: "sports.card.subtitle \(PlaceText.plural(PlaceWord.of(sport)))"),
+                systemImage: "sportscourt",
+                style: .sport(sport),
+                minHeight: 170
+            )
+        }
+        .buttonStyle(.brandCard)
     }
 
     /// One club's card: it opens the club; the heart is its own button.
@@ -405,12 +442,12 @@ private struct VenueCard: View {
     }
 }
 
-/// The clubs side by side, one card a swipe (owner 2026-11-13: "make this
-/// club section swipable right and left"), with the next card's edge in view
-/// so the swipe is found, and a dot per club under them.
-private struct ClubCarousel<Card: View>: View {
-    let rows: [VenueListModel.Row]
-    @ViewBuilder let card: (VenueListModel.Row) -> Card
+/// Cards side by side, one a swipe (owner 2026-11-13: "make this club
+/// section swipable right and left"), with the next card's edge in view so
+/// the swipe is found, and a dot per card under them: the clubs, the sports.
+struct CardCarousel<Item: Identifiable, Card: View>: View where Item.ID == String {
+    let rows: [Item]
+    @ViewBuilder let card: (Item) -> Card
 
     @State private var current: String?
 
@@ -448,5 +485,10 @@ private struct ClubCarousel<Card: View>: View {
             }
         }
     }
+}
+
+/// A sport in the «Спортове» carousel.
+struct SportItem: Identifiable {
+    let id: String
 }
 
