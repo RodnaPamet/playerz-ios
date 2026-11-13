@@ -35,7 +35,7 @@ struct VenueGallery: View {
             .scrollIndicators(.hidden)
         }
         .fullScreenCover(item: Binding(get: { opened.map(Opened.init) }, set: { opened = $0?.index })) { start in
-            Viewer(photos: photos, serverURL: serverURL, index: start.index)
+            Viewer(photos: photos, serverURL: serverURL, index: start.index).outsideShellBar()
         }
     }
 

@@ -12,9 +12,9 @@ struct CityChoice: Hashable, Identifiable {
 }
 
 enum CityText {
-    /// The name in the language iOS chose for the app; Bulgarian otherwise.
+    /// The name in the app's language (AppLanguageChoice).
     static func shown(_ names: Components.Schemas.CityNames) -> String {
-        AppLanguage.code(for: Bundle.main.preferredLocalizations.first) == .en ? names.en : names.bg
+        AppLanguageChoice.current == .en ? names.en : names.bg
     }
 }
 

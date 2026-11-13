@@ -119,6 +119,21 @@ extension UIColor {
     }
 }
 
+private struct BrandPage: ViewModifier {
+    @Environment(\.shellBarHeight) private var barHeight
+
+    func body(content: Content) -> some View {
+        content
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .scrollContentBackground(.hidden)
+            .contentMargins(.top, Theme.Spacing.m, for: .scrollContent)
+            // DEBUG only (`PLAYERZ_SCROLL_END=1`): open at the end, for a screenshot.
+            .defaultScrollAnchor(DebugLaunch.scrollEnd ? .bottom : nil)
+            .safeAreaPadding(.bottom, barHeight)
+            .background(Theme.Palette.page.ignoresSafeArea())
+    }
+}
+
 extension View {
     func themeShadow(_ shadow: Theme.Shadow) -> some View {
         self.shadow(color: shadow.color, radius: shadow.radius, y: shadow.y)
@@ -128,11 +143,11 @@ extension View {
     /// background and its tall first gap, so the first card starts one step
     /// under the band or the chips on every screen; a spinner or an empty
     /// state is stretched to fill.
+    ///
+    /// Its end stays clear of the floating bar (`shellBarHeight`): a list
+    /// scrolls under the bar and still stops with its last row above it.
     func brandPage() -> some View {
-        frame(maxWidth: .infinity, maxHeight: .infinity)
-            .scrollContentBackground(.hidden)
-            .contentMargins(.top, Theme.Spacing.m, for: .scrollContent)
-            .background(Theme.Palette.page.ignoresSafeArea())
+        modifier(BrandPage())
     }
 
     /// A List's or Form's rows on the card token, with the token's hairline

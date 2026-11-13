@@ -83,7 +83,7 @@ struct BookingPlayersView: View {
             if DebugLaunch.open == "invite", standing?.viewerRole == .BOOKER { inviting = true }
         }
         .sheet(item: $conversation) { opened in
-            ConversationSheet(opened: opened, session: session)
+            ConversationSheet(opened: opened, session: session).outsideShellBar()
         }
         .brandSheet(isPresented: $inviting, detents: [.medium, .large], onDismiss: reload) {
             InvitePlayersView(

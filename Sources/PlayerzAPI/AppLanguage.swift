@@ -1,8 +1,9 @@
 /// The app's language as the account stores it (playerz-ios#13).
 ///
-/// The app follows the iPhone (Settings → playerz → Language), not a switch of
-/// its own. The account's `locale` decides the language of its emails and
-/// pushes, so the app writes the language it is showing.
+/// Bulgarian unless chosen otherwise, in the app's «Профил» or in iOS
+/// Settings → Playerz.bg → Language (owner 2026-11-13; the app's
+/// AppLanguageChoice). The account's `locale` decides the language of its
+/// emails and pushes, so the app writes the language it is showing.
 public enum AppLanguage {
     public typealias Code = Components.Schemas.UpdateMeRequest.localePayload
 

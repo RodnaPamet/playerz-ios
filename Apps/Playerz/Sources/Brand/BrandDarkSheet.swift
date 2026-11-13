@@ -138,6 +138,7 @@ private struct BrandSheetPresentation<Content: View>: View {
     var body: some View {
         content
             .environment(\.brandSheetHeight, $height)
+            .outsideShellBar()
             .presentationDetents(resolved)
             .presentationDragIndicator(.visible)
             .presentationBackground(Theme.Palette.sheetSurface)

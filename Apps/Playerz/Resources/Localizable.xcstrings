@@ -11941,6 +11941,22 @@
         }
       }
     },
+    "profile.language": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Език"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Language"
+          }
+        }
+      }
+    },
     "profile.push": {
       "localizations": {
         "bg": {

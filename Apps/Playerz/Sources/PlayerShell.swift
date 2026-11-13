@@ -22,6 +22,7 @@ struct PlayerShell: View {
     @State private var creating = DebugLaunch.create
     @State private var chrome = ShellChrome()
     @State private var keyboardUp = false
+    @State private var barHeight: CGFloat = 0
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
@@ -45,10 +46,13 @@ struct PlayerShell: View {
             }
         }
         .animation(reduceMotion ? nil : .snappy(duration: 0.3), value: session.messagesOpen)
-        // An inset, not an overlay: lists scroll under the bar and still end above it.
-        .safeAreaInset(edge: .bottom, spacing: 0) {
-            // Gone under the keyboard: an inset would ride up on top of it.
-            if !keyboardUp, chrome.barHiders == 0, !session.messagesOpen { bar }
+        // Every page keeps this much clear at its end (`shellBarHeight`):
+        // the shell's own inset did not reach through the tabs' stacks.
+        .environment(\.shellBarHeight, showsBar ? barHeight : 0)
+        .overlay(alignment: .bottom) {
+            if showsBar {
+                bar.onGeometryChange(for: CGFloat.self) { $0.size.height } action: { barHeight = $0 }
+            }
         }
         .environment(chrome)
         .onChange(of: tab, initial: true) { _, now in mounted.insert(now) }
@@ -62,6 +66,10 @@ struct PlayerShell: View {
             CreateSheet(modules: session.modules, choose: create)
         }
     }
+
+    /// Gone under the keyboard, under a screen that asked (`floatingTabBarHidden`),
+    /// and under the inbox.
+    private var showsBar: Bool { !keyboardUp && chrome.barHiders == 0 && !session.messagesOpen }
 
     /// A module the server has off has no tab (#16).
     private var tabs: [DebugLaunch.Tab] {

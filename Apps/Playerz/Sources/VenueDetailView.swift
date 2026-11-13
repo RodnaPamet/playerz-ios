@@ -87,7 +87,7 @@ struct VenueDetailView: View {
             }
         }
         .sheet(item: $conversation) { opened in
-            ConversationSheet(opened: opened, session: session)
+            ConversationSheet(opened: opened, session: session).outsideShellBar()
         }
         .alert(
             String(localized: "messages.writeToClub"),

@@ -5,11 +5,19 @@ import UserNotifications
 @main
 struct PlayerzApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var delegate
-    @State private var session = SessionModel()
+    @State private var session: SessionModel
+
+    init() {
+        // Before the first text is looked up (AppLanguageChoice).
+        AppLanguageChoice.applyAtLaunch()
+        _session = State(initialValue: SessionModel())
+    }
 
     var body: some Scene {
         WindowGroup {
             RootView(session: session)
+                // Dates, amounts and SwiftUI's own words in the app's language.
+                .environment(\.locale, AppLanguageChoice.locale(session.language))
                 // A refusal for want of a confirmed phone, from any screen (#11).
                 .sheet(isPresented: $session.phoneStepNeeded) {
                     PhoneStepView(session: session) {
@@ -25,6 +33,11 @@ struct PlayerzApp: App {
                     // A tapped push opens its screen (#15), also one that launched the app.
                     delegate.onLink { session.open($0) }
                     await session.restore()
+                    // DEBUG only: the picker's choice, made without a tap.
+                    if let code = DebugLaunch.chooseLanguage {
+                        try? await Task.sleep(for: .seconds(3))
+                        await session.chooseLanguage(AppLanguage.code(for: code))
+                    }
                     if session.state == .signedIn { await PushRegistrar.shared.refreshIfAllowed(session) }
                 }
         }
@@ -129,6 +142,9 @@ struct RootView: View {
                 // undecided one do not get the player's tabs.
                 LandingGate(session: session) {
                     PlayerShell(session: session, tab: $tab)
+                        // Every text is read again in a newly chosen language;
+                        // the tab stays (it is RootView's).
+                        .id(session.language)
                         // The dot without opening the inbox: read on launch, then each
                         // minute, and only while messaging is on.
                         .task(id: session.modules.messaging) {

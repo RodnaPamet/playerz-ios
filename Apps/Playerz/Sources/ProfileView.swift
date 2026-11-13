@@ -165,6 +165,21 @@ struct ProfileView: View {
                 // The hint is the switch's, for VoiceOver too.
                 .accessibilityElement(children: .combine)
 
+                // Bulgarian unless chosen here (owner 2026-11-13): each
+                // language named in itself, so it can be found from either.
+                ProfileHubRow(String(localized: "profile.language"), systemImage: "globe") {
+                    Picker(String(localized: "profile.language"), selection: language) {
+                        Text(verbatim: "Български").tag(AppLanguage.Code.bg)
+                        Text(verbatim: "English").tag(AppLanguage.Code.en)
+                    }
+                    .pickerStyle(.menu)
+                    .labelsHidden()
+                    // The language's whole name, not broken over two lines.
+                    .fixedSize()
+                    .tint(Theme.Palette.accentText)
+                }
+                .hubDivider()
+
                 NavigationLink {
                     NotificationSettingsView(session: session, isCoach: me.accountKind == "COACH")
                 } label: {
@@ -206,6 +221,10 @@ struct ProfileView: View {
                     .padding(.horizontal, Theme.Spacing.l)
             }
         }
+    }
+
+    private var language: Binding<AppLanguage.Code> {
+        Binding(get: { session.language }, set: { code in Task { await session.chooseLanguage(code) } })
     }
 
     /// Signing out stays reachable when the profile did not load.
