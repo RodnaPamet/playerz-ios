@@ -108,7 +108,7 @@ struct GameDetailView: View {
                 .accessibilityLabel(GameText.spoken(game))
                 GameCourtView(
                     seats: GameSeats(game: game, server: session.serverURL),
-                    court: GameSport.court(game.sport),
+                    sport: game.sport,
                     organiserName: game.booker.firstName,
                     organiserAvatar: GameText.picture(game.booker.avatarUrl, server: session.serverURL),
                     large: true,

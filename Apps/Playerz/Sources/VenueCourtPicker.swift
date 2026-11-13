@@ -1,37 +1,11 @@
 import PlayerzAPI
 import SwiftUI
 
-/// A court drawn from above in its sport's lines: a game's court
-/// (`GameCourtView`) and a tile of the court picker.
-struct CourtSurface: View {
-    let court: GameSport.Court
-
-    var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: Theme.Radius.tile)
-                .fill(
-                    LinearGradient(
-                        colors: [Theme.Palette.headerGlow, Theme.Palette.controlOn],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
-            CourtLines(court: court)
-                .stroke(Theme.Palette.onHeader.opacity(0.5), lineWidth: 1.5)
-            if court == .net {
-                Capsule()
-                    .fill(Theme.Palette.onHeader.opacity(0.9))
-                    .frame(width: 4)
-                    .padding(.vertical, 4)
-            }
-        }
-    }
-}
-
 /// The venue's courts drawn side by side, to choose one (owner 2026-11-13:
 /// "a schematic way to choose a court graphically; the list of times only for
 /// the court chosen"). Where the club has drawn a plan (#25) the plan does
-/// this; here every venue has one. Each tile: the court in its sport's lines,
+/// this; here every venue has one. Each tile: the court as its sport's own
+/// surface (SportPitch),
 /// its name, indoor or outdoor, and how many times are free that day; a court
 /// with none is dimmed, and the chosen one carries the accent and a tick.
 struct VenueCourtPicker: View {
@@ -61,7 +35,7 @@ struct VenueCourtPicker: View {
             selected = court.resourceId
         } label: {
             VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
-                CourtSurface(court: GameSport.court(court.sport))
+                SportPitchView(sport: court.sport)
                     .frame(height: columnCount == 3 ? 52 : 64)
                     .opacity(free == 0 ? 0.35 : 1)
                     .overlay(alignment: .topTrailing) {

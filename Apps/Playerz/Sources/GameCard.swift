@@ -39,7 +39,7 @@ struct GameCard: View {
             }
             GameCourtView(
                 seats: GameSeats(game: game, server: server),
-                court: GameSport.court(game.sport),
+                sport: game.sport,
                 organiserName: game.booker.firstName,
                 organiserAvatar: GameText.picture(game.booker.avatarUrl, server: server),
                 join: join

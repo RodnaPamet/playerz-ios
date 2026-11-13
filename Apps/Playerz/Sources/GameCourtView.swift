@@ -6,7 +6,8 @@ import SwiftUI
 /// without offering them (the caller already asked, or the game is theirs).
 struct GameCourtView: View {
     let seats: GameSeats
-    let court: GameSport.Court
+    /// The game's sport, drawn as its own surface (SportPitch).
+    let sport: String
     /// The only player the server names (#376).
     var organiserName: String?
     var organiserAvatar: URL?
@@ -42,7 +43,11 @@ struct GameCourtView: View {
     }
 
     private var surface: some View {
-        CourtSurface(court: court)
+        // A shade over the surface keeps the players' pictures readable on
+        // the brighter ones (clay, sand, a basketball floor).
+        SportPitchView(sport: sport)
+            .overlay(Color.black.opacity(0.18))
+            .clipShape(.rect(cornerRadius: Theme.Radius.tile))
     }
 
     private func side(_ side: [GameSeats.Seat]) -> some View {
@@ -178,46 +183,11 @@ struct GameCourtView: View {
     }
 }
 
-/// The markings of a court seen from above, the net or halfway line upright
-/// in the middle.
-struct CourtLines: Shape {
-    let court: GameSport.Court
-
-    func path(in rect: CGRect) -> Path {
-        let field = rect.insetBy(dx: 8, dy: 8)
-        var path = Path()
-        path.addRect(field)
-        switch court {
-        case .net:
-            // Service lines, and the line that halves the service boxes.
-            let near = field.minX + field.width * 0.2
-            let far = field.minX + field.width * 0.8
-            path.move(to: CGPoint(x: near, y: field.minY))
-            path.addLine(to: CGPoint(x: near, y: field.maxY))
-            path.move(to: CGPoint(x: far, y: field.minY))
-            path.addLine(to: CGPoint(x: far, y: field.maxY))
-            path.move(to: CGPoint(x: near, y: field.midY))
-            path.addLine(to: CGPoint(x: far, y: field.midY))
-        case .pitch:
-            path.move(to: CGPoint(x: field.midX, y: field.minY))
-            path.addLine(to: CGPoint(x: field.midX, y: field.maxY))
-            let radius = field.height * 0.2
-            path.addEllipse(in: CGRect(x: field.midX - radius, y: field.midY - radius, width: radius * 2, height: radius * 2))
-            let box = CGSize(width: field.width * 0.1, height: field.height * 0.5)
-            path.addRect(CGRect(x: field.minX, y: field.midY - box.height / 2, width: box.width, height: box.height))
-            path.addRect(CGRect(x: field.maxX - box.width, y: field.midY - box.height / 2, width: box.width, height: box.height))
-        case .plain:
-            path.move(to: CGPoint(x: field.midX, y: field.minY))
-            path.addLine(to: CGPoint(x: field.midX, y: field.maxY))
-        }
-        return path
-    }
-}
 
 #Preview("Doubles") {
     GameCourtView(
         seats: GameSeats(capacity: 4, players: 2, spotsLeft: 1, viewerIsBooker: false, viewerIsPlaying: false),
-        court: .net, organiserName: "Мария"
+        sport: "TENNIS", organiserName: "Мария"
     ) {}
     .padding()
 }
@@ -225,7 +195,7 @@ struct CourtLines: Shape {
 #Preview("Singles") {
     GameCourtView(
         seats: GameSeats(capacity: 2, players: 1, spotsLeft: 1, viewerIsBooker: true, viewerIsPlaying: false),
-        court: .net, organiserName: "Иван", large: true
+        sport: "PADEL", organiserName: "Иван", large: true
     )
     .padding()
 }
@@ -233,7 +203,7 @@ struct CourtLines: Shape {
 #Preview("Team") {
     GameCourtView(
         seats: GameSeats(capacity: 14, players: 6, spotsLeft: 4, viewerIsBooker: false, viewerIsPlaying: true),
-        court: .pitch, organiserName: nil
+        sport: "FOOTBALL5", organiserName: nil
     ) {}
     .padding()
 }
