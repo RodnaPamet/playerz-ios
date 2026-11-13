@@ -27,13 +27,14 @@ enum Theme {
         static var headerGlow: Color { Color(hex: 0x2B2245) }
         static var onHeader: Color { .white }
 
-        /// THE action colour: the web's purple in light mode; yellow in dark
-        /// mode (owner 2026-11-13: "purple, yellow and white for the dark
-        /// theme"), and on every surface that is dark in both modes (the
-        /// header band, dark sheets). White on the purple is 5.9:1; the deep
-        /// purple ink on the yellow is 13:1. The draft's lavender carries
-        /// everything chosen (`accentText`, `selectedFill`).
-        static var accentFill: Color { Color(light: 0x6D3FE8, dark: 0xFFD23F) }
+        /// THE action colour: the web's purple in light mode; in dark mode a
+        /// dark gold, "like the golden hour sun light" (owner 2026-11-13, on
+        /// "purple, yellow and white for the dark theme"), and on every
+        /// surface that is dark in both modes (the header band, dark sheets).
+        /// White on the purple is 5.9:1; the deep purple ink on the gold is
+        /// 8.0:1. The draft's lavender carries everything chosen
+        /// (`accentText`, `selectedFill`).
+        static var accentFill: Color { Color(light: 0x6D3FE8, dark: 0xDDA13F) }
         static var onAccent: Color { Color(light: 0xFFFFFF, dark: 0x1A0B3D) }
         /// Accent-coloured text and icons on `page` or `card`, and what is
         /// chosen; also the app's tint. The draft's lavender in dark mode
