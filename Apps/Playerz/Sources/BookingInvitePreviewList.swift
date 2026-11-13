@@ -67,7 +67,7 @@ struct BookingInvitePreviewList: View {
                 Text(
                     preview.lesson == nil
                         ? String(localized: "bookingInvite.payAtClub")
-                        : String(localized: "bookingInvite.lesson.payAtClub")
+                        : String(localized: "bookingInvite.lesson.payAtClubOf \(PlaceText.the(PlaceWord.of(preview.resource.sport)))")
                 )
                 .padding(.top, Theme.Spacing.s)
             }
@@ -81,15 +81,8 @@ struct BookingInvitePreviewList: View {
         return String(localized: "bookingInvite.title \(name)")
     }
 
-    /// The web's noun for the resource (resource-kinds.ts); a type added later
-    /// reads as a court.
+    /// The place's word for its sport (PlaceWord, owner 2026-11-13).
     private var courtLabel: String {
-        switch preview.resource.resourceType {
-        case "FIELD": String(localized: "bookingInvite.pitch.court")
-        case "TABLE", "BOARD_TABLE": String(localized: "bookingInvite.table.court")
-        case "LOBBY": String(localized: "bookingInvite.seat.court")
-        case "TRACK": String(localized: "bookingInvite.track.court")
-        default: String(localized: "bookingInvite.court")
-        }
+        PlaceText.label(sport: preview.resource.sport)
     }
 }

@@ -71,7 +71,7 @@ enum GameText {
 
     /// «Корт: 36,00 €»: the booking's total, not a share (owner 2026-11-12).
     static func courtPrice(_ game: Components.Schemas.OpenGame) -> String {
-        String(localized: "games.courtPrice \(money(game))")
+        String(localized: "games.placePrice \(PlaceText.label(sport: game.sport)) \(money(game))")
     }
 
     /// «36,00 €», the booking's total.

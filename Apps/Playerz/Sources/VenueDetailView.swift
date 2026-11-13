@@ -206,7 +206,11 @@ struct VenueDetailView: View {
                     .listRowInsets(EdgeInsets(top: 12, leading: 12, bottom: 12, trailing: 12))
                     .listRowBackground(Color.clear)
             } header: {
-                Text(String(localized: model.plan == nil ? "venue.courts.choose" : "venue.courts.others"))
+                // «Избери корт», «Избери игрище», «Избери място» for a mix.
+                let word = PlaceWord.common(offPlan.map(\.sport))
+                Text(model.plan == nil
+                    ? String(localized: "venue.places.choose \(PlaceText.lower(word))")
+                    : String(localized: "venue.places.others \(PlaceText.plural(word))"))
             }
             .id("courts")
         }
@@ -362,9 +366,7 @@ private struct CourtHeader: View {
         HStack(spacing: 6) {
             Text(court.name)
             Text(
-                court.isIndoor
-                    ? String(localized: "venue.indoor")
-                    : String(localized: "venue.outdoor")
+                PlaceText.roof(PlaceWord.of(court.sport), indoor: court.isIndoor)
             )
             .foregroundStyle(.secondary)
 

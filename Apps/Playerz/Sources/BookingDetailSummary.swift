@@ -20,7 +20,7 @@ struct BookingDetailSummary: View {
                 LabeledContent(String(localized: "myBookings.detail.price")) {
                     VStack(alignment: .trailing) {
                         Text(money(lesson.totalCents))
-                        Text(String(localized: "myBookings.detail.lesson.parts \(money(lesson.coachFeeCents)) \(money(lesson.courtPriceCents))"))
+                        Text(String(localized: "myBookings.detail.lesson.partsOf \(money(lesson.coachFeeCents)) \(money(lesson.courtPriceCents)) \(PlaceText.of(PlaceWord.of(booking.resource.sport)))"))
                             .font(.footnote)
                             .foregroundStyle(.secondary)
                         payAtClub
@@ -53,15 +53,8 @@ struct BookingDetailSummary: View {
         (Decimal(cents) / 100).formatted(.currency(code: booking.currency))
     }
 
-    /// The web's noun for the resource (resource-kinds.ts); a type added later
-    /// reads as a court.
+    /// The place's word for its sport (PlaceWord, owner 2026-11-13).
     private var courtLabel: String {
-        switch booking.resource.resourceType {
-        case "FIELD": String(localized: "myBookings.detail.pitch.court")
-        case "TABLE", "BOARD_TABLE": String(localized: "myBookings.detail.table.court")
-        case "LOBBY": String(localized: "myBookings.detail.seat.court")
-        case "TRACK": String(localized: "myBookings.detail.track.court")
-        default: String(localized: "myBookings.detail.court")
-        }
+        PlaceText.label(sport: booking.resource.sport)
     }
 }
