@@ -335,13 +335,7 @@ struct VenueListView: View {
         NavigationLink {
             SportClubsView(sport: sport, session: session)
         } label: {
-            BrandActionCard(
-                title: GameText.sport(sport),
-                subtitle: String(localized: "sports.card.subtitle \(PlaceText.plural(PlaceWord.of(sport)))"),
-                systemImage: "sportscourt",
-                style: .sport(sport),
-                minHeight: 170
-            )
+            SportCard(sport: sport, clubs: model.rows.filter { $0.sports.contains(sport) }.count)
         }
         .buttonStyle(.brandCard)
     }
@@ -443,8 +437,10 @@ private struct VenueCard: View {
 }
 
 /// Cards side by side, one a swipe (owner 2026-11-13: "make this club
-/// section swipable right and left"), with the next card's edge in view so
-/// the swipe is found, and a dot per card under them: the clubs, the sports.
+/// section swipable right and left"), nearly the page's full width between
+/// its margins, as the club cards were before, with only a sliver of the
+/// next card in view (owner: "peek in just a bit - minimal"), and a dot per
+/// card under them: the clubs, the sports.
 struct CardCarousel<Item: Identifiable, Card: View>: View where Item.ID == String {
     let rows: [Item]
     @ViewBuilder let card: (Item) -> Card
@@ -457,9 +453,10 @@ struct CardCarousel<Item: Identifiable, Card: View>: View where Item.ID == Strin
                 LazyHStack(alignment: .top, spacing: Theme.Spacing.m) {
                     ForEach(rows) { row in
                         card(row)
-                            // The page's width, less a peek of the next card.
+                            // The width between the page's margins (already
+                            // without them), less a sliver of the next card.
                             .containerRelativeFrame(.horizontal) { width, _ in
-                                rows.count > 1 ? width - Theme.Spacing.xl * 2 : width
+                                rows.count > 1 ? width - Theme.Spacing.m : width
                             }
                             .id(row.id)
                     }
@@ -484,6 +481,47 @@ struct CardCarousel<Item: Identifiable, Card: View>: View where Item.ID == Strin
                 .accessibilityHidden(true)
             }
         }
+    }
+}
+
+/// A sport in the «Спортове» carousel, in the club card's form (owner
+/// 2026-11-14: "both need to be the form of Clubs"): its photo as the
+/// cover, its court drawn in the tile, its name, and how many clubs have it.
+private struct SportCard: View {
+    let sport: String
+    /// Among the clubs read so far.
+    let clubs: Int
+
+    var body: some View {
+        BrandCoverCard(coverHeight: 132) {
+            SportBackdrop(sport: sport, scrim: 0.25)
+        } logo: {
+            SportPitchView(sport: sport)
+                .padding(8)
+                .background(Theme.Palette.sheetRow)
+        } content: {
+            VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
+                Text(GameText.sport(sport))
+                    .font(Theme.Typography.cardTitle)
+                    .foregroundStyle(Color.primary)
+                    .fixedSize(horizontal: false, vertical: true)
+                Label(
+                    String(localized: "sports.card.subtitle \(PlaceText.plural(PlaceWord.of(sport)))"),
+                    systemImage: "sportscourt"
+                )
+                .font(Theme.Typography.cardSubtitle)
+                .foregroundStyle(.secondary)
+                if clubs > 0 {
+                    ChipFlow {
+                        VenueFactChip(text: String(localized: "sports.clubCount \(clubs)"))
+                    }
+                    .padding(.top, Theme.Spacing.xs)
+                }
+            }
+            .multilineTextAlignment(.leading)
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel([GameText.sport(sport), clubs > 0 ? String(localized: "sports.clubCount \(clubs)") : nil].compactMap { $0 }.joined(separator: ", "))
     }
 }
 
