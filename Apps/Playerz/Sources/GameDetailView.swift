@@ -97,11 +97,13 @@ struct GameDetailView: View {
                     if game.viewer?.levelFits == true {
                         GameTag(text: String(localized: "games.levelFits"), systemImage: "checkmark.seal.fill")
                     }
-                    Text(GameText.day(game.startTs, timezone: game.timezone))
-                        .font(Theme.Typography.cardTitle)
-                    Text("\(GameText.hours(game.startTs, game.endTs, timezone: game.timezone)) · \(GameText.duration(game.startTs, game.endTs))")
-                        .font(.body)
-                        .foregroundStyle(.secondary)
+                    // The day on the game's sport in its photo (owner
+                    // 2026-11-13: "highlight each selected sport page").
+                    SportBanner(
+                        sport: game.sport,
+                        title: GameText.day(game.startTs, timezone: game.timezone),
+                        subtitle: "\(GameText.hours(game.startTs, game.endTs, timezone: game.timezone)) · \(GameText.duration(game.startTs, game.endTs))"
+                    )
                 }
                 // One sentence for VoiceOver; the court's «+» is the button below.
                 .accessibilityElement(children: .ignore)
