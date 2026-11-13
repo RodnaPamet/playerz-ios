@@ -85,6 +85,12 @@ enum DebugLaunch {
     static var venueAt: String? { env["PLAYERZ_VENUE_AT"] }
     /// Every sport's drawn surface on one screen (`PLAYERZ_PITCHES=1`).
     static var pitches: Bool { env["PLAYERZ_PITCHES"] == "1" }
+    /// A venue with its first hours picked (`PLAYERZ_PICK=3`), the summary
+    /// open (`PLAYERZ_REVIEW=1`) and reserved (`PLAYERZ_RESERVE=1`: a DEBUG
+    /// build on the local server only, as every DebugLaunch route).
+    static var pick: Int? { env["PLAYERZ_PICK"].flatMap(Int.init) }
+    static var review: Bool { env["PLAYERZ_REVIEW"] == "1" }
+    static var reserve: Bool { env["PLAYERZ_RESERVE"] == "1" }
     /// `PLAYERZ_BOOKINGS=past`: Резервации opened on «Минали».
     static var bookingsPast: Bool { env["PLAYERZ_BOOKINGS"] == "past" }
     /// `PLAYERZ_BOOKINGS=cancelled`: Резервации opened on «Отменени» (#58).
@@ -131,6 +137,9 @@ enum DebugLaunch {
     static let statsAt: String? = nil
     static let venueAt: String? = nil
     static let pitches = false
+    static let pick: Int? = nil
+    static let review = false
+    static let reserve = false
     static let emptyStateEnd = false
     static let bookingsPast = false
     static let bookingsCancelled = false
