@@ -11,11 +11,17 @@ public enum HourlySlots {
     /// longer (a 90-minute padel minimum stays 90). Not one that has begun:
     /// the server lists today's current hour as free, and refuses to book it
     /// (SLOT_NOT_BOOKABLE).
-    public static func hourly(_ slots: [Slot], timezone: TimeZone, now: Date = .now) -> [Slot] {
+    ///
+    /// `includeTaken` keeps the hours that are not free too, marked so
+    /// (`available` false), for a grid that shows them as taken (the design
+    /// draft: "label unavailable times").
+    public static func hourly(
+        _ slots: [Slot], timezone: TimeZone, now: Date = .now, includeTaken: Bool = false
+    ) -> [Slot] {
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = timezone
         return slots.compactMap { slot in
-            guard slot.available, slot.startTs > now,
+            guard slot.available || includeTaken, slot.startTs > now,
                   calendar.component(.minute, from: slot.startTs) == 0
             else { return nil }
             let durations = slot.durations ?? []
@@ -24,10 +30,52 @@ public enum HourlySlots {
                 startTs: slot.startTs,
                 endTs: pick?.endTs ?? slot.endTs,
                 priceCents: pick?.priceCents ?? slot.priceCents,
-                available: true,
-                blockedReason: nil,
+                available: slot.available,
+                blockedReason: slot.blockedReason,
                 durations: slot.durations
             )
+        }
+    }
+
+    /// The part of the day an hour starts in, for the hours grid's groups.
+    public enum Daypart: String, CaseIterable, Sendable {
+        /// Before 12:00.
+        case morning
+        /// 12:00 to 17:00.
+        case afternoon
+        /// From 17:00.
+        case evening
+    }
+
+    /// The hours in the parts of the day they start in, in order; a part
+    /// with no hour is left out.
+    public static func dayparts(_ slots: [Slot], timezone: TimeZone) -> [(part: Daypart, slots: [Slot])] {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = timezone
+        let grouped = Dictionary(grouping: slots) { slot -> Daypart in
+            switch calendar.component(.hour, from: slot.startTs) {
+            case ..<12: .morning
+            case ..<17: .afternoon
+            default: .evening
+            }
+        }
+        return Daypart.allCases.compactMap { part in
+            grouped[part].map { (part, $0.sorted { $0.startTs < $1.startTs }) }
+        }
+    }
+
+    /// The picks that a fresh read shows are no longer free: on a place
+    /// read, starting within the hours read, and not among its free hours.
+    /// Picks on other days or places are not known to be gone.
+    public static func gone(
+        _ picks: [Pick], read: [String: [Slot]], free: [String: [Slot]]
+    ) -> [Pick] {
+        picks.filter { pick in
+            guard let all = read[pick.resourceId], let first = all.map(\.startTs).min(),
+                  let last = all.map(\.startTs).max(),
+                  pick.start >= first, pick.start <= last
+            else { return false }
+            return !(free[pick.resourceId] ?? []).contains { $0.startTs == pick.start }
         }
     }
 
