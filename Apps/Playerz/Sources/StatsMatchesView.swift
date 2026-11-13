@@ -69,7 +69,7 @@ struct StatsMatchCard: View {
                         )
                 }
                 Text(match.score.map(StatsText.score) ?? String(localized: "stats.matches.noScore"))
-                    .font(.system(.title2, design: .rounded, weight: .heavy))
+                    .font(Theme.Typography.display(32, relativeTo: .title2))
                     .monospacedDigit()
                 if !match.partners.isEmpty {
                     Label(String(localized: "stats.matches.with \(StatsText.names(match.partners))"), systemImage: "person.2")

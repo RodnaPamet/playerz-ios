@@ -33,25 +33,10 @@ struct HomeActionGrid: View {
                 title: title(action),
                 subtitle: subtitle(action),
                 systemImage: symbol(action),
-                style: action == .createGame ? .accent : .dark,
-                minHeight: action == .court ? 150 : 140,
+                style: action == .createGame ? .accent : action == .court ? .pitch("PADEL") : .dark,
+                minHeight: action == .court ? 190 : 140,
                 fillsHeight: true
             )
-            // A court drawn on the wide tile's free half. Decoration only,
-            // so it goes when large text needs that half.
-            .overlay(alignment: .trailing) {
-                if action == .court, !typeSize.isAccessibilitySize {
-                    Image(systemName: "sportscourt")
-                        .resizable()
-                        .scaledToFit()
-                        .fontWeight(.light)
-                        .foregroundStyle(Theme.Palette.onHeader.opacity(0.1))
-                        .rotationEffect(.degrees(-10))
-                        .padding(Theme.Spacing.l)
-                        .frame(maxWidth: 190)
-                        .accessibilityHidden(true)
-                }
-            }
             .clipShape(.rect(cornerRadius: Theme.Radius.card))
         }
         .buttonStyle(.brandCard)

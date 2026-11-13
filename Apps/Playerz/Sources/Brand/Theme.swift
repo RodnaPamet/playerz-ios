@@ -81,10 +81,22 @@ enum Theme {
 
     /// Text styles, all on the system's Dynamic Type styles: none has a fixed size.
     enum Typography {
-        static var wordmark: Font { .system(.title, design: .rounded, weight: .heavy) }
-        static var headerTitle: Font { .title3.weight(.bold) }
-        static var sectionTitle: Font { .title3.weight(.bold) }
-        static var cardTitle: Font { .title3.weight(.bold) }
+        /// The athletic headline face (owner 2026-11-13, "more sports
+        /// feeling", Nike / Under Armour / On): Sofia Sans Extra Condensed,
+        /// black italic, scaling with Dynamic Type from `style`.
+        static func display(_ size: CGFloat, relativeTo style: Font.TextStyle) -> Font {
+            .custom("SofiaSansExtraCondensedItalic-BlackItalic", size: size, relativeTo: style)
+        }
+
+        /// The same family upright, for numbers that line up (scores, times).
+        static func displayUpright(_ size: CGFloat, relativeTo style: Font.TextStyle) -> Font {
+            .custom("SofiaSansExtraCondensed-ExtraBold", size: size, relativeTo: style)
+        }
+
+        static var wordmark: Font { display(40, relativeTo: .title) }
+        static var headerTitle: Font { display(30, relativeTo: .title2) }
+        static var sectionTitle: Font { display(28, relativeTo: .title2) }
+        static var cardTitle: Font { display(30, relativeTo: .title2) }
         static var cardSubtitle: Font { .subheadline }
         static var rowTitle: Font { .headline }
         static var chip: Font { .subheadline.weight(.semibold) }

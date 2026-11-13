@@ -7,6 +7,9 @@ enum BrandActionCardStyle {
     case dark
     /// A photo under a scrim that keeps the white text readable.
     case photo(Image)
+    /// A sport's surface (SportPitch), leaning, under the same scrim: the
+    /// campaign banner of a sports page.
+    case pitch(String)
 }
 
 /// A large rounded tile for the home grid: an icon square, a title, a line
@@ -36,6 +39,7 @@ struct BrandActionCard: View {
             Spacer(minLength: Theme.Spacing.m)
             Text(title)
                 .font(Theme.Typography.cardTitle)
+                .textCase(.uppercase)
                 .foregroundStyle(titleColor)
             if let subtitle {
                 Text(subtitle)
@@ -87,6 +91,20 @@ struct BrandActionCard: View {
                 .overlay(LinearGradient(
                     colors: [.black.opacity(0.25), .black.opacity(0.75)], startPoint: .top, endPoint: .bottom
                 ))
+                .accessibilityHidden(true)
+        case let .pitch(sport):
+            Color.black
+                .overlay {
+                    SportPitchView(sport: sport, rounded: false)
+                        .scaleEffect(1.5)
+                        .rotationEffect(.degrees(-12))
+                        .offset(x: 70)
+                }
+                .overlay(LinearGradient(
+                    colors: [.black.opacity(0.78), .black.opacity(0.35), .black.opacity(0.1)],
+                    startPoint: .leading, endPoint: .trailing
+                ))
+                .clipped()
                 .accessibilityHidden(true)
         }
     }

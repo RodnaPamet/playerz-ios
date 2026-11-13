@@ -46,6 +46,12 @@ targets:
         CFBundleDevelopmentRegion: bg
         CFBundleLocalizations: [bg, en]
         UILaunchScreen: {}
+        # Sofia Sans Extra Condensed (OFL, Resources/Fonts/SofiaSans-OFL.txt),
+        # by a Bulgarian type foundry: the athletic headlines (owner
+        # 2026-11-13: "more sports feeling", Nike / Under Armour / On).
+        UIAppFonts:
+          - SofiaSansExtraCondensed-BlackItalic.ttf
+          - SofiaSansExtraCondensed-ExtraBold.ttf
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
         # WeatherKit attribution is a REQUIREMENT, not a courtesy (#211), so the
