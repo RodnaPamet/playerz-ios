@@ -5,6 +5,11 @@ import PlayerzAPI
 /// #550), in the web's words. The bell always shows everything.
 enum NotificationKind: String, CaseIterable, Hashable {
     case confirmation, reminder, clubChanges, messages, openPlay, lessonsTaught
+    /// «Факт на деня» (owner 2026-11-13): a push only; there is no such email.
+    case sportFacts
+
+    /// Push only: no email switch.
+    var pushOnly: Bool { self == .sportFacts }
 
     var label: String {
         localized(key: "profile.kind.\(rawValue)")
@@ -18,6 +23,7 @@ enum NotificationKind: String, CaseIterable, Hashable {
         case .messages: email.messages
         case .openPlay: email.openPlay
         case .lessonsTaught: email.lessonsTaught
+        case .sportFacts: false
         }
     }
 
@@ -29,6 +35,7 @@ enum NotificationKind: String, CaseIterable, Hashable {
         case .messages: push.messages
         case .openPlay: push.openPlay
         case .lessonsTaught: push.lessonsTaught
+        case .sportFacts: push.sportFacts
         }
     }
 
@@ -41,6 +48,8 @@ enum NotificationKind: String, CaseIterable, Hashable {
         case .messages: .init(messages: on)
         case .openPlay: .init(openPlay: on)
         case .lessonsTaught: .init(lessonsTaught: on)
+        // Never asked: the email section has no such switch (the server refuses it).
+        case .sportFacts: .init()
         }
     }
 
@@ -52,6 +61,7 @@ enum NotificationKind: String, CaseIterable, Hashable {
         case .messages: .init(messages: on)
         case .openPlay: .init(openPlay: on)
         case .lessonsTaught: .init(lessonsTaught: on)
+        case .sportFacts: .init(sportFacts: on)
         }
     }
 }

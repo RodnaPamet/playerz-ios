@@ -65,6 +65,9 @@ struct NewGameView: View {
                     SportBanner(sport: sport, title: GameText.sport(sport))
                         .listRowBackground(Color.clear)
                         .listRowInsets(EdgeInsets())
+                    SportStoryCard(sport: sport, session: session)
+                        .listRowBackground(Color.clear)
+                        .listRowInsets(EdgeInsets())
                 }
                 Section {
                     if loadingVenues {

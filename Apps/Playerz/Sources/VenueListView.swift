@@ -53,6 +53,7 @@ struct VenueListView: View {
                                 title: GameText.sport(sport),
                                 subtitle: String(localized: "venues.sportBanner \(PlaceText.plural(PlaceWord.of(sport)))")
                             )
+                            SportStoryCard(sport: sport, session: session)
                         }
                         clubs
                         sportsSection
@@ -137,6 +138,11 @@ struct VenueListView: View {
             showingCoaches = request == .coaches && session.modules.coaches
             showingNewGame = request == .newGame
             clubsWanted = request == .clubs
+            if case let .sport(sport) = request {
+                // The fact of the week's push: the clubs with that sport.
+                clubsWanted = true
+                Task { await model.apply(VenueFilters(sport: sport), session: session) }
+            }
             stackID += 1
         }
         .brandSheet(isPresented: $filtering) {

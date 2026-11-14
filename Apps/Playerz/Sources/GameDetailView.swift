@@ -36,6 +36,7 @@ struct GameDetailView: View {
             VStack(alignment: .leading, spacing: Theme.Spacing.l) {
                 summary
                 if !pinsAction { actionBar }
+                SportStoryCard(sport: game.sport, session: session)
                 players
                 facts
                 if let text = game.note, !text.isEmpty {

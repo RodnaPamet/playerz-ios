@@ -14,6 +14,8 @@ public enum AppLink: Hashable, Sendable, Identifiable {
     case bookings
     case messages
     case games(mine: Bool)
+    /// «Начало» on one sport's clubs: the fact of the week's push (`/venues?sport=X`).
+    case sport(String)
 
     public var id: Self { self }
 
@@ -22,7 +24,9 @@ public enum AppLink: Hashable, Sendable, Identifiable {
         guard let parts = URLComponents(string: path) else { return nil }
         let segments = parts.path.split(separator: "/").map(String.init)
         let tab = parts.queryItems?.first { $0.name == "tab" }?.value
+        let sport = parts.queryItems?.first { $0.name == "sport" }?.value
         switch segments.count {
+        case 1 where segments[0] == "venues" && sport?.isEmpty == false: self = .sport(sport!)
         case 1 where segments[0] == "messages": self = .messages
         case 1 where segments[0] == "games": self = .games(mine: tab == "mine")
         case 2 where segments == ["me", "bookings"]: self = .bookings
@@ -41,6 +45,7 @@ public enum AppLink: Hashable, Sendable, Identifiable {
         switch (refType, refId) {
         case let ("booking", id?): self = .booking(id)
         case let ("conversation", id?): self = .conversation(id)
+        case let ("sport", id?): self = .sport(id)
         default: return nil
         }
     }

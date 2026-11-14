@@ -97,7 +97,7 @@ final class SessionModel {
     /// A screen of «Начало» asked for from elsewhere («Създай»).
     var homeRequest: HomeScreen?
 
-    enum HomeScreen { case clubs, coaches, newGame }
+    enum HomeScreen: Equatable { case clubs, coaches, newGame, sport(String) }
 
     /// «Начало» on its club list, or on «Треньори».
     func showHome(_ screen: HomeScreen) {
@@ -114,7 +114,7 @@ final class SessionModel {
     /// Whether `link` is a whole tab rather than one screen.
     func isTab(_ link: AppLink) -> Bool {
         switch link {
-        case .bookings, .messages, .games: true
+        case .bookings, .messages, .games, .sport: true
         case .booking, .conversation: false
         }
     }
@@ -126,6 +126,8 @@ final class SessionModel {
         case .bookings: requestedTab = .bookings
         case .messages: if modules.messaging { requestedTab = .messages }
         case .games: if modules.openPlay { requestedTab = .games }
+        // The fact of the week: «Начало» on that sport's clubs.
+        case let .sport(sport): showHome(.sport(sport))
         case let .conversation(id):
             guard modules.messaging, id != conversationOnScreen else { return }
             present(link)

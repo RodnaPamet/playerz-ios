@@ -47,6 +47,9 @@ struct StatsProgressView: View {
                     }
                 }
             }
+            if let sport = model.shownSport {
+                SportStoryCard(sport: sport, session: session)
+            }
             if model.offersSurvey, let survey = model.survey {
                 StatsSurveyCard(questions: survey.questions.count, again: stats?.rating?.declaredLevel != nil) {
                     openSurvey(survey)
