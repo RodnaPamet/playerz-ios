@@ -111,8 +111,11 @@ def main() -> int:
     status, answer = call(token(), "POST", "betaAppReviewSubmissions", {"data": {
         "type": "betaAppReviewSubmissions",
         "relationships": {"build": {"data": {"type": "builds", "id": build}}}}})
-    # A build of a version already approved may need no submission: Apple says so with a 409.
-    if status >= 300 and status != 409:
+    # Apple takes one submission at a time: while an earlier build waits for
+    # review, this one is refused (409) and stays unsubmitted. Builds 22.1–25.1
+    # sat that way while 20.1 waited, because a 409 was taken as "nothing to
+    # do". Now it fails the step, so the run says so and it is submitted by hand.
+    if status >= 300:
         print(f"could not submit build {number} for review ({status}): {problem(answer)}")
         return 1
     print(f"build {number} is in «{group_name}» and submitted for Beta App Review")
