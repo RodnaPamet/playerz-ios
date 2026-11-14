@@ -1157,6 +1157,204 @@
         }
       }
     },
+    "calendar.google.connectedAs %@": {
+      "comment": "Under the switch: the Google account it writes to.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Свързан с %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connected as %@"
+          }
+        }
+      }
+    },
+    "calendar.google.denied": {
+      "comment": "The player declined Google's consent.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не позволихте достъп до календара."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You didn't allow access to the calendar."
+          }
+        }
+      }
+    },
+    "calendar.google.expired": {
+      "comment": "The connect link expired.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Времето изтече. Включете отново."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That took too long. Switch it on again."
+          }
+        }
+      }
+    },
+    "calendar.google.failed": {
+      "comment": "Connecting or disconnecting Google Calendar failed.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не стана. Опитайте отново."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That didn't work. Try again."
+          }
+        }
+      }
+    },
+    "calendar.google.hint": {
+      "comment": "Under the Google Calendar switch, while off.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Резервации, игри, уроци и мачове в календар «playerz»."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bookings, games, lessons and matches in a «playerz» calendar."
+          }
+        }
+      }
+    },
+    "calendar.google.lastSync %@": {
+      "comment": "Under the switch: when it last synced.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "последно %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "last synced %@"
+          }
+        }
+      }
+    },
+    "calendar.google.reconnect": {
+      "comment": "The Google connection was revoked.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Google спря достъпа. Включете отново."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Google stopped the access. Switch it on again."
+          }
+        }
+      }
+    },
+    "calendar.google.scope": {
+      "comment": "The player unticked a calendar permission on Google's screen.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нужни са и двете разрешения за календара."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Both calendar permissions are needed."
+          }
+        }
+      }
+    },
+    "calendar.google.syncFailed": {
+      "comment": "A manual sync failed.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Синхронизирането не стана. Опитайте по-късно."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The sync didn't work. Try later."
+          }
+        }
+      }
+    },
+    "calendar.google.syncNow": {
+      "comment": "Runs a sync at once.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Синхронизирай сега"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sync now"
+          }
+        }
+      }
+    },
+    "calendar.google.title": {
+      "comment": "Профил: the switch that keeps bookings in the player's Google Calendar.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Синхронизирай с Google Календар"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sync with Google Calendar"
+          }
+        }
+      }
+    },
     "club.contactLabel": {
       "localizations": {
         "bg": {
