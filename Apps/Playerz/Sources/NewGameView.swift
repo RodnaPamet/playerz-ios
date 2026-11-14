@@ -262,13 +262,29 @@ struct NewGameDetailsView: View {
     let venueName: String
     let sport: String
 
-    @State private var spots = 1
+    @State private var spots: Int
     @State private var levelMin: Int?
     @State private var levelMax: Int?
     @State private var note = ""
     @State private var busy = false
     @State private var problem: String?
     @State private var created: String?
+
+    /// `spots` and the levels start where a draft put them: the assistant's
+    /// prepared game (#122) opens here with them filled.
+    init(
+        session: SessionModel, model: VenueDetailModel, venueId: String, venueName: String, sport: String,
+        spots: Int = 1, levelMin: Int? = nil, levelMax: Int? = nil
+    ) {
+        self.session = session
+        self.model = model
+        self.venueId = venueId
+        self.venueName = venueName
+        self.sport = sport
+        _spots = State(initialValue: spots)
+        _levelMin = State(initialValue: levelMin.flatMap { (1...7).contains($0) ? $0 : nil })
+        _levelMax = State(initialValue: levelMax.flatMap { (1...7).contains($0) ? $0 : nil })
+    }
 
     private var block: HourlySlots.Block? { model.blocks.first }
 

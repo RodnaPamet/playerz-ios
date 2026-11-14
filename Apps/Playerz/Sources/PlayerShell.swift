@@ -27,6 +27,8 @@ struct PlayerShell: View {
     /// first page (owner 2026-11-14: "clicking a bottom bar menu button
     /// should take the user to the respective page - home included").
     @State private var roots: [DebugLaunch.Tab: Int] = [:]
+    /// The screen on show, for the assistant's question (#122).
+    @State private var pages = AssistantPageTracker()
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
@@ -59,7 +61,17 @@ struct PlayerShell: View {
                 bar.onGeometryChange(for: CGFloat.self) { $0.size.height } action: { barHeight = $0 }
             }
         }
+        // «Асистент» (#122), lower right on every screen, above the bar or a
+        // screen's own bottom button. Always mounted, only hidden: its sheets
+        // hang on it, and the sheet's own keyboard (which also hides the
+        // button) must not take the conversation down with it.
+        .overlay(alignment: .bottomTrailing) {
+            AssistantLauncher(session: session, page: page, shown: session.showsAssistant && !keyboardUp)
+                .padding(.trailing, Theme.Spacing.l)
+                .padding(.bottom, launcherClearance)
+        }
         .environment(chrome)
+        .environment(pages)
         .onChange(of: tab, initial: true) { _, now in mounted.insert(now) }
         .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { _ in
             keyboardUp = true
@@ -75,6 +87,27 @@ struct PlayerShell: View {
     /// Gone under the keyboard, under a screen that asked (`floatingTabBarHidden`),
     /// and under the inbox.
     private var showsBar: Bool { !keyboardUp && chrome.barHiders == 0 && !session.messagesOpen }
+
+    /// Above the floating bar; above a screen's own bottom bar where the
+    /// screen took the floating one away (a game's action, a chat's field).
+    private var launcherClearance: CGFloat {
+        if showsBar { return barHeight + Theme.Spacing.s }
+        return chrome.barHiders > 0 ? 84 : Theme.Spacing.m
+    }
+
+    /// The page the assistant is told the person is on: a screen that names
+    /// a club, a booking or a game, else the tab's own.
+    private var page: AssistantPage {
+        if session.messagesOpen { return .init(.messages) }
+        if let shown = pages.top { return shown }
+        switch tab {
+        case .play: return .init(.home)
+        case .games: return .init(.games)
+        case .bookings: return .init(.bookings)
+        case .profile: return .init(.profile)
+        case .messages: return .init(.messages)
+        }
+    }
 
     /// A module the server has off has no tab (#16).
     private var tabs: [DebugLaunch.Tab] {

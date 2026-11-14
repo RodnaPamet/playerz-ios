@@ -58,6 +58,8 @@ struct BookingDetailView: View {
             }
         }
         .brandPage()
+        // The screen the assistant is told about (#122).
+        .assistantPage(.booking(bookingId))
         // Hidden with the system bar; still what VoiceOver calls the screen.
         .navigationTitle(booking?.venue.name ?? "")
         .brandHeader(.back(booking?.venue.name ?? ""))
