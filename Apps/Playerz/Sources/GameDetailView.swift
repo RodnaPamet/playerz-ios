@@ -55,6 +55,8 @@ struct GameDetailView: View {
             .padding(.bottom, Theme.Spacing.l)
         }
         .brandPage()
+        // The screen the assistant is told about (#122).
+        .assistantPage(.game(game.id))
         .safeAreaInset(edge: .bottom, spacing: 0) {
             if pinsAction {
                 actionBar
