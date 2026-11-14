@@ -14,6 +14,7 @@ struct AppLinkTests {
             ("/games?tab=mine", .games(mine: true)),
             ("/games", .games(mine: false)),
             ("https://playerz.bg/me/bookings/cmv1", .booking("cmv1")),
+            ("/venues?sport=TENNIS", .sport("TENNIS")),
         ]
     )
     func routes(path: String, link: AppLink) {
@@ -22,9 +23,10 @@ struct AppLinkTests {
 
     @Test(
         "a path with no screen in the app opens nothing",
-        arguments: ["/", "/tournaments/t1", "/t/club/admin/messages/c1", "/coach/profile", "/me/bookings/a/b", ""]
+        arguments: ["/", "/venues", "/venues?sport=", "/tournaments/t1", "/t/club/admin/messages/c1", "/coach/profile", "/me/bookings/a/b", ""]
     )
     func noScreen(path: String) {
+        // `/venues` alone is the list, not a sport: no screen of its own here.
         #expect(AppLink(path: path) == nil)
     }
 

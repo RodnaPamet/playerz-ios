@@ -12753,6 +12753,24 @@
         }
       }
     },
+    "profile.kind.sportFacts": {
+      "comment": "Push switch: a weekly fun fact about the player's main sport, on Mondays.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Факт на седмицата"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fact of the week"
+          }
+        }
+      }
+    },
     "profile.language": {
       "localizations": {
         "bg": {
@@ -15785,6 +15803,42 @@
           "stringUnit": {
             "state": "translated",
             "value": "Player"
+          }
+        }
+      }
+    },
+    "story.fact.number %lld": {
+      "comment": "Sport page: which of the sport's 52 facts today's is.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Факт %lld от 52"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fact %lld of 52"
+          }
+        }
+      }
+    },
+    "story.fact.title": {
+      "comment": "Sport page: the heading over the sport's fact of the week.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Факт на седмицата"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fact of the week"
           }
         }
       }

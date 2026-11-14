@@ -46,7 +46,7 @@ struct NotificationSettingsView: View {
         // Only a change from what the server said is written.
         .onChange(of: email) { _, now in
             guard let settings else { return }
-            for kind in kinds where now[kind] != kind.read(settings.email) {
+            for kind in emailKinds where now[kind] != kind.read(settings.email) {
                 Task { await save(.init(email: kind.emailChange(now[kind] ?? true))) }
             }
         }
@@ -60,7 +60,7 @@ struct NotificationSettingsView: View {
 
     private var emailSection: some View {
         Section {
-            ForEach(kinds, id: \.self) { kind in
+            ForEach(emailKinds, id: \.self) { kind in
                 Toggle(kind.label, isOn: $email[on: kind]).tint(Theme.Palette.controlOn)
             }
         } header: {
@@ -81,6 +81,9 @@ struct NotificationSettingsView: View {
     private var kinds: [NotificationKind] {
         NotificationKind.allCases.filter { $0 != .lessonsTaught || isCoach }
     }
+
+    /// The email switches: not the push-only kinds («Факт на деня»).
+    private var emailKinds: [NotificationKind] { kinds.filter { !$0.pushOnly } }
 
     private func load() async {
         guard let client = await session.client(),

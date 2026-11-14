@@ -117,6 +117,12 @@ struct PlaceHoursView: View {
                     .padding(.bottom, Theme.Spacing.s)
                 }
                 .brandListRow()
+                // Under the hours: the booking comes first, the story after.
+                Section {
+                    SportStoryCard(sport: court.sport, session: session)
+                        .listRowBackground(Color.clear)
+                        .listRowInsets(EdgeInsets())
+                }
             } else if model.phase == .loading {
                 ProgressView(String(localized: "common.loading"))
                     .frame(maxWidth: .infinity)
