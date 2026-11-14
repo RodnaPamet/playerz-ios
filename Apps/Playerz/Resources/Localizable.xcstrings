@@ -113,6 +113,1358 @@
         }
       }
     },
+    "assistant.answerNotKept": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отговорът не е запазен."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The answer was not kept."
+          }
+        }
+      }
+    },
+    "assistant.answered %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Асистентът отговори: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The assistant answered: %@"
+          }
+        }
+      }
+    },
+    "assistant.ask": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Попитай"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ask"
+          }
+        }
+      }
+    },
+    "assistant.conversations.deleteAll": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изтрий всички разговори"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete all conversations"
+          }
+        }
+      }
+    },
+    "assistant.conversations.deleteAllNote": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Асистентът ще забрави всички стари разговори. Това не може да се върне. Запомненото остава."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The assistant will forget all past conversations. This can't be undone. What it remembers stays."
+          }
+        }
+      }
+    },
+    "assistant.conversations.deleteAllQuestion": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Да изтрия ли всички разговори?"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete all conversations?"
+          }
+        }
+      }
+    },
+    "assistant.conversations.deleted %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изтрит разговор: «%@»"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conversation deleted: “%@”"
+          }
+        }
+      }
+    },
+    "assistant.conversations.deletedNoOpening": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Разговорът е изтрит."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conversation deleted."
+          }
+        }
+      }
+    },
+    "assistant.conversations.empty": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Няма разговори"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No conversations"
+          }
+        }
+      }
+    },
+    "assistant.conversations.emptyNote": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тук ще видите разговорите си с асистента."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your conversations with the assistant will be here."
+          }
+        }
+      }
+    },
+    "assistant.conversations.noOpening": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "(разговор без въпрос)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "(conversation with no question)"
+          }
+        }
+      }
+    },
+    "assistant.conversations.note": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Всичките ви разговори с асистента. Докоснете, за да прочетете и продължите. Плъзнете, за да изтриете. Изтриването на разговор не трие запомненото от него."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All your conversations with the assistant. Tap to read and continue, swipe to delete. Deleting a conversation does not delete what was remembered from it."
+          }
+        }
+      }
+    },
+    "assistant.conversations.openHint": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отваря разговора, за да го прочетете и продължите"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opens the conversation to read and continue it"
+          }
+        }
+      }
+    },
+    "assistant.conversations.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Стари разговори"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Past conversations"
+          }
+        }
+      }
+    },
+    "assistant.conversations.turns %lld": {
+      "localizations": {
+        "bg": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld реплика"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld реплики"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld turn"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld turns"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "assistant.earlierLeftOut": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "По-старите реплики от този разговор не са показани."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The older turns of this conversation are not shown."
+          }
+        }
+      }
+    },
+    "assistant.earlierQuestion": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "(по-ранен въпрос)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "(earlier question)"
+          }
+        }
+      }
+    },
+    "assistant.halt.ASSISTANT_PARTIAL_DATA": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отговорът е непълен. Част от данните не можаха да се прочетат."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The answer is incomplete. Some of the data could not be read."
+          }
+        }
+      }
+    },
+    "assistant.halt.ASSISTANT_PROVIDER_UNAVAILABLE": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Асистентът не работи в момента. Опитайте пак по-късно."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The assistant is not available right now. Try again later."
+          }
+        }
+      }
+    },
+    "assistant.halt.ASSISTANT_REQUEST_REJECTED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нещо при нас се обърка и няма отговор. Грешката не е ваша."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Something went wrong on our side, so there is no answer. It is not your fault."
+          }
+        }
+      }
+    },
+    "assistant.halt.ASSISTANT_SPEND_CEILING": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Стигнахте дневния лимит на асистента. Опитайте пак утре."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You have reached the assistant's daily limit. Try again tomorrow."
+          }
+        }
+      }
+    },
+    "assistant.halt.ASSISTANT_TIME_BUDGET": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отговорът е непълен. Отне твърде дълго и спрях."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The answer is incomplete. It took too long, so I stopped."
+          }
+        }
+      }
+    },
+    "assistant.halt.ASSISTANT_TOOL_BUDGET": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отговорът е непълен. Стигнах границата на проверките за един въпрос."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The answer is incomplete. I reached the limit of checks for one question."
+          }
+        }
+      }
+    },
+    "assistant.halt.ASSISTANT_TRUNCATED_RESULT": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отговорът ползва само част от данните. Един от списъците беше твърде дълъг."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The answer uses only part of the data. One of the lists was too long."
+          }
+        }
+      }
+    },
+    "assistant.halt.other": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отговорът е непълен."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The answer is incomplete."
+          }
+        }
+      }
+    },
+    "assistant.interrupted": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Връзката прекъсна, преди асистентът да довърши. Опитайте пак."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The connection dropped before the assistant finished. Try again."
+          }
+        }
+      }
+    },
+    "assistant.intro": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Питайте за свободни кортове, часове и цени. Или кога да играете пак с хората от ваша игра. Асистентът само търси и предлага. Резервирате вие."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ask about free courts, hours and prices, or when to play again with the people from one of your games. The assistant only looks and suggests. You make the booking."
+          }
+        }
+      }
+    },
+    "assistant.lostMidAnswer": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Връзката прекъсна, преди да дойде отговорът. Задайте въпроса пак."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The connection dropped before the answer came. Ask again."
+          }
+        }
+      }
+    },
+    "assistant.memory.cancel": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отказ"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel"
+          }
+        }
+      }
+    },
+    "assistant.memory.delete": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изтрий"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete"
+          }
+        }
+      }
+    },
+    "assistant.memory.editCount %lld %lld": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld от %2$lld знака. Това са ваши думи и асистентът няма да ги променя."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld of %2$lld characters. These are your words, and the assistant will not change them."
+          }
+        }
+      }
+    },
+    "assistant.memory.editHint": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отваря поправката"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opens the correction"
+          }
+        }
+      }
+    },
+    "assistant.memory.editPlaceholder": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Какво да помни асистентът"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What the assistant should remember"
+          }
+        }
+      }
+    },
+    "assistant.memory.editTitle": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Поправка"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Correct"
+          }
+        }
+      }
+    },
+    "assistant.memory.editedByYou": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "поправено от вас"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "corrected by you"
+          }
+        }
+      }
+    },
+    "assistant.memory.empty": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Още нищо"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing yet"
+          }
+        }
+      }
+    },
+    "assistant.memory.emptyNote": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Асистентът запомня какво му казвате за себе си: спорт, ниво, любими клубове и часове."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The assistant remembers what you tell it about yourself: sport, level, favourite clubs and times."
+          }
+        }
+      }
+    },
+    "assistant.memory.error.empty": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не може да е празно."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "It can't be empty."
+          }
+        }
+      }
+    },
+    "assistant.memory.error.failed": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не стана. Опитайте пак."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That did not work. Try again."
+          }
+        }
+      }
+    },
+    "assistant.memory.error.notFound": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Това вече го няма."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This is already gone."
+          }
+        }
+      }
+    },
+    "assistant.memory.error.rateLimited": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Много промени за кратко време. Изчакайте малко."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Too many changes in a short time. Wait a little."
+          }
+        }
+      }
+    },
+    "assistant.memory.forgetAll": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изтрий всичко запомнено"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete everything remembered"
+          }
+        }
+      }
+    },
+    "assistant.memory.forgetAllNote": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Всичко запомнено ще се изтрие завинаги. Старите разговори остават."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Everything remembered will be deleted for good. Past conversations stay."
+          }
+        }
+      }
+    },
+    "assistant.memory.forgetAllQuestion": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Да забрави ли асистентът всичко?"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Should the assistant forget everything?"
+          }
+        }
+      }
+    },
+    "assistant.memory.forgotten %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Забравено: «%@»"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Forgotten: “%@”"
+          }
+        }
+      }
+    },
+    "assistant.memory.forgottenSaid": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Забравено. Можете да отмените."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Forgotten. You can undo."
+          }
+        }
+      }
+    },
+    "assistant.memory.list": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Запомнено"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remembered"
+          }
+        }
+      }
+    },
+    "assistant.memory.listNote": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Асистентът ползва това във всеки отговор. Докоснете, за да поправите. Плъзнете, за да изтриете. Изтритото не се запомня пак от същите думи."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The assistant uses this in every answer. Tap to correct, swipe to delete. Deleted points are not learned again from the same words."
+          }
+        }
+      }
+    },
+    "assistant.memory.notForgotten": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не е изтрито"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not deleted"
+          }
+        }
+      }
+    },
+    "assistant.memory.rememberedOn %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Запомнено на %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remembered on %@"
+          }
+        }
+      }
+    },
+    "assistant.memory.rowHint": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Запомненото и старите разговори"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What it remembers, and past conversations"
+          }
+        }
+      }
+    },
+    "assistant.memory.save": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Запази"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save"
+          }
+        }
+      }
+    },
+    "assistant.memory.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Какво помни асистентът"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What the assistant remembers"
+          }
+        }
+      }
+    },
+    "assistant.memory.undo": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отмени"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Undo"
+          }
+        }
+      }
+    },
+    "assistant.newConversation": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нов разговор"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New conversation"
+          }
+        }
+      }
+    },
+    "assistant.noAnswer": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Асистентът няма отговор на този въпрос."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The assistant has no answer to this question."
+          }
+        }
+      }
+    },
+    "assistant.offline": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Няма връзка със сървъра. Опитайте пак."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Can't reach the server. Try again."
+          }
+        }
+      }
+    },
+    "assistant.prompt": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Попитайте за корт или час за игра…"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ask about a court or a time to play…"
+          }
+        }
+      }
+    },
+    "assistant.proposal.booking": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Към резервацията"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open the booking"
+          }
+        }
+      }
+    },
+    "assistant.proposal.game": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Към новата игра"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open the new game"
+          }
+        }
+      }
+    },
+    "assistant.proposal.gone": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Този час вече не е свободен."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This hour is no longer free."
+          }
+        }
+      }
+    },
+    "assistant.proposal.goneHint": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отворете клуба и изберете друг час."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open the club and pick another hour."
+          }
+        }
+      }
+    },
+    "assistant.proposal.note": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Асистентът избра корта и часа. Проверете и потвърдете."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The assistant picked the court and the time. Check and confirm."
+          }
+        }
+      }
+    },
+    "assistant.proposal.openVenue": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Към клуба"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open the club"
+          }
+        }
+      }
+    },
+    "assistant.reading": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Проверявам…"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Checking…"
+          }
+        }
+      }
+    },
+    "assistant.reading.best_time_for_game": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Проверявам кога могат играчите…"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Checking when the players are free…"
+          }
+        }
+      }
+    },
+    "assistant.reading.find_free_places": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Търся свободни часове…"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Looking for free hours…"
+          }
+        }
+      }
+    },
+    "assistant.reading.propose_booking": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Подготвям резервацията…"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparing the booking…"
+          }
+        }
+      }
+    },
+    "assistant.reading.search_past_conversations": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Търся в старите разговори…"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Searching past conversations…"
+          }
+        }
+      }
+    },
+    "assistant.refusal.ASSISTANT_DECLINED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не мога да помогна с този въпрос."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I can't help with that question."
+          }
+        }
+      }
+    },
+    "assistant.refusal.ASSISTANT_EGRESS_BLOCKED": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Спрях този отговор, защото изглеждаше, че съдържа тайни данни. Нищо не е изпратено."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I stopped this answer because it looked like it held secret data. Nothing was sent."
+          }
+        }
+      }
+    },
+    "assistant.refusal.ASSISTANT_NO_GROUNDING": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не намерих с какво да отговоря и няма да гадая."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I found nothing to answer with, and I will not guess."
+          }
+        }
+      }
+    },
+    "assistant.refusal.other": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Асистентът не отговори на този въпрос."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The assistant did not answer this question."
+          }
+        }
+      }
+    },
+    "assistant.refused.badRequest": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Въпросът не можа да се изпрати. Опитайте по-кратко."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The question could not be sent. Try a shorter one."
+          }
+        }
+      }
+    },
+    "assistant.refused.disabled": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Асистентът не е включен."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The assistant is switched off."
+          }
+        }
+      }
+    },
+    "assistant.refused.failed": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Асистентът не отговори. Опитайте пак."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The assistant did not answer. Try again."
+          }
+        }
+      }
+    },
+    "assistant.refused.playersOnly": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Асистентът е само за играчи."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The assistant is for players only."
+          }
+        }
+      }
+    },
+    "assistant.refused.rateLimited": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Много въпроси за кратко време. Изчакайте няколко минути."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Too many questions in a short time. Wait a few minutes."
+          }
+        }
+      }
+    },
+    "assistant.refused.signedOut": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Влезте отново в профила си."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign in again."
+          }
+        }
+      }
+    },
+    "assistant.thinking": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Мисля…"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thinking…"
+          }
+        }
+      }
+    },
+    "assistant.title": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Асистент"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Assistant"
+          }
+        }
+      }
+    },
+    "assistant.writing": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пиша отговора…"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Writing the answer…"
+          }
+        }
+      }
+    },
+    "assistant.you %@": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вие: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You: %@"
+          }
+        }
+      }
+    },
     "bookingGame.accept": {
       "localizations": {
         "bg": {

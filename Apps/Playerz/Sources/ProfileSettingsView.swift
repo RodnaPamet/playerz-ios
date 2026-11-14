@@ -200,6 +200,21 @@ struct ProfileSettingsView: View {
                     .hubDivider()
                 }
 
+                // «Какво помни асистентът» (#122), while the server offers it.
+                if session.showsAssistant {
+                    NavigationLink {
+                        AssistantMemoryView(session: session)
+                    } label: {
+                        ProfileHubRow(
+                            AssistantMemoryText.title,
+                            subtitle: AssistantMemoryText.rowHint,
+                            systemImage: "sparkles"
+                        )
+                    }
+                    .buttonStyle(.plain)
+                    .hubDivider()
+                }
+
                 // A coach's own area (#20), as the web's «Профил на треньор».
                 if me.accountKind == "COACH", session.modules.coaches {
                     NavigationLink {

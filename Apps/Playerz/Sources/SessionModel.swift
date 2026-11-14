@@ -270,6 +270,7 @@ final class SessionModel {
     private func adopt(_ s: PlayerzSession) async {
         session = s
         state = .signedIn
+        assistantRefused = false
         // This phone's token, if notifications are allowed, now belongs to
         // this account (#12).
         await PushRegistrar.shared.refreshIfAllowed(self)
@@ -333,8 +334,52 @@ final class SessionModel {
     }
 
     /// Ask the server which modules are on. A failed read keeps what was known.
+    /// Whether it offers «Асистент» is asked with them: both are switches
+    /// that can change while the app is open.
     func refreshModules() async {
         if let fresh = await session?.modules() { modules = fresh }
+        await refreshAssistant()
+    }
+
+    // MARK: - «Асистент» (#122, projectZ#704)
+
+    /// The server offers the assistant: `ASSISTANT_ENABLED` on. No module
+    /// says so, so it is asked of the memory list, which answers 404
+    /// `ASSISTANT_DISABLED` while it is off. Off until the server says.
+    private(set) var assistantOffered = false
+    /// Refused for this account (403 `ASSISTANT_PLAYERS_ONLY`): hidden until
+    /// the next sign-in.
+    private(set) var assistantRefused = false
+
+    /// The launcher and «Какво помни асистентът» are shown.
+    var showsAssistant: Bool { assistantOffered && !assistantRefused }
+
+    /// Re-asked on launch and on every return to the foreground. A failed
+    /// read keeps what was known.
+    func refreshAssistant() async {
+        guard let client = await client() else {
+            assistantOffered = false
+            return
+        }
+        if let offered = await AssistantAPI.isOffered(client: client) { assistantOffered = offered }
+    }
+
+    /// A question refused because the assistant is not here: the button goes.
+    func noticeAssistant(_ refused: AssistantAskError?) {
+        switch refused {
+        case .disabled: assistantOffered = false
+        case .playersOnly: assistantRefused = true
+        default: break
+        }
+    }
+
+    /// A fresh conversation for a sheet: questions go through this session's
+    /// client, and the connection is held while the app steps out.
+    func assistantStore() -> AssistantStore {
+        AssistantStore(ask: { [weak self] ask in
+            guard let client = await self?.client() else { throw AssistantAskError.signedOut }
+            return try await AssistantAPI.ask(ask, client: client)
+        }, hold: AssistantKeepAlive())
     }
 
     /// The account's language follows the app's (#13): written when they
@@ -387,6 +432,8 @@ final class SessionModel {
         PushRegistrar.shared.signedOut()
         session = nil
         state = .signedOut
+        assistantOffered = false
+        assistantRefused = false
     }
 
     /// An authenticated client, or nil when signed out.

@@ -70,6 +70,8 @@ struct VenueDetailView: View {
                 .outsideShellBar()
         }
         .brandPage()
+        // The screen the assistant is told about (#122).
+        .assistantPage(.venue(venueId))
         // Hidden with the system bar; still what VoiceOver calls the screen.
         .navigationTitle(model.venue?.name ?? "")
         .navigationDestination(isPresented: $showingBookings) {
