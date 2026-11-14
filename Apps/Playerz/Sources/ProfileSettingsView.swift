@@ -189,6 +189,9 @@ struct ProfileSettingsView: View {
                 .buttonStyle(.plain)
                 .hubDivider()
 
+                // «Синхронизирай с Google Календар» (owner 2026-11-14).
+                GoogleCalendarRow(session: session)
+
                 // «Класиране» (#18), while the ranking module is on.
                 if session.modules.ranking {
                     NavigationLink {
