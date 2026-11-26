@@ -1193,6 +1193,24 @@
         }
       }
     },
+    "calendar.google.disclosureChanged": {
+      "comment": "The calendar connection text changed while it was open; it is shown again.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Текстът за свързването се промени. Прочетете го отново и потвърдете."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The text about connecting has changed. Read it again and confirm."
+          }
+        }
+      }
+    },
     "calendar.google.expired": {
       "comment": "The connect link expired.",
       "extractionState": "manual",
@@ -1261,6 +1279,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "last synced %@"
+          }
+        }
+      }
+    },
+    "calendar.google.privacyLink": {
+      "comment": "Link under the calendar consent points to the privacy policy.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Политика за поверителност"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Privacy policy"
           }
         }
       }
