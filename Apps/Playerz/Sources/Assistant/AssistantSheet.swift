@@ -54,6 +54,19 @@ struct AssistantSheet: View {
             .navigationTitle(AssistantText.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .principal) {
+                    // The title says what it is: an AI (AI Act Art. 50).
+                    HStack(spacing: Theme.Spacing.s) {
+                        Text(AssistantText.title).font(.headline)
+                        Text(AssistantText.aiBadge)
+                            .font(.caption.weight(.bold))
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .foregroundStyle(Theme.Palette.accentText)
+                            .overlay(Capsule().strokeBorder(Theme.Palette.accentText, lineWidth: 1))
+                    }
+                    .accessibilityElement(children: .combine)
+                }
                 ToolbarItem(placement: .cancellationAction) {
                     Button(String(localized: "common.close")) { dismiss() }
                 }

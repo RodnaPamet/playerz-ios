@@ -9,6 +9,8 @@ enum AssistantText {
     static var title: String { String(localized: "assistant.title") }
     static var prompt: String { String(localized: "assistant.prompt") }
     static var intro: String { String(localized: "assistant.intro") }
+    /// «ИИ» beside the title: the person is told they talk to an AI (AI Act Art. 50, projectZ #716).
+    static var aiBadge: String { String(localized: "assistant.aiBadge") }
     static var ask: String { String(localized: "assistant.ask") }
     static var newConversation: String { String(localized: "assistant.newConversation") }
     static var earlierQuestion: String { String(localized: "assistant.earlierQuestion") }

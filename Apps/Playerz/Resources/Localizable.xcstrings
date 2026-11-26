@@ -113,6 +113,24 @@
         }
       }
     },
+    "assistant.aiBadge": {
+      "comment": "Badge beside the assistant’s title: it is an AI.",
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ИИ"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AI"
+          }
+        }
+      }
+    },
     "assistant.answerNotKept": {
       "localizations": {
         "bg": {
@@ -558,13 +576,13 @@
         "bg": {
           "stringUnit": {
             "state": "translated",
-            "value": "Питайте за свободни кортове, часове и цени. Или кога да играете пак с хората от ваша игра. Асистентът само търси и предлага. Резервирате вие."
+            "value": "Питайте за свободни места, часове и цени. Или кога да играете пак с хората от ваша игра. Асистентът само търси и предлага. Резервирате вие. Това е изкуствен интелект и може да греши. Не споделяйте с него данни за здравето си."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ask about free courts, hours and prices, or when to play again with the people from one of your games. The assistant only looks and suggests. You make the booking."
+            "value": "Ask about free places, hours and prices, or when to play again with the people from one of your games. The assistant only looks and suggests. You make the booking. It is an AI and can make mistakes. Don’t share health details with it."
           }
         }
       }
@@ -894,13 +912,13 @@
         "bg": {
           "stringUnit": {
             "state": "translated",
-            "value": "Асистентът ползва това във всеки отговор. Докоснете, за да поправите. Плъзнете, за да изтриете. Изтритото не се запомня пак от същите думи."
+            "value": "Асистентът ползва това във всеки отговор. Докоснете, за да поправите. Плъзнете, за да изтриете. Изтритото изчезва завинаги. Ако кажете същото пак, асистентът може да го запомни отново."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The assistant uses this in every answer. Tap to correct, swipe to delete. Deleted points are not learned again from the same words."
+            "value": "The assistant uses this in every answer. Tap to correct it. Swipe to delete it. What you delete is gone for good. If you say the same thing again, the assistant may remember it again."
           }
         }
       }
