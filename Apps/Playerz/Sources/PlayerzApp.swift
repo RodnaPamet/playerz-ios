@@ -6,6 +6,8 @@ import UserNotifications
 struct PlayerzApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var delegate
     @State private var session: SessionModel
+    /// Dark unless the person chose otherwise in Профил (AppTheme).
+    @AppStorage(AppTheme.storageKey) private var theme: AppTheme = .dark
 
     init() {
         // Before the first text is looked up (AppLanguageChoice).
@@ -16,6 +18,7 @@ struct PlayerzApp: App {
     var body: some Scene {
         WindowGroup {
             launchView
+                .preferredColorScheme(theme.colorScheme)
                 // Dates, amounts and SwiftUI's own words in the app's language.
                 .environment(\.locale, AppLanguageChoice.locale(session.language))
                 // A refusal for want of a confirmed phone, from any screen (#11).
