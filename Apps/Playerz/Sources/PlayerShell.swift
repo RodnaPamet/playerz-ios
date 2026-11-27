@@ -30,6 +30,8 @@ struct PlayerShell: View {
     /// The screen on show, for the assistant's question (#122).
     @State private var pages = AssistantPageTracker()
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    /// «Начало» sketched in pencil, once per cold launch (LaunchSketch).
+    @State private var sketching = false
 
     var body: some View {
         ZStack {
@@ -53,6 +55,16 @@ struct PlayerShell: View {
             }
         }
         .animation(reduceMotion ? nil : .snappy(duration: 0.3), value: session.messagesOpen)
+        .overlay {
+            if sketching { LaunchSketch { sketching = false } }
+        }
+        .onAppear {
+            // Only on a cold launch that opens on «Начало», and never with
+            // Reduce Motion; the screen loads underneath either way.
+            guard !LaunchSketch.played else { return }
+            LaunchSketch.played = true
+            sketching = tab == .play && !reduceMotion
+        }
         // Every page keeps this much clear at its end (`shellBarHeight`):
         // the shell's own inset did not reach through the tabs' stacks.
         .environment(\.shellBarHeight, showsBar ? barHeight : 0)

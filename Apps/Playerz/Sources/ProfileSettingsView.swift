@@ -7,6 +7,7 @@ import SwiftUI
 /// the emails and the pushes (#484, #510, #529), «Език», «Класиране» (#18),
 /// a coach's area (#20), the data and deleting the account (#9), signing out.
 struct ProfileSettingsView: View {
+    @AppStorage(AppTheme.storageKey) private var theme: AppTheme = .dark
     @Bindable var session: SessionModel
 
     @State private var debugCoach = DebugLaunch.profile == .coach
@@ -172,6 +173,18 @@ struct ProfileSettingsView: View {
                     .pickerStyle(.menu)
                     .labelsHidden()
                     // The language's whole name, not broken over two lines.
+                    .fixedSize()
+                    .tint(Theme.Palette.accentText)
+                }
+                .hubDivider()
+
+                // Dark by default, whatever the phone uses (owner 2026-11-27).
+                ProfileHubRow(String(localized: "profile.theme"), systemImage: "circle.lefthalf.filled") {
+                    Picker(String(localized: "profile.theme"), selection: $theme) {
+                        ForEach(AppTheme.allCases, id: \.self) { Text($0.label).tag($0) }
+                    }
+                    .pickerStyle(.menu)
+                    .labelsHidden()
                     .fixedSize()
                     .tint(Theme.Palette.accentText)
                 }
